@@ -1,0 +1,22 @@
+PODS:
+  - Flutter (1.0.0)
+  - native_webview (0.0.1):
+    - Flutter
+
+DEPENDENCIES:
+  - Flutter (from `Flutter`)
+  - native_webview (from `.symlinks/plugins/native_webview/ios`)
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+  native_webview:
+    :path: ".symlinks/plugins/native_webview/ios"
+
+SPEC CHECKSUMS:
+  Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  native_webview: 8192d722dffd5387611d4ab8011fda8d4a7d29f7
+
+PODFILE CHECKSUM: 083258d7f5e80b42ea9bfee905fe93049bc04c64
+
+COCOAPODS: 1.8.4
