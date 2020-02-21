@@ -2,6 +2,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 class WebView extends StatefulWidget {
+  final String initialUrl;
+
+  const WebView({
+    Key key,
+    this.initialUrl,
+  });
+
   @override
   State<StatefulWidget> createState() => _WebViewState();
 }
@@ -15,8 +22,24 @@ class _WebViewState extends State<WebView> {
         print(id);
       },
       gestureRecognizers: Set.from([]),
-      creationParams: {},
+      creationParams: _CreationParams.from(widget).toMap(),
       creationParamsCodec: const StandardMessageCodec(),
     );
+  }
+}
+
+class _CreationParams {
+  final WebView widget;
+
+  _CreationParams._(this.widget);
+
+  static _CreationParams from(WebView widget) {
+    return _CreationParams._(widget);
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      "initialUrl": widget.initialUrl,
+    };
   }
 }

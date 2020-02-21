@@ -22,7 +22,9 @@ class _MyAppState extends State<MyApp> {
         appBar: AppBar(
           title: const Text('Plugin example app'),
         ),
-        body: WebView(),
+        body: WebView(
+          initialUrl: "https://flutter.dev/",
+        ),
       ),
     );
   }

@@ -19,12 +19,13 @@ public class FlutterWebViewController: NSObject, FlutterPlatformView {
 
         super.init()
 
-        webview.loadHTMLString("<div>hisaichi5518</div>", baseURL: nil)
+        let initialURL = args["initialUrl"] as? String ?? "about:blank"
 
         webview.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         self.parent.addSubview(webview)
 
         channel.setMethodCallHandler(handle)
+        webview.load(URLRequest(url: URL(string: initialURL)!))
     }
 
     deinit {
