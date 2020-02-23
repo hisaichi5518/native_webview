@@ -1,12 +1,15 @@
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:native_webview/src/webview_controller.dart';
 
 class WebView extends StatefulWidget {
   final String initialUrl;
+  final void Function(WebViewController) onWebViewCreated;
 
   const WebView({
     Key key,
     this.initialUrl,
+    this.onWebViewCreated,
   });
 
   @override
@@ -19,7 +22,12 @@ class _WebViewState extends State<WebView> {
     return UiKitView(
       viewType: "packages.jp/native_webview",
       onPlatformViewCreated: (int id) {
-        print(id);
+        if (widget.onWebViewCreated == null) {
+          return;
+        }
+        widget.onWebViewCreated(
+          WebViewController(widget, id),
+        );
       },
       gestureRecognizers: Set.from([]),
       creationParams: _CreationParams.from(widget).toMap(),

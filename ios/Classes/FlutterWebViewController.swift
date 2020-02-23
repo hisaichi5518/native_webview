@@ -33,5 +33,37 @@ public class FlutterWebViewController: NSObject, FlutterPlatformView {
     }
 
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        switch call.method {
+        case "evaluateJavascript":
+            guard let javaScriptString = call.arguments as? String else {
+                result(FlutterError.init(
+                    code: "evaluateJavascript",
+                    message: "evaluateJavaScript error",
+                    details: "\(call.arguments ?? "<nil>") is not String"
+                ))
+                break;
+            }
+            webview.evaluateJavaScript(javaScriptString, completionHandler: { (completed, err) in
+                if let err = err {
+                    let error = err as NSError
+                    let message = error.userInfo["WKJavaScriptExceptionMessage"] as? String ?? "javascript error"
+                    result(FlutterError.init(
+                        code: "evaluateJavascript",
+                        message: message,
+                        details: nil
+                    ))
+                } else {
+                    result(completed)
+                }
+            })
+        case "currentUrl":
+            guard let url = webview.url else {
+                result(nil)
+                return
+            }
+            result(url.absoluteString)
+        default:
+            result(FlutterMethodNotImplemented)
+        }
     }
 }
