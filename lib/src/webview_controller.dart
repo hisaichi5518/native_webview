@@ -20,4 +20,14 @@ class WebViewController {
       'currentUrl',
     );
   }
+
+  Future<void> loadUrl(String url, {Map<String, String> headers}) async {
+    return _channel.invokeMethod<void>(
+      'loadUrl',
+      <String, dynamic>{
+        'url': url,
+        'headers': headers,
+      },
+    );
+  }
 }

@@ -62,6 +62,25 @@ public class FlutterWebViewController: NSObject, FlutterPlatformView {
                 return
             }
             result(url.absoluteString)
+        case "loadUrl":
+            guard let arguments = call.arguments as? [String: Any?], let url = arguments["url"] as? String else {
+                result(FlutterError.init(
+                    code: "loadUrl",
+                    message: "Can not find url",
+                    details: nil
+                ))
+                return
+            }
+
+            var request = URLRequest(url: URL(string: url)!)
+            if let headers = arguments["headers"] as? [String: String] {
+                for (key, value) in headers {
+                    request.setValue(value, forHTTPHeaderField: key)
+                }
+            }
+
+            webview.load(request)
+            result(true)
         default:
             result(FlutterMethodNotImplemented)
         }
