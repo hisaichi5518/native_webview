@@ -167,6 +167,38 @@ void main() {
     });
   });
 
+  group("onPageFinished", () {
+    testWidgets('wait for page finished', (tester) async {
+      final controllerCompleter = Completer<WebViewController>();
+      final streamController = StreamController<String>();
+
+      List<int> progressValues = [];
+      await tester.pumpWidget(
+        Directionality(
+          textDirection: TextDirection.ltr,
+          child: WebView(
+            initialUrl: 'https://flutter.dev/',
+            onWebViewCreated: (WebViewController controller) {
+              controllerCompleter.complete(controller);
+            },
+            onProgressChanged: (controller, progress) {
+              progressValues.add(progress);
+            },
+            onPageFinished: (controller, url) {
+              streamController.add(url);
+            },
+          ),
+        ),
+      );
+
+      final url = await streamController.stream
+          .firstWhere((element) => element == "https://flutter.dev/");
+      expect(url, "https://flutter.dev/");
+      expect(progressValues.last, 100);
+      streamController.close();
+    });
+  });
+
   group("loadUrl", () {
     testWidgets('loadUrl', (tester) async {
       final controllerCompleter = Completer<WebViewController>();

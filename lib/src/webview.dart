@@ -7,6 +7,7 @@ class WebView extends StatefulWidget {
   final void Function(WebViewController) onWebViewCreated;
   final void Function(WebViewController, String) onPageStarted;
   final void Function(WebViewController, String) onPageFinished;
+  final void Function(WebViewController, int) onProgressChanged;
 
   const WebView({
     Key key,
@@ -14,6 +15,7 @@ class WebView extends StatefulWidget {
     this.onWebViewCreated,
     this.onPageStarted,
     this.onPageFinished,
+    this.onProgressChanged,
   });
 
   @override

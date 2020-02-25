@@ -9,10 +9,17 @@ public class NativeWebView: WKWebView, WKNavigationDelegate {
         self.channel = channel
         super.init(frame: frame, configuration: configuration)
         navigationDelegate = self
+
+        addObserver(
+            self,
+            forKeyPath: #keyPath(WKWebView.estimatedProgress),
+            options: .new,
+            context: nil
+        )
+
     }
 
     required public init(coder aDecoder: NSCoder) {
-        self.channel = nil
         super.init(coder: aDecoder)!
     }
 
@@ -24,5 +31,18 @@ public class NativeWebView: WKWebView, WKNavigationDelegate {
     public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         let arguments: [String: String?] = ["url": webView.url?.absoluteString]
         channel?.invokeMethod("onPageFinished", arguments: arguments)
+    }
+
+
+    override public func observeValue(
+        forKeyPath keyPath: String?,
+        of object: Any?,
+        change: [NSKeyValueChangeKey : Any]?,
+        context: UnsafeMutableRawPointer?
+    ) {
+        if keyPath == #keyPath(WKWebView.estimatedProgress) {
+            let arguments: [String: Int] = ["progress": Int(estimatedProgress * 100)]
+            channel?.invokeMethod("onProgressChanged", arguments: arguments)
+        }
     }
 }

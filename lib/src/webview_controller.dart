@@ -13,10 +13,13 @@ class WebViewController {
   Future<bool> _onMethodCall(MethodCall call) async {
     switch (call.method) {
       case 'onPageStarted':
-        _widget.onPageStarted(this, call.arguments['url']);
+        _widget.onPageStarted(this, call.arguments['url'] as String);
         return null;
       case 'onPageFinished':
-        _widget.onPageFinished(this, call.arguments['url']);
+        _widget.onPageFinished(this, call.arguments['url'] as String);
+        return null;
+      case 'onProgressChanged':
+        _widget.onProgressChanged(this, call.arguments['progress'] as int);
         return null;
     }
     throw MissingPluginException(
