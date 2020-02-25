@@ -14,7 +14,9 @@ public class FlutterWebViewController: NSObject, FlutterPlatformView {
 
     init(parent: UIView, channel: FlutterMethodChannel, arguments args: NSDictionary) {
         self.parent = parent
-        self.webview = NativeWebView()
+
+        let configuration = WKWebViewConfiguration()
+        self.webview = NativeWebView(frame: parent.bounds, configuration: configuration, channel: channel)
         self.channel = channel
 
         super.init()

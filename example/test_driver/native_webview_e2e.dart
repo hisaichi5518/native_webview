@@ -113,6 +113,60 @@ void main() {
     });
   });
 
+  group("onPageStarted", () {
+    testWidgets('wait for page started', (tester) async {
+      final controllerCompleter = Completer<WebViewController>();
+      final streamController = StreamController<String>();
+
+      await tester.pumpWidget(
+        Directionality(
+          textDirection: TextDirection.ltr,
+          child: WebView(
+            initialUrl: 'https://flutter.dev/',
+            onWebViewCreated: (WebViewController controller) {
+              controllerCompleter.complete(controller);
+            },
+            onPageStarted: (controller, url) {
+              streamController.add(url);
+            },
+          ),
+        ),
+      );
+
+      final url = await streamController.stream
+          .firstWhere((element) => element == "https://flutter.dev/");
+      expect(url, "https://flutter.dev/");
+      streamController.close();
+    });
+  });
+
+  group("onPageFinished", () {
+    testWidgets('wait for page finished', (tester) async {
+      final controllerCompleter = Completer<WebViewController>();
+      final streamController = StreamController<String>();
+
+      await tester.pumpWidget(
+        Directionality(
+          textDirection: TextDirection.ltr,
+          child: WebView(
+            initialUrl: 'https://flutter.dev/',
+            onWebViewCreated: (WebViewController controller) {
+              controllerCompleter.complete(controller);
+            },
+            onPageFinished: (controller, url) {
+              streamController.add(url);
+            },
+          ),
+        ),
+      );
+
+      final url = await streamController.stream
+          .firstWhere((element) => element == "https://flutter.dev/");
+      expect(url, "https://flutter.dev/");
+      streamController.close();
+    });
+  });
+
   group("loadUrl", () {
     testWidgets('loadUrl', (tester) async {
       final controllerCompleter = Completer<WebViewController>();

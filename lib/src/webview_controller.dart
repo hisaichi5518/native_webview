@@ -6,7 +6,23 @@ class WebViewController {
   final MethodChannel _channel;
 
   WebViewController(this._widget, int id)
-      : _channel = MethodChannel("packages.jp/native_webview_$id");
+      : _channel = MethodChannel("packages.jp/native_webview_$id") {
+    _channel.setMethodCallHandler(_onMethodCall);
+  }
+
+  Future<bool> _onMethodCall(MethodCall call) async {
+    switch (call.method) {
+      case 'onPageStarted':
+        _widget.onPageStarted(this, call.arguments['url']);
+        return null;
+      case 'onPageFinished':
+        _widget.onPageFinished(this, call.arguments['url']);
+        return null;
+    }
+    throw MissingPluginException(
+      '${call.method} was invoked but has no handler',
+    );
+  }
 
   Future<String> evaluateJavascript(String javascriptString) async {
     return _channel.invokeMethod<String>(

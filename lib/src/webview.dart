@@ -5,11 +5,15 @@ import 'package:native_webview/src/webview_controller.dart';
 class WebView extends StatefulWidget {
   final String initialUrl;
   final void Function(WebViewController) onWebViewCreated;
+  final void Function(WebViewController, String) onPageStarted;
+  final void Function(WebViewController, String) onPageFinished;
 
   const WebView({
     Key key,
     this.initialUrl,
     this.onWebViewCreated,
+    this.onPageStarted,
+    this.onPageFinished,
   });
 
   @override
