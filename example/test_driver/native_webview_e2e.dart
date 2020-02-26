@@ -250,4 +250,74 @@ void main() {
       expect(content.contains('flutter_test_header'), isTrue);
     });
   });
+
+  group("JavascriptHandler", () {
+    testWidgets("messages received", (tester) async {
+      final controllerCompleter = Completer<WebViewController>();
+      final streamController = StreamController<String>();
+      final List<List<dynamic>> argumentsReceived = [];
+
+      await tester.pumpWidget(
+        Directionality(
+          textDirection: TextDirection.ltr,
+          child: WebView(
+            initialUrl: 'https://flutter.dev/',
+            onWebViewCreated: (controller) {
+              controller.addJavascriptHandler("hoge", (arguments) async {
+                argumentsReceived.add(arguments);
+              });
+              controllerCompleter.complete(controller);
+            },
+            onPageFinished: (controller, url) {
+              streamController.add(url);
+            },
+          ),
+        ),
+      );
+      final controller = await controllerCompleter.future;
+
+      await streamController.stream
+          .firstWhere((element) => element == "https://flutter.dev/");
+
+      await controller.evaluateJavascript("""
+      window.nativeWebView.callHandler("hoge", "value", 1, true);
+      """);
+      expect(argumentsReceived, [
+        ["value", 1, true],
+      ]);
+      streamController.close();
+    });
+
+    testWidgets("nothing handler", (tester) async {
+      final controllerCompleter = Completer<WebViewController>();
+      final streamController = StreamController<String>();
+      final List<List<dynamic>> argumentsReceived = [];
+
+      await tester.pumpWidget(
+        Directionality(
+          textDirection: TextDirection.ltr,
+          child: WebView(
+            initialUrl: 'https://flutter.dev/',
+            onWebViewCreated: (controller) {
+              controllerCompleter.complete(controller);
+            },
+            onPageFinished: (controller, url) {
+              streamController.add(url);
+            },
+          ),
+        ),
+      );
+      final controller = await controllerCompleter.future;
+
+      await streamController.stream
+          .firstWhere((element) => element == "https://flutter.dev/");
+
+      // no error
+      await controller.evaluateJavascript("""
+      window.nativeWebView.callHandler("hoge", "value", 1, true);
+      """);
+      expect(argumentsReceived, []);
+      streamController.close();
+    });
+  });
 }

@@ -1,9 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/services.dart';
 import 'package:native_webview/native_webview.dart';
+
+typedef Future<void> JavascriptHandlerCallback(List<dynamic> arguments);
 
 class WebViewController {
   final WebView _widget;
   final MethodChannel _channel;
+  final Map<String, JavascriptHandlerCallback> _javascriptChannelMap = {};
 
   WebViewController(this._widget, int id)
       : _channel = MethodChannel("packages.jp/native_webview_$id") {
@@ -13,14 +18,28 @@ class WebViewController {
   Future<bool> _onMethodCall(MethodCall call) async {
     switch (call.method) {
       case 'onPageStarted':
-        _widget.onPageStarted(this, call.arguments['url'] as String);
-        return null;
+        if (_widget.onPageStarted != null) {
+          _widget.onPageStarted(this, call.arguments['url'] as String);
+        }
+        return true;
       case 'onPageFinished':
-        _widget.onPageFinished(this, call.arguments['url'] as String);
-        return null;
+        if (_widget.onPageFinished != null) {
+          _widget.onPageFinished(this, call.arguments['url'] as String);
+        }
+        return true;
       case 'onProgressChanged':
-        _widget.onProgressChanged(this, call.arguments['progress'] as int);
-        return null;
+        if (_widget.onProgressChanged != null) {
+          _widget.onProgressChanged(this, call.arguments['progress'] as int);
+        }
+        return true;
+      case 'onJavascriptHandler':
+        final name = call.arguments['handlerName'] as String;
+        final args = call.arguments['args'] as String;
+
+        if (_javascriptChannelMap.containsKey(name)) {
+          await _javascriptChannelMap[name](jsonDecode(args));
+        }
+        return true;
     }
     throw MissingPluginException(
       '${call.method} was invoked but has no handler',
@@ -48,5 +67,14 @@ class WebViewController {
         'headers': headers,
       },
     );
+  }
+
+  void addJavascriptHandler(String name, JavascriptHandlerCallback callback) {
+    assert(!_javascriptChannelMap.containsKey(name));
+    _javascriptChannelMap[name] = callback;
+  }
+
+  JavascriptHandlerCallback removeJavascriptHandler(String name) {
+    return _javascriptChannelMap.remove(name);
   }
 }

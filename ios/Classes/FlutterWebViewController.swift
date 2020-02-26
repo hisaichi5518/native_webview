@@ -2,6 +2,19 @@ import Flutter
 import UIKit
 import WebKit
 
+
+private let JAVASCRIPT_BRIDGE_NAME = "nativeWebView"
+
+private let javaScriptBridgeJS = """
+window.\(JAVASCRIPT_BRIDGE_NAME) = {};
+window.\(JAVASCRIPT_BRIDGE_NAME).callHandler = function() {
+    window.webkit.messageHandlers['callHandler'].postMessage( {
+        'handlerName': arguments[0],
+        'args': JSON.stringify(Array.prototype.slice.call(arguments, 1))
+    } );
+}
+"""
+
 public class FlutterWebViewController: NSObject, FlutterPlatformView {
 
     var parent: UIView
@@ -16,10 +29,17 @@ public class FlutterWebViewController: NSObject, FlutterPlatformView {
         self.parent = parent
 
         let configuration = WKWebViewConfiguration()
+        let userController = WKUserContentController()
+        configuration.userContentController = userController
+
         self.webview = NativeWebView(frame: parent.bounds, configuration: configuration, channel: channel)
         self.channel = channel
 
         super.init()
+
+        let javaScriptBridgeJSScript = WKUserScript(source: javaScriptBridgeJS, injectionTime: .atDocumentStart, forMainFrameOnly: false)
+        configuration.userContentController.addUserScript(javaScriptBridgeJSScript)
+        configuration.userContentController.add(self, name: "callHandler")
 
         let initialURL = args["initialUrl"] as? String ?? "about:blank"
 
@@ -86,5 +106,18 @@ public class FlutterWebViewController: NSObject, FlutterPlatformView {
         default:
             result(FlutterMethodNotImplemented)
         }
+    }
+}
+
+extension FlutterWebViewController: WKScriptMessageHandler {
+    public func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+        guard let body = message.body as? [String: Any],
+            let handlerName = body["handlerName"] as? String,
+            let args = body["args"] as? String
+        else {
+            return
+        }
+        let arguments = ["handlerName": handlerName, "args": args]
+        channel.invokeMethod("onJavascriptHandler", arguments: arguments)
     }
 }
