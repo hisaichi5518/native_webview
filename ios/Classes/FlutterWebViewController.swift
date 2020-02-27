@@ -42,16 +42,34 @@ public class FlutterWebViewController: NSObject, FlutterPlatformView {
         configuration.userContentController.add(self, name: "callHandler")
 
         let initialURL = args["initialUrl"] as? String ?? "about:blank"
+        let initialData = args["initialData"] as? [String: String]
 
         webview.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         self.parent.addSubview(webview)
 
         channel.setMethodCallHandler(handle)
-        webview.load(URLRequest(url: URL(string: initialURL)!))
+
+        load(initialData, initialURL);
     }
 
     deinit {
         channel.setMethodCallHandler(nil)
+    }
+
+    func load(_ initialData: [String: String]?, _ initialURL: String) {
+        if let initialData = initialData,
+            let dataString = initialData["data"],
+            let mimeType = initialData["mimeType"],
+            let encoding = initialData["encoding"],
+            let baseURL = initialData["baseUrl"],
+            let data = dataString.data(using: .utf8),
+            let url = URL(string: baseURL)
+        {
+            webview.load(data, mimeType: mimeType, characterEncodingName: encoding, baseURL: url)
+            return
+        }
+
+        webview.load(URLRequest(url: URL(string: initialURL)!))
     }
 
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {

@@ -69,6 +69,45 @@ void main() {
     });
   });
 
+  group("initalData", () {
+    testWidgets('not empty', (tester) async {
+      final controllerCompleter = Completer<WebViewController>();
+      final finishedStream = StreamController<String>();
+
+      final baseUrl = "https://flutter.dev/";
+
+      await tester.pumpWidget(
+        Directionality(
+          textDirection: TextDirection.ltr,
+          child: WebView(
+            initialData: WebViewData(
+              '<html><body>yoshitaka-yuriko</body></html>',
+              baseUrl: baseUrl,
+            ),
+            onWebViewCreated: (WebViewController controller) {
+              controllerCompleter.complete(controller);
+            },
+            onPageFinished: (controller, url) {
+              finishedStream.add(url);
+            },
+          ),
+        ),
+      );
+      final controller = await controllerCompleter.future;
+
+      await finishedStream.stream.firstWhere((element) => element == baseUrl);
+
+      final content = await controller.evaluateJavascript(
+        '(() => document.documentElement.innerText)()',
+      );
+      expect(content, "yoshitaka-yuriko");
+
+      final currentUrl = await controller.currentUrl();
+      expect(currentUrl, baseUrl);
+      finishedStream.close();
+    });
+  });
+
   group("evaluateJavascript", () {
     testWidgets('success', (tester) async {
       final controllerCompleter = Completer<WebViewController>();
