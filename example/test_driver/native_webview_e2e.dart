@@ -67,6 +67,40 @@ void main() {
       final currentUrl = await controller.currentUrl();
       expect(currentUrl, 'https');
     });
+
+    testWidgets('with headers', (WidgetTester tester) async {
+      final controllerCompleter = Completer<WebViewController>();
+      final finishedStream = StreamController<String>();
+      final headers = <String, String>{'test_header': 'flutter_test_header'};
+      await tester.pumpWidget(
+        Directionality(
+          textDirection: TextDirection.ltr,
+          child: WebView(
+            initialUrl: 'https://flutter-header-echo.herokuapp.com/',
+            initialHeaders: headers,
+            onWebViewCreated: (WebViewController controller) {
+              controllerCompleter.complete(controller);
+            },
+            onPageFinished: (controller, url) {
+              finishedStream.add(url);
+            },
+          ),
+        ),
+      );
+      final controller = await controllerCompleter.future;
+      final currentUrl = await controller.currentUrl();
+      expect(currentUrl, 'https://flutter-header-echo.herokuapp.com/');
+
+      await finishedStream.stream.firstWhere(
+        (element) => element == "https://flutter-header-echo.herokuapp.com/",
+      );
+
+      final content = await controller.evaluateJavascript(
+        '(() => document.documentElement.innerText)()',
+      );
+      expect(content.contains('flutter_test_header'), isTrue);
+      finishedStream.close();
+    });
   });
 
   group("initalData", () {
@@ -109,7 +143,7 @@ void main() {
   });
 
   group("initalFile", () {
-    testWidgets('without headers', (tester) async {
+    testWidgets('from assets', (tester) async {
       final controllerCompleter = Completer<WebViewController>();
       final finishedStream = StreamController<String>();
 
@@ -318,7 +352,7 @@ void main() {
       expect(currentUrl, 'https://www.google.com/');
     });
 
-    testWidgets('loadUrl with headers', (WidgetTester tester) async {
+    testWidgets('with headers', (WidgetTester tester) async {
       final controllerCompleter = Completer<WebViewController>();
       final finishedStream = StreamController<String>();
       await tester.pumpWidget(

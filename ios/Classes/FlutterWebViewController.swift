@@ -46,20 +46,21 @@ public class FlutterWebViewController: NSObject, FlutterPlatformView {
         let initialURL = args["initialUrl"] as? String ?? "about:blank"
         let initialFile = args["initialFile"] as? String
         let initialData = args["initialData"] as? [String: String]
+        let initialHeaders = args["initialHeaders"] as? [String: String]
 
         webview.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         self.parent.addSubview(webview)
 
         channel.setMethodCallHandler(handle)
 
-        load(initialData, initialFile, initialURL)
+        load(initialData, initialFile, initialURL, initialHeaders)
     }
 
     deinit {
         channel.setMethodCallHandler(nil)
     }
 
-    func load(_ initialData: [String: String]?, _ initialFile: String?,  _ initialURL: String) {
+    func load(_ initialData: [String: String]?, _ initialFile: String?,  _ initialURL: String, _ initialHeaders: [String: String]?) {
         if let initialData = initialData,
             let dataString = initialData["data"],
             let mimeType = initialData["mimeType"],
@@ -79,10 +80,11 @@ public class FlutterWebViewController: NSObject, FlutterPlatformView {
                 return
             }
 
-            webview.load(URLRequest(url: assetURL))
+            webview.loadURL(assetURL, headers: initialHeaders)
             return
         }
-        webview.load(URLRequest(url: URL(string: initialURL)!))
+
+        webview.loadURLString(initialURL, headers: initialHeaders)
     }
 
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -125,14 +127,7 @@ public class FlutterWebViewController: NSObject, FlutterPlatformView {
                 return
             }
 
-            var request = URLRequest(url: URL(string: url)!)
-            if let headers = arguments["headers"] as? [String: String] {
-                for (key, value) in headers {
-                    request.setValue(value, forHTTPHeaderField: key)
-                }
-            }
-
-            webview.load(request)
+            webview.loadURLString(url, headers: arguments["headers"] as? [String: String])
             result(true)
         default:
             result(FlutterMethodNotImplemented)

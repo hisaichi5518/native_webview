@@ -23,6 +23,21 @@ public class NativeWebView: WKWebView, WKNavigationDelegate {
         super.init(coder: aDecoder)!
     }
 
+    func loadURLString(_ url: String, headers: [String: String]?) {
+        loadURL(URL(string: url)!, headers: headers)
+    }
+
+    func loadURL(_ url: URL, headers: [String: String]?) {
+        var request = URLRequest(url: url)
+        if let headers = headers {
+            for (key, value) in headers {
+                request.setValue(value, forHTTPHeaderField: key)
+            }
+        }
+        load(request)
+    }
+
+
     public func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
         let arguments: [String: String?] = ["url": webView.url?.absoluteString]
         channel?.invokeMethod("onPageStarted", arguments: arguments)
