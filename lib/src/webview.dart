@@ -44,7 +44,10 @@ class WebViewData {
 
 class WebView extends StatefulWidget {
   final String initialUrl;
+  final String initialFile;
+  final Map<String, String> initialHeaders;
   final WebViewData initialData;
+
   final void Function(WebViewController) onWebViewCreated;
   final void Function(WebViewController, String) onPageStarted;
   final void Function(WebViewController, String) onPageFinished;
@@ -53,6 +56,8 @@ class WebView extends StatefulWidget {
   const WebView({
     Key key,
     this.initialUrl,
+    this.initialFile,
+    this.initialHeaders,
     this.initialData,
     this.onWebViewCreated,
     this.onPageStarted,
@@ -96,6 +101,8 @@ class _CreationParams {
   Map<String, dynamic> toMap() {
     return {
       "initialUrl": widget.initialUrl,
+      "initialFile": widget.initialFile,
+      "initialHeaders": widget.initialHeaders,
       "initialData": widget.initialData?.toMap(),
     };
   }

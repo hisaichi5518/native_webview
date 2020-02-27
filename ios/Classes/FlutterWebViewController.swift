@@ -20,13 +20,15 @@ public class FlutterWebViewController: NSObject, FlutterPlatformView {
     var parent: UIView
     var webview: NativeWebView
     var channel: FlutterMethodChannel
+    var registrar: FlutterPluginRegistrar
 
     public func view() -> UIView {
         return parent
     }
 
-    init(parent: UIView, channel: FlutterMethodChannel, arguments args: NSDictionary) {
+    init(parent: UIView, channel: FlutterMethodChannel, arguments args: NSDictionary, registrar: FlutterPluginRegistrar) {
         self.parent = parent
+        self.registrar = registrar
 
         let configuration = WKWebViewConfiguration()
         let userController = WKUserContentController()
@@ -42,6 +44,7 @@ public class FlutterWebViewController: NSObject, FlutterPlatformView {
         configuration.userContentController.add(self, name: "callHandler")
 
         let initialURL = args["initialUrl"] as? String ?? "about:blank"
+        let initialFile = args["initialFile"] as? String
         let initialData = args["initialData"] as? [String: String]
 
         webview.autoresizingMask = [.flexibleWidth, .flexibleHeight]
@@ -49,14 +52,14 @@ public class FlutterWebViewController: NSObject, FlutterPlatformView {
 
         channel.setMethodCallHandler(handle)
 
-        load(initialData, initialURL);
+        load(initialData, initialFile, initialURL)
     }
 
     deinit {
         channel.setMethodCallHandler(nil)
     }
 
-    func load(_ initialData: [String: String]?, _ initialURL: String) {
+    func load(_ initialData: [String: String]?, _ initialFile: String?,  _ initialURL: String) {
         if let initialData = initialData,
             let dataString = initialData["data"],
             let mimeType = initialData["mimeType"],
@@ -69,6 +72,16 @@ public class FlutterWebViewController: NSObject, FlutterPlatformView {
             return
         }
 
+        if let initialFile = initialFile {
+            let key = registrar.lookupKey(forAsset: initialFile)
+            guard let assetURL = Bundle.main.url(forResource: key, withExtension: nil) else {
+                NSLog("\n[ERROR]\(initialFile) asset file cannot be found.")
+                return
+            }
+
+            webview.load(URLRequest(url: assetURL))
+            return
+        }
         webview.load(URLRequest(url: URL(string: initialURL)!))
     }
 

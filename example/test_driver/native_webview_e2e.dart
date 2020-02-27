@@ -70,7 +70,7 @@ void main() {
   });
 
   group("initalData", () {
-    testWidgets('not empty', (tester) async {
+    testWidgets('with baseUrl', (tester) async {
       final controllerCompleter = Completer<WebViewController>();
       final finishedStream = StreamController<String>();
 
@@ -104,6 +104,40 @@ void main() {
 
       final currentUrl = await controller.currentUrl();
       expect(currentUrl, baseUrl);
+      finishedStream.close();
+    });
+  });
+
+  group("initalFile", () {
+    testWidgets('without headers', (tester) async {
+      final controllerCompleter = Completer<WebViewController>();
+      final finishedStream = StreamController<String>();
+
+      await tester.pumpWidget(
+        Directionality(
+          textDirection: TextDirection.ltr,
+          child: WebView(
+            initialFile: "test_assets/initial_file.html",
+            onWebViewCreated: (WebViewController controller) {
+              controllerCompleter.complete(controller);
+            },
+            onPageFinished: (controller, url) {
+              finishedStream.add(url);
+            },
+          ),
+        ),
+      );
+      final controller = await controllerCompleter.future;
+
+      final url = await finishedStream.stream.first;
+
+      final content = await controller.evaluateJavascript(
+        '(() => document.documentElement.innerText)()',
+      );
+      expect(content, "yoshitaka-yuriko");
+
+      final currentUrl = await controller.currentUrl();
+      expect(currentUrl, url);
       finishedStream.close();
     });
   });

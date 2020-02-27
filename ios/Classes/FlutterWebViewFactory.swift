@@ -21,7 +21,8 @@ public class FlutterWebViewFactory: NSObject, FlutterPlatformViewFactory {
         return FlutterWebViewController(
             parent: UIView(frame: frame),
             channel: channel,
-            arguments: arguments
+            arguments: arguments,
+            registrar: registrar
         )
     }
 }
