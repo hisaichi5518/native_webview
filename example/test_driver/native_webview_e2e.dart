@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:e2e/e2e.dart';
 import 'package:flutter/services.dart';
@@ -86,6 +87,31 @@ void main() {
       final controller = await controllerCompleter.future;
       final result = await controller.evaluateJavascript('(() => "test ok")()');
       expect(result, 'test ok');
+    });
+
+    testWidgets('return object', (tester) async {
+      final controllerCompleter = Completer<WebViewController>();
+
+      await tester.pumpWidget(
+        Directionality(
+          textDirection: TextDirection.ltr,
+          child: WebView(
+            initialUrl: 'about:blank',
+            onWebViewCreated: (WebViewController controller) {
+              controllerCompleter.complete(controller);
+            },
+          ),
+        ),
+      );
+      final controller = await controllerCompleter.future;
+      final result = await controller.evaluateJavascript('(() => {test: 1})()');
+      if (Platform.isIOS) {
+        expect(result, isNull);
+      } else if (Platform.isAndroid) {
+        expect(result, isNotNull);
+      } else {
+        fail("Not support platform");
+      }
     });
 
     testWidgets('invalid javascript', (tester) async {
