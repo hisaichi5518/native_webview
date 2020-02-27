@@ -247,6 +247,7 @@ void main() {
 
     testWidgets('loadUrl with headers', (WidgetTester tester) async {
       final controllerCompleter = Completer<WebViewController>();
+      final finishedStream = StreamController<String>();
       await tester.pumpWidget(
         Directionality(
           textDirection: TextDirection.ltr,
@@ -254,6 +255,9 @@ void main() {
             initialUrl: 'https://flutter.dev/',
             onWebViewCreated: (WebViewController controller) {
               controllerCompleter.complete(controller);
+            },
+            onPageFinished: (controller, url) {
+              finishedStream.add(url);
             },
           ),
         ),
@@ -267,13 +271,15 @@ void main() {
       final currentUrl = await controller.currentUrl();
       expect(currentUrl, 'https://flutter-header-echo.herokuapp.com/');
 
-      // TODO: onPageStarted, onPageFinished
-      await Future.delayed(Duration(seconds: 10));
+      await finishedStream.stream.firstWhere(
+        (element) => element == "https://flutter-header-echo.herokuapp.com/",
+      );
 
       final content = await controller.evaluateJavascript(
         '(() => document.documentElement.innerText)()',
       );
       expect(content.contains('flutter_test_header'), isTrue);
+      finishedStream.close();
     });
   });
 
