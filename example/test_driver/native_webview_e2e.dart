@@ -140,6 +140,40 @@ void main() {
       expect(currentUrl, baseUrl);
       finishedStream.close();
     });
+    testWidgets('without baseUrl', (tester) async {
+      final controllerCompleter = Completer<WebViewController>();
+      final finishedStream = StreamController<String>();
+
+      await tester.pumpWidget(
+        Directionality(
+          textDirection: TextDirection.ltr,
+          child: WebView(
+            initialData: WebViewData(
+              '<html><body>yoshitaka-yuriko</body></html>',
+            ),
+            onWebViewCreated: (WebViewController controller) {
+              controllerCompleter.complete(controller);
+            },
+            onPageFinished: (controller, url) {
+              finishedStream.add(url);
+            },
+          ),
+        ),
+      );
+      final controller = await controllerCompleter.future;
+
+      await finishedStream.stream
+          .firstWhere((element) => element == "about:blank");
+
+      final content = await controller.evaluateJavascript(
+        '(() => document.documentElement.innerText)()',
+      );
+      expect(content, "yoshitaka-yuriko");
+
+      final currentUrl = await controller.currentUrl();
+      expect(currentUrl, "about:blank");
+      finishedStream.close();
+    });
   });
 
   group("initalFile", () {
