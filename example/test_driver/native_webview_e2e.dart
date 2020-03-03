@@ -493,4 +493,36 @@ void main() {
       streamController.close();
     });
   });
+
+  group("onJsConfirm", () {
+    testWidgets("handled", (tester) async {
+      final controllerCompleter = Completer<WebViewController>();
+      final streamController = StreamController<String>();
+      final List<List<dynamic>> argumentsReceived = [];
+
+      await tester.pumpWidget(
+        Directionality(
+          textDirection: TextDirection.ltr,
+          child: WebView(
+            initialData: WebViewData(
+              '<html><body><script>window.confirm("confirm")</script></body></html>',
+            ),
+            onWebViewCreated: (controller) {
+              controllerCompleter.complete(controller);
+            },
+            onJsConfirm: (controller, message) {
+              return JsConfirmResponse.handled(JsConfirmResponseAction.cancel);
+            },
+            onPageFinished: (controller, url) {
+              print(url);
+              streamController.add(url);
+            },
+          ),
+        ),
+      );
+      final controller = await controllerCompleter.future;
+      await streamController.stream.first;
+      streamController.close();
+    });
+  });
 }

@@ -15,7 +15,7 @@ class WebViewController {
     _channel.setMethodCallHandler(_onMethodCall);
   }
 
-  Future<bool> _onMethodCall(MethodCall call) async {
+  Future<dynamic> _onMethodCall(MethodCall call) async {
     switch (call.method) {
       case 'onPageStarted':
         if (_widget.onPageStarted != null) {
@@ -40,6 +40,12 @@ class WebViewController {
           await _javascriptChannelMap[name](jsonDecode(args));
         }
         return true;
+      case 'onJsConfirm':
+        final message = call.arguments['message'] as String;
+        if (_widget.onJsConfirm == null) {
+          return {};
+        }
+        return _widget.onJsConfirm(this, message)?.toMap();
     }
     throw MissingPluginException(
       '${call.method} was invoked but has no handler',

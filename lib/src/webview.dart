@@ -42,6 +42,52 @@ class WebViewData {
   }
 }
 
+///JsConfirmResponseAction class used by [JsConfirmResponse] class.
+enum JsConfirmResponseAction {
+  confirm,
+  cancel,
+}
+
+///JsConfirmResponse class represents the response used by the [onJsConfirm] event to control a JavaScript confirm dialog.
+class JsConfirmResponse {
+  ///Message to be displayed in the window.
+  String message;
+
+  ///Title of the confirm button.
+  String okLabel;
+
+  ///Title of the cancel button.
+  String cancelLabel;
+
+  ///Whether the client will handle the confirm dialog.
+  bool handledByClient;
+
+  ///Action used to confirm that the user hit confirm or cancel button.
+  JsConfirmResponseAction action;
+
+  JsConfirmResponse._();
+
+  JsConfirmResponse.handled(this.action) {
+    handledByClient = true;
+  }
+
+  JsConfirmResponse.confirm(
+    this.message,
+    this.okLabel,
+    this.cancelLabel,
+  );
+
+  Map<String, dynamic> toMap() {
+    return {
+      "message": message,
+      "okLabel": okLabel,
+      "cancelLabel": cancelLabel,
+      "handledByClient": handledByClient,
+      "action": action?.index,
+    };
+  }
+}
+
 class WebView extends StatefulWidget {
   final String initialUrl;
   final String initialFile;
@@ -52,6 +98,7 @@ class WebView extends StatefulWidget {
   final void Function(WebViewController, String) onPageStarted;
   final void Function(WebViewController, String) onPageFinished;
   final void Function(WebViewController, int) onProgressChanged;
+  final JsConfirmResponse Function(WebViewController, String) onJsConfirm;
 
   const WebView({
     Key key,
@@ -63,6 +110,7 @@ class WebView extends StatefulWidget {
     this.onPageStarted,
     this.onPageFinished,
     this.onProgressChanged,
+    this.onJsConfirm,
   });
 
   @override
@@ -75,11 +123,12 @@ class _WebViewState extends State<WebView> {
     return UiKitView(
       viewType: "packages.jp/native_webview",
       onPlatformViewCreated: (int id) {
+        final controller = WebViewController(widget, id);
         if (widget.onWebViewCreated == null) {
           return;
         }
         widget.onWebViewCreated(
-          WebViewController(widget, id),
+          controller,
         );
       },
       gestureRecognizers: Set.from([]),
