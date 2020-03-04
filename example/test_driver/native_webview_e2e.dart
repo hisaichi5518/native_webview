@@ -70,7 +70,7 @@ void main() {
 
     testWidgets('with headers', (WidgetTester tester) async {
       final controllerCompleter = Completer<WebViewController>();
-      final finishedStream = StreamController<String>();
+      final finishedCompleter = Completer<String>();
       final headers = <String, String>{'test_header': 'flutter_test_header'};
       await tester.pumpWidget(
         Directionality(
@@ -82,7 +82,7 @@ void main() {
               controllerCompleter.complete(controller);
             },
             onPageFinished: (controller, url) {
-              finishedStream.add(url);
+              finishedCompleter.complete(url);
             },
           ),
         ),
@@ -91,22 +91,19 @@ void main() {
       final currentUrl = await controller.currentUrl();
       expect(currentUrl, 'https://flutter-header-echo.herokuapp.com/');
 
-      await finishedStream.stream.firstWhere(
-        (element) => element == "https://flutter-header-echo.herokuapp.com/",
-      );
+      await finishedCompleter.future;
 
       final content = await controller.evaluateJavascript(
         '(() => document.documentElement.innerText)()',
       );
       expect(content.contains('flutter_test_header'), isTrue);
-      finishedStream.close();
     });
   });
 
   group("initalData", () {
     testWidgets('with baseUrl', (tester) async {
       final controllerCompleter = Completer<WebViewController>();
-      final finishedStream = StreamController<String>();
+      final finishedCompleter = Completer<String>();
 
       final baseUrl = "https://flutter.dev/";
 
@@ -122,14 +119,13 @@ void main() {
               controllerCompleter.complete(controller);
             },
             onPageFinished: (controller, url) {
-              finishedStream.add(url);
+              finishedCompleter.complete(url);
             },
           ),
         ),
       );
       final controller = await controllerCompleter.future;
-
-      await finishedStream.stream.firstWhere((element) => element == baseUrl);
+      await finishedCompleter.future;
 
       final content = await controller.evaluateJavascript(
         '(() => document.documentElement.innerText)()',
@@ -138,11 +134,10 @@ void main() {
 
       final currentUrl = await controller.currentUrl();
       expect(currentUrl, baseUrl);
-      finishedStream.close();
     });
     testWidgets('without baseUrl', (tester) async {
       final controllerCompleter = Completer<WebViewController>();
-      final finishedStream = StreamController<String>();
+      final finishedCompleter = Completer<String>();
 
       await tester.pumpWidget(
         Directionality(
@@ -155,15 +150,14 @@ void main() {
               controllerCompleter.complete(controller);
             },
             onPageFinished: (controller, url) {
-              finishedStream.add(url);
+              finishedCompleter.complete(url);
             },
           ),
         ),
       );
       final controller = await controllerCompleter.future;
 
-      await finishedStream.stream
-          .firstWhere((element) => element == "about:blank");
+      await finishedCompleter.future;
 
       final content = await controller.evaluateJavascript(
         '(() => document.documentElement.innerText)()',
@@ -172,14 +166,13 @@ void main() {
 
       final currentUrl = await controller.currentUrl();
       expect(currentUrl, "about:blank");
-      finishedStream.close();
     });
   });
 
   group("initalFile", () {
     testWidgets('from assets', (tester) async {
       final controllerCompleter = Completer<WebViewController>();
-      final finishedStream = StreamController<String>();
+      final finishedCompleter = Completer<String>();
 
       await tester.pumpWidget(
         Directionality(
@@ -190,23 +183,21 @@ void main() {
               controllerCompleter.complete(controller);
             },
             onPageFinished: (controller, url) {
-              finishedStream.add(url);
+              finishedCompleter.complete(url);
             },
           ),
         ),
       );
       final controller = await controllerCompleter.future;
 
-      final url = await finishedStream.stream.first;
+      final url = await finishedCompleter.future;
+      final currentUrl = await controller.currentUrl();
+      expect(currentUrl, url);
 
       final content = await controller.evaluateJavascript(
         '(() => document.documentElement.innerText)()',
       );
       expect(content, "yoshitaka-yuriko");
-
-      final currentUrl = await controller.currentUrl();
-      expect(currentUrl, url);
-      finishedStream.close();
     });
   });
 
@@ -283,7 +274,7 @@ void main() {
   group("onPageStarted", () {
     testWidgets('wait for page started', (tester) async {
       final controllerCompleter = Completer<WebViewController>();
-      final streamController = StreamController<String>();
+      final finishedCompleter = Completer<String>();
 
       await tester.pumpWidget(
         Directionality(
@@ -294,23 +285,21 @@ void main() {
               controllerCompleter.complete(controller);
             },
             onPageStarted: (controller, url) {
-              streamController.add(url);
+              finishedCompleter.complete(url);
             },
           ),
         ),
       );
 
-      final url = await streamController.stream
-          .firstWhere((element) => element == "https://flutter.dev/");
+      final url = await finishedCompleter.future;
       expect(url, "https://flutter.dev/");
-      streamController.close();
     });
   });
 
   group("onPageFinished", () {
     testWidgets('wait for page finished', (tester) async {
       final controllerCompleter = Completer<WebViewController>();
-      final streamController = StreamController<String>();
+      final finishedCompleter = Completer<String>();
 
       await tester.pumpWidget(
         Directionality(
@@ -321,23 +310,21 @@ void main() {
               controllerCompleter.complete(controller);
             },
             onPageFinished: (controller, url) {
-              streamController.add(url);
+              finishedCompleter.complete(url);
             },
           ),
         ),
       );
 
-      final url = await streamController.stream
-          .firstWhere((element) => element == "https://flutter.dev/");
+      final url = await finishedCompleter.future;
       expect(url, "https://flutter.dev/");
-      streamController.close();
     });
   });
 
   group("onPageFinished", () {
     testWidgets('wait for page finished', (tester) async {
       final controllerCompleter = Completer<WebViewController>();
-      final streamController = StreamController<String>();
+      final finishedCompleter = Completer<String>();
 
       List<int> progressValues = [];
       await tester.pumpWidget(
@@ -352,17 +339,15 @@ void main() {
               progressValues.add(progress);
             },
             onPageFinished: (controller, url) {
-              streamController.add(url);
+              finishedCompleter.complete(url);
             },
           ),
         ),
       );
 
-      final url = await streamController.stream
-          .firstWhere((element) => element == "https://flutter.dev/");
+      final url = await finishedCompleter.future;
       expect(url, "https://flutter.dev/");
       expect(progressValues.last, 100);
-      streamController.close();
     });
   });
 
@@ -388,7 +373,7 @@ void main() {
 
     testWidgets('with headers', (WidgetTester tester) async {
       final controllerCompleter = Completer<WebViewController>();
-      final finishedStream = StreamController<String>();
+      final finishedStreamController = StreamController<String>();
       await tester.pumpWidget(
         Directionality(
           textDirection: TextDirection.ltr,
@@ -398,7 +383,7 @@ void main() {
               controllerCompleter.complete(controller);
             },
             onPageFinished: (controller, url) {
-              finishedStream.add(url);
+              finishedStreamController.add(url);
             },
           ),
         ),
@@ -412,7 +397,7 @@ void main() {
       final currentUrl = await controller.currentUrl();
       expect(currentUrl, 'https://flutter-header-echo.herokuapp.com/');
 
-      await finishedStream.stream.firstWhere(
+      await finishedStreamController.stream.firstWhere(
         (element) => element == "https://flutter-header-echo.herokuapp.com/",
       );
 
@@ -420,14 +405,14 @@ void main() {
         '(() => document.documentElement.innerText)()',
       );
       expect(content.contains('flutter_test_header'), isTrue);
-      finishedStream.close();
+      finishedStreamController.close();
     });
   });
 
   group("JavascriptHandler", () {
     testWidgets("messages received", (tester) async {
       final controllerCompleter = Completer<WebViewController>();
-      final streamController = StreamController<String>();
+      final finishedCompleter = Completer<String>();
       final List<List<dynamic>> argumentsReceived = [];
 
       await tester.pumpWidget(
@@ -442,15 +427,14 @@ void main() {
               controllerCompleter.complete(controller);
             },
             onPageFinished: (controller, url) {
-              streamController.add(url);
+              finishedCompleter.complete(url);
             },
           ),
         ),
       );
       final controller = await controllerCompleter.future;
 
-      await streamController.stream
-          .firstWhere((element) => element == "https://flutter.dev/");
+      await finishedCompleter.future;
 
       await controller.evaluateJavascript("""
       window.nativeWebView.callHandler("hoge", "value", 1, true);
@@ -458,12 +442,11 @@ void main() {
       expect(argumentsReceived, [
         ["value", 1, true],
       ]);
-      streamController.close();
     });
 
     testWidgets("nothing handler", (tester) async {
       final controllerCompleter = Completer<WebViewController>();
-      final streamController = StreamController<String>();
+      final finishedCompleter = Completer<String>();
       final List<List<dynamic>> argumentsReceived = [];
 
       await tester.pumpWidget(
@@ -475,29 +458,27 @@ void main() {
               controllerCompleter.complete(controller);
             },
             onPageFinished: (controller, url) {
-              streamController.add(url);
+              finishedCompleter.complete(url);
             },
           ),
         ),
       );
       final controller = await controllerCompleter.future;
 
-      await streamController.stream
-          .firstWhere((element) => element == "https://flutter.dev/");
+      await finishedCompleter.future;
 
       // no error
       await controller.evaluateJavascript("""
       window.nativeWebView.callHandler("hoge", "value", 1, true);
       """);
       expect(argumentsReceived, []);
-      streamController.close();
     });
   });
 
   group("onJsConfirm", () {
     testWidgets("handled", (tester) async {
       final controllerCompleter = Completer<WebViewController>();
-      final streamController = StreamController<String>();
+      final finishedCompleter = Completer<String>();
       final List<List<dynamic>> argumentsReceived = [];
 
       await tester.pumpWidget(
@@ -514,21 +495,20 @@ void main() {
               return JsConfirmResponse.handled(JsConfirmResponseAction.cancel);
             },
             onPageFinished: (controller, url) {
-              streamController.add(url);
+              finishedCompleter.complete(url);
             },
           ),
         ),
       );
       await controllerCompleter.future;
-      await streamController.stream.first;
-      streamController.close();
+      await finishedCompleter.future;
     });
   });
 
   group("onJsAlert", () {
     testWidgets("handled", (tester) async {
       final controllerCompleter = Completer<WebViewController>();
-      final streamController = StreamController<String>();
+      final finishedCompleter = Completer<String>();
       final List<List<dynamic>> argumentsReceived = [];
 
       await tester.pumpWidget(
@@ -545,21 +525,20 @@ void main() {
               return JsAlertResponse.handled();
             },
             onPageFinished: (controller, url) {
-              streamController.add(url);
+              finishedCompleter.complete(url);
             },
           ),
         ),
       );
       await controllerCompleter.future;
-      await streamController.stream.first;
-      streamController.close();
+      await finishedCompleter.future;
     });
   });
 
   group("onJsPrompt", () {
     testWidgets("handled", (tester) async {
       final controllerCompleter = Completer<WebViewController>();
-      final streamController = StreamController<String>();
+      final finishedCompleter = Completer<String>();
       final List<List<dynamic>> argumentsReceived = [];
 
       await tester.pumpWidget(
@@ -579,14 +558,13 @@ void main() {
               );
             },
             onPageFinished: (controller, url) {
-              streamController.add(url);
+              finishedCompleter.complete(url);
             },
           ),
         ),
       );
       await controllerCompleter.future;
-      await streamController.stream.first;
-      streamController.close();
+      await finishedCompleter.future;
     });
   });
 }
