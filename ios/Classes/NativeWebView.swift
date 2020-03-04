@@ -2,7 +2,7 @@ import Flutter
 import Foundation
 import WebKit
 
-public class NativeWebView: WKWebView, WKNavigationDelegate {
+public class NativeWebView: WKWebView {
     var channel: FlutterMethodChannel?
 
     init(frame: CGRect, configuration: WKWebViewConfiguration, channel: FlutterMethodChannel) {
@@ -17,7 +17,6 @@ public class NativeWebView: WKWebView, WKNavigationDelegate {
             options: .new,
             context: nil
         )
-
     }
 
     required public init(coder aDecoder: NSCoder) {
@@ -38,17 +37,6 @@ public class NativeWebView: WKWebView, WKNavigationDelegate {
         load(request)
     }
 
-
-    public func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
-        let arguments: [String: String?] = ["url": webView.url?.absoluteString]
-        channel?.invokeMethod("onPageStarted", arguments: arguments)
-    }
-
-    public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        let arguments: [String: String?] = ["url": webView.url?.absoluteString]
-        channel?.invokeMethod("onPageFinished", arguments: arguments)
-    }
-
     override public func observeValue(
         forKeyPath keyPath: String?,
         of object: Any?,
@@ -59,6 +47,34 @@ public class NativeWebView: WKWebView, WKNavigationDelegate {
             let arguments: [String: Int] = ["progress": Int(estimatedProgress * 100)]
             channel?.invokeMethod("onProgressChanged", arguments: arguments)
         }
+    }
+}
+
+extension NativeWebView: WKNavigationDelegate {
+    public func webView(
+        _ webView: WKWebView,
+        decidePolicyFor navigationAction: WKNavigationAction,
+        decisionHandler: @escaping (WKNavigationActionPolicy) -> Void
+    ) {
+        decisionHandler(.allow)
+    }
+
+    public func webView(
+        _ webView: WKWebView,
+        decidePolicyFor navigationResponse: WKNavigationResponse,
+        decisionHandler: @escaping (WKNavigationResponsePolicy) -> Void
+    ) {
+        decisionHandler(.allow)
+    }
+
+    public func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
+        let arguments: [String: String?] = ["url": webView.url?.absoluteString]
+        channel?.invokeMethod("onPageStarted", arguments: arguments)
+    }
+
+    public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        let arguments: [String: String?] = ["url": webView.url?.absoluteString]
+        channel?.invokeMethod("onPageFinished", arguments: arguments)
     }
 }
 
