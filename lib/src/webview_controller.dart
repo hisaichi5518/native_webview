@@ -46,6 +46,12 @@ class WebViewController {
           return {};
         }
         return _widget.onJsConfirm(this, message)?.toMap();
+      case 'onJsAlert':
+        final message = call.arguments['message'] as String;
+        if (_widget.onJsAlert == null) {
+          return {};
+        }
+        return _widget.onJsAlert(this, message)?.toMap();
     }
     throw MissingPluginException(
       '${call.method} was invoked but has no handler',

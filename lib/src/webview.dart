@@ -88,6 +88,37 @@ class JsConfirmResponse {
   }
 }
 
+///JsAlertResponse class represents the response used by the [onJsAlert] event to control a JavaScript confirm dialog.
+class JsAlertResponse {
+  ///Message to be displayed in the window.
+  String message;
+
+  ///Title of the alert button.
+  String okLabel;
+
+  ///Whether the client will handle the alert dialog.
+  bool handledByClient;
+
+  JsAlertResponse._();
+
+  JsAlertResponse.handled() {
+    handledByClient = true;
+  }
+
+  JsAlertResponse.alert(
+    this.message,
+    this.okLabel,
+  );
+
+  Map<String, dynamic> toMap() {
+    return {
+      "message": message,
+      "okLabel": okLabel,
+      "handledByClient": handledByClient,
+    };
+  }
+}
+
 class WebView extends StatefulWidget {
   final String initialUrl;
   final String initialFile;
@@ -99,6 +130,7 @@ class WebView extends StatefulWidget {
   final void Function(WebViewController, String) onPageFinished;
   final void Function(WebViewController, int) onProgressChanged;
   final JsConfirmResponse Function(WebViewController, String) onJsConfirm;
+  final JsAlertResponse Function(WebViewController, String) onJsAlert;
 
   const WebView({
     Key key,
@@ -111,6 +143,7 @@ class WebView extends StatefulWidget {
     this.onPageFinished,
     this.onProgressChanged,
     this.onJsConfirm,
+    this.onJsAlert,
   });
 
   @override

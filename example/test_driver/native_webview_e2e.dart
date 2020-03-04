@@ -514,13 +514,43 @@ void main() {
               return JsConfirmResponse.handled(JsConfirmResponseAction.cancel);
             },
             onPageFinished: (controller, url) {
-              print(url);
               streamController.add(url);
             },
           ),
         ),
       );
-      final controller = await controllerCompleter.future;
+      await controllerCompleter.future;
+      await streamController.stream.first;
+      streamController.close();
+    });
+  });
+
+  group("onJsAlert", () {
+    testWidgets("handled", (tester) async {
+      final controllerCompleter = Completer<WebViewController>();
+      final streamController = StreamController<String>();
+      final List<List<dynamic>> argumentsReceived = [];
+
+      await tester.pumpWidget(
+        Directionality(
+          textDirection: TextDirection.ltr,
+          child: WebView(
+            initialData: WebViewData(
+              '<html><body><script>window.alert("alert")</script></body></html>',
+            ),
+            onWebViewCreated: (controller) {
+              controllerCompleter.complete(controller);
+            },
+            onJsAlert: (controller, message) {
+              return JsAlertResponse.handled();
+            },
+            onPageFinished: (controller, url) {
+              streamController.add(url);
+            },
+          ),
+        ),
+      );
+      await controllerCompleter.future;
       await streamController.stream.first;
       streamController.close();
     });

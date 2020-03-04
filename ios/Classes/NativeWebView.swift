@@ -78,6 +78,32 @@ extension NativeWebView: WKUIDelegate {
         initiatedByFrame frame: WKFrameInfo,
         completionHandler: @escaping () -> Void
     ) {
+        let arguments: [String: Any] = ["message": message]
+        channel?.invokeMethod("onJsAlert", arguments: arguments, result: { result -> Void in
+            if result is FlutterError, let result = result as? FlutterError {
+                NSLog("\n\(result.message ?? "message is nil")")
+                return
+            }
+
+            var responseMessage: String?
+            var okLabel: String?
+
+            if let result = result, let response = result as? [String: Any] {
+                if let handled = response["handledByClient"] as? Bool, handled {
+                    completionHandler()
+                    return
+                }
+
+                responseMessage = response["message"] as? String
+                okLabel = response["okLabel"] as? String
+            }
+
+            self.createAlertDialog(
+                message: responseMessage ?? message,
+                okLabel: okLabel,
+                completionHandler: completionHandler
+            )
+        })
     }
 
     public func webView(
@@ -122,6 +148,23 @@ extension NativeWebView: WKUIDelegate {
             )
         })
         return
+    }
+
+    func createAlertDialog(
+        message: String,
+        okLabel: String?,
+        completionHandler: @escaping () -> Void
+    ) {
+        let okTitle = okLabel ?? NSLocalizedString("Ok", comment: "")
+        let alertController = UIAlertController(title: nil, message: message, preferredStyle: .alert)
+
+        alertController.addAction(UIAlertAction(title: okTitle, style: .default, handler: { (action) in
+            completionHandler()
+        }))
+
+        if let window = window, let controller = window.rootViewController {
+            controller.present(alertController, animated: true, completion: nil)
+        }
     }
 
     private func createConfirmDialog(
