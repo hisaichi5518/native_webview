@@ -555,4 +555,38 @@ void main() {
       streamController.close();
     });
   });
+
+  group("onJsPrompt", () {
+    testWidgets("handled", (tester) async {
+      final controllerCompleter = Completer<WebViewController>();
+      final streamController = StreamController<String>();
+      final List<List<dynamic>> argumentsReceived = [];
+
+      await tester.pumpWidget(
+        Directionality(
+          textDirection: TextDirection.ltr,
+          child: WebView(
+            initialData: WebViewData(
+              '<html><body><script>window.prompt("prompt", "text")</script></body></html>',
+            ),
+            onWebViewCreated: (controller) {
+              controllerCompleter.complete(controller);
+            },
+            onJsPrompt: (controller, message, defaultText) {
+              return JsPromptResponse.handled(
+                JsPromptResponseAction.ok,
+                "value",
+              );
+            },
+            onPageFinished: (controller, url) {
+              streamController.add(url);
+            },
+          ),
+        ),
+      );
+      await controllerCompleter.future;
+      await streamController.stream.first;
+      streamController.close();
+    });
+  });
 }
