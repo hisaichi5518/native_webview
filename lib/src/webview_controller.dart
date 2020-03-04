@@ -52,6 +52,13 @@ class WebViewController {
           return {};
         }
         return _widget.onJsAlert(this, message)?.toMap();
+      case 'onJsPrompt':
+        final message = call.arguments['message'] as String;
+        final defaultText = call.arguments['defaultText'] as String;
+        if (_widget.onJsPrompt == null) {
+          return {};
+        }
+        return _widget.onJsPrompt(this, message, defaultText)?.toMap();
     }
     throw MissingPluginException(
       '${call.method} was invoked but has no handler',

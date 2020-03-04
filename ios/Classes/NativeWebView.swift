@@ -70,6 +70,43 @@ extension NativeWebView: WKUIDelegate {
         initiatedByFrame frame: WKFrameInfo,
         completionHandler: @escaping (String?) -> Void
     ) {
+        let arguments: [String: String?] = ["message": prompt, "defaultText": defaultText]
+        channel?.invokeMethod("onJsPrompt", arguments: arguments, result: { result -> Void in
+            if result is FlutterError, let result = result as? FlutterError {
+                NSLog("\n\(result.message ?? "message is nil")")
+                return
+            }
+
+            var responseMessage: String?
+            var okLabel: String?
+            var cancelLabel: String?
+
+            if let result = result, let response = result as? [String: Any] {
+                if let handled = response["handledByClient"] as? Bool, handled {
+                    let action = response["action"] as? Int
+                    switch action {
+                    case 0: // OK
+                        let value = response["value"] as? String
+                        completionHandler(value)
+                    default: // Cancel
+                        completionHandler(nil)
+                    }
+                    return
+                }
+
+                responseMessage = response["message"] as? String
+                okLabel = response["okLabel"] as? String
+                cancelLabel = response["cancelLabel"] as? String
+            }
+
+            self.createPromptDialog(
+                message: responseMessage ?? prompt,
+                defaultText: defaultText,
+                okLabel: okLabel,
+                cancelLabel: cancelLabel,
+                completionHandler: completionHandler
+            )
+        })
     }
 
     public func webView(
@@ -150,7 +187,40 @@ extension NativeWebView: WKUIDelegate {
         return
     }
 
-    func createAlertDialog(
+    private func createPromptDialog(
+        message: String,
+        defaultText: String?,
+        okLabel: String?,
+        cancelLabel: String?,
+        completionHandler: @escaping (String?) -> Void
+    ) {
+
+        let okTitle = okLabel ?? NSLocalizedString("Ok", comment: "")
+        let cancelTitle = cancelLabel ?? NSLocalizedString("Cancel", comment: "")
+        let alertController = UIAlertController(title: nil, message: message, preferredStyle: .alert)
+
+        alertController.addTextField { (textField) in
+        }
+
+        alertController.addAction(UIAlertAction(title: okTitle, style: .default, handler: { (action) in
+            if let text = alertController.textFields?.first?.text {
+                completionHandler(text)
+            } else {
+                completionHandler("")
+            }
+        }))
+
+        alertController.addAction(UIAlertAction(title: cancelTitle, style: .cancel, handler: { (action) in
+            completionHandler(nil)
+        }))
+
+        if let window = window, let controller = window.rootViewController {
+            controller.present(alertController, animated: true, completion: nil)
+        }
+    }
+
+
+    private func createAlertDialog(
         message: String,
         okLabel: String?,
         completionHandler: @escaping () -> Void

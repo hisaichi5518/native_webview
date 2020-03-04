@@ -44,7 +44,7 @@ class WebViewData {
 
 ///JsConfirmResponseAction class used by [JsConfirmResponse] class.
 enum JsConfirmResponseAction {
-  confirm,
+  ok,
   cancel,
 }
 
@@ -119,6 +119,60 @@ class JsAlertResponse {
   }
 }
 
+enum JsPromptResponseAction {
+  ok,
+  cancel,
+}
+
+///JsPromptResponse class represents the response used by the [onJsPrompt] event to control a JavaScript prompt dialog.
+class JsPromptResponse {
+  ///Message to be displayed in the window.
+  String message;
+
+  ///The default value displayed in the prompt dialog.
+  String defaultValue;
+
+  ///Title of the confirm button.
+  String okLabel;
+
+  ///Title of the cancel button.
+  String cancelLabel;
+
+  ///Whether the client will handle the prompt dialog.
+  bool handledByClient;
+
+  ///Value of the prompt dialog.
+  String value;
+
+  ///Action used to confirm that the user hit confirm or cancel button.
+  JsPromptResponseAction action;
+
+  JsPromptResponse.handled(this.action, this.value) {
+    handledByClient = true;
+  }
+
+  JsPromptResponse.prompt(
+    this.message,
+    this.defaultValue,
+    this.okLabel,
+    this.cancelLabel,
+  );
+
+  JsPromptResponse._();
+
+  Map<String, dynamic> toMap() {
+    return {
+      "message": message,
+      "defaultText": defaultValue,
+      "okLabel": okLabel,
+      "cancelLabel": cancelLabel,
+      "handledByClient": handledByClient,
+      "value": value,
+      "action": action?.index
+    };
+  }
+}
+
 class WebView extends StatefulWidget {
   final String initialUrl;
   final String initialFile;
@@ -131,6 +185,7 @@ class WebView extends StatefulWidget {
   final void Function(WebViewController, int) onProgressChanged;
   final JsConfirmResponse Function(WebViewController, String) onJsConfirm;
   final JsAlertResponse Function(WebViewController, String) onJsAlert;
+  final JsPromptResponse Function(WebViewController, String, String) onJsPrompt;
 
   const WebView({
     Key key,
@@ -144,6 +199,7 @@ class WebView extends StatefulWidget {
     this.onProgressChanged,
     this.onJsConfirm,
     this.onJsAlert,
+    this.onJsPrompt,
   });
 
   @override
