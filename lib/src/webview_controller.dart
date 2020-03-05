@@ -88,6 +88,20 @@ class WebViewController {
     );
   }
 
+  Future<bool> canGoBack() async {
+    return _channel.invokeMethod<bool>(
+      'canGoBack',
+      <String, dynamic>{},
+    );
+  }
+
+  Future<void> goBack() async {
+    return _channel.invokeMethod<void>(
+      'goBack',
+      <String, dynamic>{},
+    );
+  }
+
   void addJavascriptHandler(String name, JavascriptHandlerCallback callback) {
     assert(!_javascriptChannelMap.containsKey(name));
     _javascriptChannelMap[name] = callback;

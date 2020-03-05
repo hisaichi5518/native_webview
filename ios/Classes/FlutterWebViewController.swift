@@ -129,6 +129,11 @@ public class FlutterWebViewController: NSObject, FlutterPlatformView {
 
             webview.loadURLString(url, headers: arguments["headers"] as? [String: String])
             result(true)
+        case "canGoBack":
+            result(webview.canGoBack)
+        case "goBack":
+            webview.goBack()
+            result(true)
         default:
             result(FlutterMethodNotImplemented)
         }
