@@ -102,6 +102,20 @@ class WebViewController {
     );
   }
 
+  Future<bool> canGoForward() async {
+    return _channel.invokeMethod<bool>(
+      'canGoForward',
+      <String, dynamic>{},
+    );
+  }
+
+  Future<void> goForward() async {
+    return _channel.invokeMethod<void>(
+      'goForward',
+      <String, dynamic>{},
+    );
+  }
+
   void addJavascriptHandler(String name, JavascriptHandlerCallback callback) {
     assert(!_javascriptChannelMap.containsKey(name));
     _javascriptChannelMap[name] = callback;

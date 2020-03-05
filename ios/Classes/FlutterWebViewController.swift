@@ -134,6 +134,11 @@ public class FlutterWebViewController: NSObject, FlutterPlatformView {
         case "goBack":
             webview.goBack()
             result(true)
+        case "canGoForward":
+            result(webview.canGoForward)
+        case "goForward":
+            webview.goForward()
+            result(true)
         default:
             result(FlutterMethodNotImplemented)
         }
