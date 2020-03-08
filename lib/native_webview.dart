@@ -1,13 +1,4 @@
-import 'dart:async';
+library native_webview;
 
-import 'package:flutter/services.dart';
-
-class NativeWebview {
-  static const MethodChannel _channel =
-      const MethodChannel('native_webview');
-
-  static Future<String> get platformVersion async {
-    final String version = await _channel.invokeMethod('getPlatformVersion');
-    return version;
-  }
-}
+export 'src/webview.dart';
+export 'src/webview_controller.dart';

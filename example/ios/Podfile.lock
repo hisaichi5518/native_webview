@@ -1,0 +1,28 @@
+PODS:
+  - e2e (0.0.1):
+    - Flutter
+  - Flutter (1.0.0)
+  - native_webview (0.0.1):
+    - Flutter
+
+DEPENDENCIES:
+  - e2e (from `.symlinks/plugins/e2e/ios`)
+  - Flutter (from `Flutter`)
+  - native_webview (from `.symlinks/plugins/native_webview/ios`)
+
+EXTERNAL SOURCES:
+  e2e:
+    :path: ".symlinks/plugins/e2e/ios"
+  Flutter:
+    :path: Flutter
+  native_webview:
+    :path: ".symlinks/plugins/native_webview/ios"
+
+SPEC CHECKSUMS:
+  e2e: 967b9b1fc533b7636a3b7a719f840c27f301fe1f
+  Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  native_webview: 7a9b9c75692c1cade6726c006668290b079b07cf
+
+PODFILE CHECKSUM: 083258d7f5e80b42ea9bfee905fe93049bc04c64
+
+COCOAPODS: 1.8.4
