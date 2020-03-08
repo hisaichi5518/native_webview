@@ -17,7 +17,7 @@ public class NativeWebviewPlugin: FlutterPlugin, MethodCallHandler {
   private lateinit var channel : MethodChannel
 
   override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-    channel = MethodChannel(flutterPluginBinding.getFlutterEngine().getDartExecutor(), "native_webview")
+    channel = MethodChannel(flutterPluginBinding.getFlutterEngine().getDartExecutor(), "packages.jp/native_webview")
     channel.setMethodCallHandler(this);
   }
 
@@ -33,7 +33,7 @@ public class NativeWebviewPlugin: FlutterPlugin, MethodCallHandler {
   companion object {
     @JvmStatic
     fun registerWith(registrar: Registrar) {
-      val channel = MethodChannel(registrar.messenger(), "native_webview")
+      val channel = MethodChannel(registrar.messenger(), "packages.jp/native_webview")
       channel.setMethodCallHandler(NativeWebviewPlugin())
     }
   }
