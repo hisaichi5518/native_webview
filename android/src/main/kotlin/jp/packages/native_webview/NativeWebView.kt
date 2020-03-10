@@ -1,8 +1,14 @@
 package jp.packages.native_webview
 
 import android.content.Context
+import io.flutter.plugin.common.MethodChannel
 
-class NativeWebView(context: Context): InputAwareWebView(context, null) {
+class NativeWebView(channel: MethodChannel, context: Context): InputAwareWebView(context, null) {
+
+    init {
+        webViewClient = NativeWebViewClient(channel)
+        settings.javaScriptEnabled = true
+    }
 
     fun load(initialData: Map<String, String>?, initialFile: String?, initialURL: String, initialHeaders: Map<String, String>?) {
         initialData?.let {

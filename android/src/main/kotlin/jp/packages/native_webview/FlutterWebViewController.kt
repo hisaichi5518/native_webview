@@ -17,7 +17,9 @@ class FlutterWebViewController(
         val initialUrl = args["initialUrl"] as? String ?: "about:blank"
         val initialHeaders = args["initialHeaders"] as? Map<String, String>
 
-        webview = NativeWebView(Locator.activity!!)
+        channel.setMethodCallHandler(this)
+
+        webview = NativeWebView(channel, Locator.activity!!)
         webview.load(initialData, initialFile, initialUrl, initialHeaders)
     }
 
@@ -33,11 +35,15 @@ class FlutterWebViewController(
         when (call.method) {
             "evaluateJavascript" -> {
                 val javaScriptString = call.arguments as String
-                webview.evaluateJavascript(javaScriptString) {
-                    if (it == null)
-                        return@evaluateJavascript
-                    result.success(it)
+
+                webview.post {
+                    webview.evaluateJavascript(javaScriptString) {
+                        result.success(it)
+                    }
                 }
+            }
+            "currentUrl" -> {
+                result.success(webview.url)
             }
         }
     }
