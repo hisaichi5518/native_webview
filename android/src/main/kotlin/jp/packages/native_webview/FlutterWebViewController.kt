@@ -1,13 +1,11 @@
 package jp.packages.native_webview
 
-import android.content.Context
 import android.view.View
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.platform.PlatformView
 
 class FlutterWebViewController(
-    context: Context,
     private val channel: MethodChannel,
     args: Map<String, Any>
 ) : PlatformView, MethodChannel.MethodCallHandler {

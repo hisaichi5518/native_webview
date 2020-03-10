@@ -15,7 +15,6 @@ class FlutterWebViewFactory(
         val channel = MethodChannel(messenger, "packages.jp/native_webview_$viewId")
 
         return FlutterWebViewController(
-            context,
             channel,
             args as Map<String, Any>
         )
