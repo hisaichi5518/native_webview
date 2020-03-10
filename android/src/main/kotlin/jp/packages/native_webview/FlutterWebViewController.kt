@@ -14,14 +14,13 @@ class FlutterWebViewController(
     private val webview: InputAwareWebView
 
     init {
-        val initialUrl = args["initialUrl"] as? String
-        val initialFile = args["initialFile"] as? String
         val initialData = args["initialData"] as? Map<String, String>
+        val initialFile = args["initialFile"] as? String
+        val initialUrl = args["initialUrl"] as? String ?: "about:blank"
         val initialHeaders = args["initialHeaders"] as? Map<String, String>
 
         webview = NativeWebView(Locator.activity!!)
-
-        webview.loadUrl(initialUrl)
+        webview.load(initialData, initialFile, initialUrl, initialHeaders)
     }
 
     override fun getView(): View {
