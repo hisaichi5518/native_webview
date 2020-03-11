@@ -65,8 +65,8 @@ class WebViewController {
     );
   }
 
-  Future<String> evaluateJavascript(String javascriptString) async {
-    return _channel.invokeMethod<String>(
+  Future<dynamic> evaluateJavascript(String javascriptString) async {
+    return _channel.invokeMethod<dynamic>(
       'evaluateJavascript',
       javascriptString,
     );
