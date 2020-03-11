@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:native_webview/native_webview.dart';
@@ -66,10 +67,14 @@ class WebViewController {
   }
 
   Future<dynamic> evaluateJavascript(String javascriptString) async {
-    return _channel.invokeMethod<dynamic>(
+    final data = await _channel.invokeMethod<dynamic>(
       'evaluateJavascript',
       javascriptString,
     );
+    if (data != null && Platform.isAndroid) {
+      return jsonDecode(data);
+    }
+    return data;
   }
 
   Future<String> currentUrl() async {
