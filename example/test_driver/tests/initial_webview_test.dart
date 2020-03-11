@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -42,25 +43,6 @@ void initialWebViewTest() {
       final controller = await controllerCompleter.future;
       final currentUrl = await controller.currentUrl();
       expect(currentUrl, 'about:blank');
-    });
-
-    testWidgets('invalid url', (tester) async {
-      final controllerCompleter = Completer<WebViewController>();
-
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: WebView(
-            initialUrl: 'https',
-            onWebViewCreated: (WebViewController controller) {
-              controllerCompleter.complete(controller);
-            },
-          ),
-        ),
-      );
-      final controller = await controllerCompleter.future;
-      final currentUrl = await controller.currentUrl();
-      expect(currentUrl, 'https');
     });
 
     testWidgets('with headers', (WidgetTester tester) async {
@@ -120,7 +102,8 @@ void initialWebViewTest() {
         ),
       );
       final controller = await controllerCompleter.future;
-      await finishedCompleter.future;
+      final url = await finishedCompleter.future;
+      expect(url, baseUrl);
 
       final content = await controller.evaluateJavascript(
         '(() => document.documentElement.innerText)()',
@@ -128,7 +111,11 @@ void initialWebViewTest() {
       expect(content, "yoshitaka-yuriko");
 
       final currentUrl = await controller.currentUrl();
-      expect(currentUrl, baseUrl);
+      if (Platform.isIOS) {
+        expect(currentUrl, baseUrl);
+      } else if (Platform.isAndroid) {
+        expect(currentUrl, "about:blank");
+      }
     });
     testWidgets('without baseUrl', (tester) async {
       final controllerCompleter = Completer<WebViewController>();
