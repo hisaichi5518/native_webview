@@ -75,5 +75,37 @@ void evaluateJavascriptTest() {
             contains("SyntaxError: Unexpected end of script"));
       }
     });
+
+    testWidgets('return functions', (tester) async {
+      final controllerCompleter = Completer<WebViewController>();
+
+      await tester.pumpWidget(
+        Directionality(
+          textDirection: TextDirection.ltr,
+          child: WebView(
+            initialUrl: 'about:blank',
+            onWebViewCreated: (WebViewController controller) {
+              controllerCompleter.complete(controller);
+            },
+          ),
+        ),
+      );
+      final controller = await controllerCompleter.future;
+      try {
+        final result =
+            await controller.evaluateJavascript('(() => function test() {})()');
+        if (Platform.isAndroid) {
+          expect(result, null);
+        } else {
+          fail("not support");
+        }
+      } catch (error) {
+        expect(error, isA<PlatformException>());
+        expect(
+            error.toString(),
+            contains(
+                "JavaScript execution returned a result of an unsupported type"));
+      }
+    });
   });
 }
