@@ -45,6 +45,17 @@ class FlutterWebViewController(
             "currentUrl" -> {
                 result.success(webview.url)
             }
+            "loadUrl" -> {
+                val arguments = call.arguments as Map<String, Any>
+                val url = arguments["url"] as? String
+                if (url == null) {
+                    result.error("loadUrl", "Can not find url", null)
+                    return
+                }
+
+                webview.loadUrl(url, arguments["headers"] as? Map<String, String>)
+                result.success(true)
+            }
         }
     }
 
