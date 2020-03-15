@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:native_webview/src/webview_controller.dart';
@@ -207,23 +209,36 @@ class WebView extends StatefulWidget {
 }
 
 class _WebViewState extends State<WebView> {
+  static const String viewType = "packages.jp/native_webview";
+
   @override
   Widget build(BuildContext context) {
-    return UiKitView(
-      viewType: "packages.jp/native_webview",
-      onPlatformViewCreated: (int id) {
-        final controller = WebViewController(widget, id);
-        if (widget.onWebViewCreated == null) {
-          return;
-        }
-        widget.onWebViewCreated(
-          controller,
-        );
-      },
-      gestureRecognizers: Set.from([]),
-      creationParams: _CreationParams.from(widget).toMap(),
-      creationParamsCodec: const StandardMessageCodec(),
-    );
+    if (Platform.isIOS) {
+      return UiKitView(
+        viewType: viewType,
+        onPlatformViewCreated: _onPlatformViewCreated,
+        gestureRecognizers: Set.from([]),
+        creationParams: _CreationParams.from(widget).toMap(),
+        creationParamsCodec: const StandardMessageCodec(),
+      );
+    } else if (Platform.isAndroid) {
+      return AndroidView(
+        viewType: viewType,
+        onPlatformViewCreated: _onPlatformViewCreated,
+        gestureRecognizers: Set.from([]),
+        creationParams: _CreationParams.from(widget).toMap(),
+        creationParamsCodec: const StandardMessageCodec(),
+      );
+    }
+    throw UnsupportedError("${Platform.operatingSystem} is not supported.");
+  }
+
+  void _onPlatformViewCreated(int id) {
+    final controller = WebViewController(widget, id);
+    if (widget.onWebViewCreated == null) {
+      return;
+    }
+    widget.onWebViewCreated(controller);
   }
 }
 

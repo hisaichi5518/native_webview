@@ -23,33 +23,36 @@ void evaluateJavascriptTest() {
         ),
       );
       final controller = await controllerCompleter.future;
-      final result = await controller.evaluateJavascript('(() => "test ok")()');
-      expect(result, 'test ok');
-    });
-
-    testWidgets('return object', (tester) async {
-      final controllerCompleter = Completer<WebViewController>();
-
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: WebView(
-            initialUrl: 'about:blank',
-            onWebViewCreated: (WebViewController controller) {
-              controllerCompleter.complete(controller);
-            },
-          ),
-        ),
+      expect(
+        await controller.evaluateJavascript('(() => "りんご")()'),
+        "りんご",
       );
-      final controller = await controllerCompleter.future;
-      final result = await controller.evaluateJavascript('(() => {test: 1})()');
-      if (Platform.isIOS) {
-        expect(result, isNull);
-      } else if (Platform.isAndroid) {
-        expect(result, isNotNull);
-      } else {
-        fail("Not support platform");
-      }
+      expect(
+        await controller.evaluateJavascript('(() => 1000)()'),
+        1000,
+      );
+      expect(
+        await controller.evaluateJavascript('(() => ["りんご"])()'),
+        ["りんご"],
+      );
+      expect(
+        await controller
+            .evaluateJavascript('(function() { return {"りんご": "Apple"} })()'),
+        {"りんご": "Apple"},
+      );
+
+      expect(
+        await controller.evaluateJavascript("""
+class Rectangle {
+  constructor(height, width) {
+    this.height = height;
+    this.width = width;
+  }
+}
+(() => new Rectangle(100, 200))()
+            """),
+        {'height': 100, 'width': 200},
+      );
     });
 
     testWidgets('invalid javascript', (tester) async {
@@ -73,6 +76,36 @@ void evaluateJavascriptTest() {
         expect(error, isA<PlatformException>());
         expect(error.toString(),
             contains("SyntaxError: Unexpected end of script"));
+      }
+    });
+
+    testWidgets('unsupported type', (tester) async {
+      if (!Platform.isIOS) {
+        return;
+      }
+
+      final controllerCompleter = Completer<WebViewController>();
+
+      await tester.pumpWidget(
+        Directionality(
+          textDirection: TextDirection.ltr,
+          child: WebView(
+            initialUrl: 'about:blank',
+            onWebViewCreated: (WebViewController controller) {
+              controllerCompleter.complete(controller);
+            },
+          ),
+        ),
+      );
+      final controller = await controllerCompleter.future;
+      try {
+        await controller.evaluateJavascript('(() => function test() {})()');
+      } catch (error) {
+        expect(error, isA<PlatformException>());
+        expect(
+            error.toString(),
+            contains(
+                "JavaScript execution returned a result of an unsupported type"));
       }
     });
   });

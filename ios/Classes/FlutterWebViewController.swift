@@ -101,7 +101,10 @@ public class FlutterWebViewController: NSObject, FlutterPlatformView {
             webview.evaluateJavaScript(javaScriptString, completionHandler: { (completed, err) in
                 if let err = err {
                     let error = err as NSError
-                    let message = error.userInfo["WKJavaScriptExceptionMessage"] as? String ?? "javascript error"
+                    let message = error.userInfo["WKJavaScriptExceptionMessage"] as? String
+                        ?? error.userInfo["NSLocalizedDescription"] as? String
+                        ?? "unknown javascript error"
+
                     result(FlutterError.init(
                         code: "evaluateJavascript",
                         message: message,
