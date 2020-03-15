@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_driver/driver_extension.dart';
+import 'package:native_webview_example/screens/initial_url_screen.dart';
 import 'package:native_webview_example/screens/open_dropdown_screen.dart';
 
 void main() {
@@ -16,6 +17,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final items = [
+    InitialUrlScreen(),
     OpenDropdownScreen(),
   ];
 
