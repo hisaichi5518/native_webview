@@ -148,7 +148,7 @@ void initialWebViewTest() {
 
       final currentUrl = await controller.currentUrl();
       expect(currentUrl, "about:blank");
-    });
+    }, skip: Platform.isAndroid);
   });
 
   group("initalFile", () {
