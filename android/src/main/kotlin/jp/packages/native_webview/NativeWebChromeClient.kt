@@ -1,6 +1,5 @@
 package jp.packages.native_webview
 
-import android.R.attr.defaultValue
 import android.content.DialogInterface
 import android.util.Log
 import android.webkit.JsPromptResult
