@@ -10,6 +10,7 @@ class NativeWebView(channel: MethodChannel, context: Context) : InputAwareWebVie
         webChromeClient = NativeWebChromeClient(channel)
         @SuppressLint("SetJavaScriptEnabled")
         settings.javaScriptEnabled = true
+        addJavascriptInterface(JavascriptHandler(channel), NativeWebViewClient.JAVASCRIPT_BRIDGE_NAME)
     }
 
     fun load(initialData: Map<String, String>?, initialFile: String?, initialURL: String, initialHeaders: Map<String, String>?) {
