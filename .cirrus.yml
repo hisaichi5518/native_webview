@@ -1,0 +1,24 @@
+flutter_drive_ios_task:
+  osx_instance:
+    image: catalina-flutter
+  open_simulator_script: open -a Simulator
+  test_script: make test
+
+flutter_drive_android_task:
+  container:
+    image: cirrusci/flutter:latest
+    kvm: true
+  env:
+    EMULATOR_API_LEVEL: 28
+    ANDROID_ABI: "default;x86"
+  fix_kvm_script: sudo chown cirrus:cirrus /dev/kvm
+  update_emulator_script: sdkmanager --verbose --channel=0 "emulator"
+  update_images_script: sdkmanager "system-images;android-$EMULATOR_API_LEVEL;$ANDROID_ABI"
+  create_device_script: echo no | avdmanager create avd --force -n test -k "system-images;android-$EMULATOR_API_LEVEL;$ANDROID_ABI"
+  start_emulator_background_script: $ANDROID_HOME/emulator/emulator -verbose -avd test -no-audio -no-window
+  wait_for_emulator_script:
+    - ./scripts/android-wait-for-emulator.sh
+  pub_cache:
+    folder: ~/.pub-cache
+  devices_script: flutter devices
+  test_script: make test
