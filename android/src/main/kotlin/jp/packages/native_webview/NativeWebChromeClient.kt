@@ -67,6 +67,73 @@ class NativeWebChromeClient(private val channel: MethodChannel) : WebChromeClien
         return true
     }
 
+    override fun onJsAlert(view: WebView?, url: String?, message: String, result: JsResult): Boolean {
+        channel.invokeMethod(
+            "onJsAlert",
+            mapOf("message" to message),
+            object : MethodChannel.Result {
+                override fun notImplemented() {
+                    Log.i("NativeWebChromeClient", "onJsAlert is notImplemented")
+                    result.cancel()
+                }
+
+                override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
+                    Log.e("NativeWebChromeClient", "$errorCode $errorMessage $errorDetails")
+                    result.cancel()
+                }
+
+                override fun success(response: Any?) {
+                    var responseMessage: String? = null
+                    var okLabel: String? = null
+
+                    val responseMap = response as? Map<String, Any>
+                    if (responseMap != null) {
+                        val handledByClient = responseMap["handledByClient"] as? Boolean
+                        if (handledByClient != null && handledByClient) {
+                            result.confirm()
+                            return
+                        }
+
+                        responseMessage = responseMap["message"] as? String ?: message
+                        okLabel = responseMap["okLabel"] as? String
+                    }
+
+                    createAlertDialog(
+                        responseMessage ?: message,
+                        result,
+                        okLabel
+                    )
+                }
+            })
+
+        return true
+    }
+
+    private fun createAlertDialog(
+        message: String,
+        result: JsResult,
+        okLabel: String?
+    ) {
+        val builder = AlertDialog.Builder(Locator.activity!!, R.style.Theme_AppCompat_Dialog_Alert).apply {
+            setMessage(message)
+        }
+        val confirmClickListener = DialogInterface.OnClickListener { dialog, _ ->
+            result.confirm()
+            dialog.dismiss()
+        }
+        if (okLabel != null && okLabel.isNotEmpty()) {
+            builder.setPositiveButton(okLabel, confirmClickListener)
+        } else {
+            builder.setPositiveButton(android.R.string.ok, confirmClickListener)
+        }
+
+        builder.setOnCancelListener { dialog ->
+            result.cancel()
+            dialog.dismiss()
+        }
+        builder.show()
+    }
+
     private fun createConfirmDialog(
         message: String,
         result: JsResult,
