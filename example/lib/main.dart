@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_driver/driver_extension.dart';
+import 'package:native_webview_example/screens/initial_data_screen.dart';
+import 'package:native_webview_example/screens/initial_data_with_base_url_screen.dart';
 import 'package:native_webview_example/screens/initial_url_screen.dart';
 import 'package:native_webview_example/screens/on_js_prompt_screen.dart';
 import 'package:native_webview_example/screens/open_dropdown_screen.dart';
@@ -19,6 +21,8 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   final items = [
     InitialUrlScreen(),
+    InitialDataScreen(),
+    InitialDataWithBaseUrlScreen(),
     OnJsPromptScreen(),
     OpenDropdownScreen(),
   ];
