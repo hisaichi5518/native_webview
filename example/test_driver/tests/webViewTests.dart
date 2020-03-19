@@ -5,7 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:native_webview/native_webview.dart';
 
-void initialWebViewTest() {
+void webViewTests() {
   group("initalUrl", () {
     testWidgets('https://flutter.dev/', (tester) async {
       final controllerCompleter = Completer<WebViewController>();
@@ -180,6 +180,179 @@ void initialWebViewTest() {
         '(() => document.documentElement.innerText)()',
       );
       expect(content, "yoshitaka-yuriko");
+    });
+  });
+
+  group("onJsConfirm", () {
+    testWidgets("handled", (tester) async {
+      final controllerCompleter = Completer<WebViewController>();
+      final finishedCompleter = Completer<String>();
+      final List<List<dynamic>> argumentsReceived = [];
+
+      await tester.pumpWidget(
+        Directionality(
+          textDirection: TextDirection.ltr,
+          child: WebView(
+            initialData: WebViewData(
+              '<html><body><script>window.confirm("confirm")</script></body></html>',
+            ),
+            onWebViewCreated: (controller) {
+              controllerCompleter.complete(controller);
+            },
+            onJsConfirm: (controller, message) {
+              return JsConfirmResponse.handled(JsConfirmResponseAction.cancel);
+            },
+            onPageFinished: (controller, url) {
+              finishedCompleter.complete(url);
+            },
+          ),
+        ),
+      );
+      await controllerCompleter.future;
+      await finishedCompleter.future;
+    });
+  });
+
+  group("onJsAlert", () {
+    testWidgets("handled", (tester) async {
+      final controllerCompleter = Completer<WebViewController>();
+      final finishedCompleter = Completer<String>();
+      final List<List<dynamic>> argumentsReceived = [];
+
+      await tester.pumpWidget(
+        Directionality(
+          textDirection: TextDirection.ltr,
+          child: WebView(
+            initialData: WebViewData(
+              '<html><body><script>window.alert("alert")</script></body></html>',
+            ),
+            onWebViewCreated: (controller) {
+              controllerCompleter.complete(controller);
+            },
+            onJsAlert: (controller, message) {
+              return JsAlertResponse.handled();
+            },
+            onPageFinished: (controller, url) {
+              finishedCompleter.complete(url);
+            },
+          ),
+        ),
+      );
+      await controllerCompleter.future;
+      await finishedCompleter.future;
+    });
+  });
+
+  group("onJsPrompt", () {
+    testWidgets("handled", (tester) async {
+      final controllerCompleter = Completer<WebViewController>();
+      final finishedCompleter = Completer<String>();
+      final List<List<dynamic>> argumentsReceived = [];
+
+      await tester.pumpWidget(
+        Directionality(
+          textDirection: TextDirection.ltr,
+          child: WebView(
+            initialData: WebViewData(
+              '<html><body><script>window.prompt("prompt", "text")</script></body></html>',
+            ),
+            onWebViewCreated: (controller) {
+              controllerCompleter.complete(controller);
+            },
+            onJsPrompt: (controller, message, defaultText) {
+              return JsPromptResponse.handled(
+                JsPromptResponseAction.ok,
+                "value",
+              );
+            },
+            onPageFinished: (controller, url) {
+              finishedCompleter.complete(url);
+            },
+          ),
+        ),
+      );
+      await controllerCompleter.future;
+      await finishedCompleter.future;
+    });
+  });
+
+  group("onPageStarted", () {
+    testWidgets('wait for page started', (tester) async {
+      final controllerCompleter = Completer<WebViewController>();
+      final finishedCompleter = Completer<String>();
+
+      await tester.pumpWidget(
+        Directionality(
+          textDirection: TextDirection.ltr,
+          child: WebView(
+            initialUrl: 'https://flutter.dev/',
+            onWebViewCreated: (WebViewController controller) {
+              controllerCompleter.complete(controller);
+            },
+            onPageStarted: (controller, url) {
+              finishedCompleter.complete(url);
+            },
+          ),
+        ),
+      );
+
+      final url = await finishedCompleter.future;
+      expect(url, "https://flutter.dev/");
+    });
+  });
+
+  group("onPageFinished", () {
+    testWidgets('wait for page finished', (tester) async {
+      final controllerCompleter = Completer<WebViewController>();
+      final finishedCompleter = Completer<String>();
+
+      await tester.pumpWidget(
+        Directionality(
+          textDirection: TextDirection.ltr,
+          child: WebView(
+            initialUrl: 'https://flutter.dev/',
+            onWebViewCreated: (WebViewController controller) {
+              controllerCompleter.complete(controller);
+            },
+            onPageFinished: (controller, url) {
+              finishedCompleter.complete(url);
+            },
+          ),
+        ),
+      );
+
+      final url = await finishedCompleter.future;
+      expect(url, "https://flutter.dev/");
+    });
+  });
+
+  group("onProgressChanged", () {
+    testWidgets('wait for page finished', (tester) async {
+      final controllerCompleter = Completer<WebViewController>();
+      final finishedCompleter = Completer<String>();
+
+      List<int> progressValues = [];
+      await tester.pumpWidget(
+        Directionality(
+          textDirection: TextDirection.ltr,
+          child: WebView(
+            initialUrl: 'https://flutter.dev/',
+            onWebViewCreated: (WebViewController controller) {
+              controllerCompleter.complete(controller);
+            },
+            onProgressChanged: (controller, progress) {
+              progressValues.add(progress);
+            },
+            onPageFinished: (controller, url) {
+              finishedCompleter.complete(url);
+            },
+          ),
+        ),
+      );
+
+      final url = await finishedCompleter.future;
+      expect(url, "https://flutter.dev/");
+      expect(progressValues.last, 100);
     });
   });
 }
