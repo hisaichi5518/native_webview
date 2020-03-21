@@ -1,3 +1,11 @@
+flutter_analyze_task:
+  container:
+    image: cirrusci/flutter:latest
+  pub_cache:
+    folder: ~/.pub-cache
+  pub_get_script: flutter pub get
+  lint_script: flutter analyze
+
 flutter_drive_ios_task:
   osx_instance:
     image: catalina-flutter
