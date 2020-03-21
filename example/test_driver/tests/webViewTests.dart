@@ -187,7 +187,6 @@ void webViewTests() {
     testWidgets("handled", (tester) async {
       final controllerCompleter = Completer<WebViewController>();
       final finishedCompleter = Completer<String>();
-      final List<List<dynamic>> argumentsReceived = [];
 
       await tester.pumpWidget(
         Directionality(
@@ -217,7 +216,6 @@ void webViewTests() {
     testWidgets("handled", (tester) async {
       final controllerCompleter = Completer<WebViewController>();
       final finishedCompleter = Completer<String>();
-      final List<List<dynamic>> argumentsReceived = [];
 
       await tester.pumpWidget(
         Directionality(
@@ -247,7 +245,6 @@ void webViewTests() {
     testWidgets("handled", (tester) async {
       final controllerCompleter = Completer<WebViewController>();
       final finishedCompleter = Completer<String>();
-      final List<List<dynamic>> argumentsReceived = [];
 
       await tester.pumpWidget(
         Directionality(

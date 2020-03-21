@@ -53,31 +53,45 @@ enum JsConfirmResponseAction {
 ///JsConfirmResponse class represents the response used by the [onJsConfirm] event to control a JavaScript confirm dialog.
 class JsConfirmResponse {
   ///Message to be displayed in the window.
-  String message;
+  final String message;
 
   ///Title of the confirm button.
-  String okLabel;
+  final String okLabel;
 
   ///Title of the cancel button.
-  String cancelLabel;
+  final String cancelLabel;
 
   ///Whether the client will handle the confirm dialog.
-  bool handledByClient;
+  final bool handledByClient;
 
   ///Action used to confirm that the user hit confirm or cancel button.
-  JsConfirmResponseAction action;
+  final JsConfirmResponseAction action;
 
-  JsConfirmResponse._();
-
-  JsConfirmResponse.handled(this.action) {
-    handledByClient = true;
-  }
-
-  JsConfirmResponse.confirm(
+  JsConfirmResponse._(
     this.message,
     this.okLabel,
     this.cancelLabel,
+    this.handledByClient,
+    this.action,
   );
+
+  factory JsConfirmResponse.handled(JsConfirmResponseAction action) {
+    return JsConfirmResponse._(null, null, null, true, action);
+  }
+
+  factory JsConfirmResponse.confirm(
+    String message,
+    String okLabel,
+    String cancelLabel,
+  ) {
+    return JsConfirmResponse._(
+      message,
+      okLabel,
+      cancelLabel,
+      false,
+      null,
+    );
+  }
 
   Map<String, dynamic> toMap() {
     return {
@@ -93,24 +107,30 @@ class JsConfirmResponse {
 ///JsAlertResponse class represents the response used by the [onJsAlert] event to control a JavaScript confirm dialog.
 class JsAlertResponse {
   ///Message to be displayed in the window.
-  String message;
+  final String message;
 
   ///Title of the alert button.
-  String okLabel;
+  final String okLabel;
 
   ///Whether the client will handle the alert dialog.
-  bool handledByClient;
+  final bool handledByClient;
 
-  JsAlertResponse._();
+  JsAlertResponse._(this.message, this.okLabel, this.handledByClient);
 
-  JsAlertResponse.handled() {
-    handledByClient = true;
+  factory JsAlertResponse.handled() {
+    return JsAlertResponse._(null, null, true);
   }
 
-  JsAlertResponse.alert(
-    this.message,
-    this.okLabel,
-  );
+  factory JsAlertResponse.alert(
+    String message,
+    String okLabel,
+  ) {
+    return JsAlertResponse._(
+      message,
+      okLabel,
+      false,
+    );
+  }
 
   Map<String, dynamic> toMap() {
     return {
@@ -129,38 +149,67 @@ enum JsPromptResponseAction {
 ///JsPromptResponse class represents the response used by the [onJsPrompt] event to control a JavaScript prompt dialog.
 class JsPromptResponse {
   ///Message to be displayed in the window.
-  String message;
+  final String message;
 
   ///The default value displayed in the prompt dialog.
-  String defaultValue;
+  final String defaultValue;
 
   ///Title of the confirm button.
-  String okLabel;
+  final String okLabel;
 
   ///Title of the cancel button.
-  String cancelLabel;
+  final String cancelLabel;
 
   ///Whether the client will handle the prompt dialog.
-  bool handledByClient;
-
-  ///Value of the prompt dialog.
-  String value;
+  final bool handledByClient;
 
   ///Action used to confirm that the user hit confirm or cancel button.
-  JsPromptResponseAction action;
+  final JsPromptResponseAction action;
 
-  JsPromptResponse.handled(this.action, this.value) {
-    handledByClient = true;
+  ///Value of the prompt dialog.
+  final String value;
+
+  factory JsPromptResponse.handled(
+    JsPromptResponseAction action,
+    String value,
+  ) {
+    return JsPromptResponse._(
+      null,
+      null,
+      null,
+      null,
+      true,
+      action,
+      value,
+    );
   }
 
-  JsPromptResponse.prompt(
+  factory JsPromptResponse.prompt(
+    String message,
+    String defaultValue,
+    String okLabel,
+    String cancelLabel,
+  ) {
+    return JsPromptResponse._(
+      message,
+      defaultValue,
+      okLabel,
+      cancelLabel,
+      false,
+      null,
+      null,
+    );
+  }
+
+  JsPromptResponse._(
     this.message,
     this.defaultValue,
     this.okLabel,
     this.cancelLabel,
+    this.handledByClient,
+    this.action,
+    this.value,
   );
-
-  JsPromptResponse._();
 
   Map<String, dynamic> toMap() {
     return {
