@@ -17,6 +17,8 @@ window.\(JAVASCRIPT_BRIDGE_NAME).callHandler = function() {
 
 public class FlutterWebViewController: NSObject, FlutterPlatformView {
 
+    static private let processPool = WKProcessPool()
+
     var parent: UIView
     var webview: NativeWebView
     var channel: FlutterMethodChannel
@@ -33,6 +35,7 @@ public class FlutterWebViewController: NSObject, FlutterPlatformView {
         let configuration = WKWebViewConfiguration()
         let userController = WKUserContentController()
         configuration.userContentController = userController
+        configuration.processPool = FlutterWebViewController.processPool
 
         self.webview = NativeWebView(frame: parent.bounds, configuration: configuration, channel: channel)
         self.channel = channel
