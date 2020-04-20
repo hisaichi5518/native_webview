@@ -32,12 +32,7 @@ void cookieManagerTests() {
       final cookieManager = CookieManager.instance();
       final cookies = await cookieManager.getCookies(url: currentUrl);
 
-      // TODO: It doesn't work on iOS, so I'll temporarily skip it.
-      if (Platform.isAndroid) {
-        expect(cookies.length, greaterThanOrEqualTo(1));
-      } else {
-        expect(true, true);
-      }
+      expect(cookies.length, greaterThanOrEqualTo(1));
     });
 
     testWidgets('has name', (tester) async {
