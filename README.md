@@ -17,6 +17,7 @@ Known issues are tagged with the  [flutter/flutter’s platform-views label](htt
 
 ## Requirements
 
+- Dart: >=2.6.0 <3.0.0
 - Flutter: >=1.12.13+hotfix.5 <2.0.0
 - Android: minSdkVersion 21, AndroidX, Kotlin
 - iOS: iOS version >= 11.0, Xcode version >= 11, Swift
