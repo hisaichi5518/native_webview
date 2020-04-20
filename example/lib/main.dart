@@ -5,6 +5,7 @@ import 'package:native_webview_example/screens/initial_data_with_base_url_screen
 import 'package:native_webview_example/screens/initial_url_screen.dart';
 import 'package:native_webview_example/screens/on_js_prompt_screen.dart';
 import 'package:native_webview_example/screens/open_dropdown_screen.dart';
+import 'package:native_webview_example/screens/target_blank_screen.dart';
 
 void main() {
   // Enable integration testing with the Flutter Driver extension.
@@ -25,6 +26,7 @@ class _MyAppState extends State<MyApp> {
     InitialDataWithBaseUrlScreen(),
     OnJsPromptScreen(),
     OpenDropdownScreen(),
+    TargetBlankScreen(),
   ];
 
   @override
