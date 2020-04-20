@@ -56,6 +56,15 @@ extension NativeWebView: WKNavigationDelegate {
         decidePolicyFor navigationAction: WKNavigationAction,
         decisionHandler: @escaping (WKNavigationActionPolicy) -> Void
     ) {
+        if let url = navigationAction.request.url {
+            // target="_blank"
+            if navigationAction.targetFrame == nil {
+                webView.load(URLRequest(url: url))
+                decisionHandler(.cancel)
+                return
+            }
+        }
+
         decisionHandler(.allow)
     }
 
