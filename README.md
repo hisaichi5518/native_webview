@@ -2,7 +2,7 @@
 
 A Flutter plugin that allows you to add an inline WebView.
 
-## Motivation.
+## Motivation
 
 There is already a useful library for working with WebViews in Flutter.
 
