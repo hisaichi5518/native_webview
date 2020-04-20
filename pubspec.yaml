@@ -1,11 +1,11 @@
 name: native_webview
 description: A new flutter plugin project.
 version: 0.0.1
-author:
-homepage:
+author: hisaichi5518
+homepage: https://github.com/hisaichi5518/native_webview
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.6.0 <3.0.0"
   flutter: ">=1.12.13+hotfix.5 <2.0.0"
 
 dependencies:
