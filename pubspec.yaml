@@ -1,6 +1,6 @@
 name: native_webview
-description: A Flutter plugin that allows you to add an inline WebView.
-version: 0.0.1
+description: A Flutter plugin that provides a WebView widget on Android and iOS.
+version: 0.0.2
 homepage: https://github.com/hisaichi5518/native_webview
 
 environment:
@@ -14,6 +14,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  pedantic: ^1.8.0+1
 
 flutter:
   plugin:

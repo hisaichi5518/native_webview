@@ -12,7 +12,7 @@ class Cookie {
 class CookieManager {
   static CookieManager _instance;
   static const MethodChannel _channel =
-      const MethodChannel('packages.jp/native_webview_cookie_manager');
+      MethodChannel('packages.jp/native_webview_cookie_manager');
 
   static CookieManager instance() {
     return (_instance != null) ? _instance : _init();
@@ -20,7 +20,7 @@ class CookieManager {
 
   static CookieManager _init() {
     _channel.setMethodCallHandler(_handleMethod);
-    _instance = new CookieManager();
+    _instance = CookieManager();
     return _instance;
   }
 
@@ -73,8 +73,9 @@ class CookieManager {
 
     for (final cookie in cookieListMap) {
       if (name != null && name.isNotEmpty) {
-        if (cookie["name"] == name)
+        if (cookie["name"] == name) {
           cookies.add(Cookie(cookie["name"], cookie["value"]));
+        }
       } else {
         cookies.add(Cookie(cookie["name"], cookie["value"]));
       }

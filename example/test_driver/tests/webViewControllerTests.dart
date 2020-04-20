@@ -61,7 +61,7 @@ void webViewControllerTests() {
         '(() => document.documentElement.innerText)()',
       );
       expect(content.contains('flutter_test_header'), isTrue);
-      finishedStreamController.close();
+      await finishedStreamController.close();
     });
   });
 
