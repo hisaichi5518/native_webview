@@ -1,0 +1,138 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
+
+class Cookie {
+  String name;
+
+  dynamic value;
+
+  Cookie(this.name, this.value);
+}
+
+class CookieManager {
+  static CookieManager _instance;
+  static const MethodChannel _channel =
+      const MethodChannel('packages.jp/native_webview_cookie_manager');
+
+  static CookieManager instance() {
+    return (_instance != null) ? _instance : _init();
+  }
+
+  static CookieManager _init() {
+    _channel.setMethodCallHandler(_handleMethod);
+    _instance = new CookieManager();
+    return _instance;
+  }
+
+  static Future<dynamic> _handleMethod(MethodCall call) async {}
+
+  Future<void> setCookie({
+    @required String url,
+    @required String name,
+    @required String value,
+    String domain,
+    String path = "/",
+    int expiresDate,
+    int maxAge,
+    bool isSecure,
+  }) async {
+    if (domain == null || domain.isNotEmpty) domain = _getDomainName(url);
+
+    assert(url != null && url.isNotEmpty);
+    assert(name != null && name.isNotEmpty);
+    assert(value != null && value.isNotEmpty);
+    assert(domain != null && domain.isNotEmpty);
+    assert(path != null && path.isNotEmpty);
+
+    Map<String, dynamic> args = <String, dynamic>{
+      "url": url,
+      "name": name,
+      "value": value,
+      "domain": domain,
+      "path": path,
+      "expiresDate": expiresDate?.toString(),
+      "maxAge": maxAge,
+      "isSecure": isSecure,
+    };
+    await _channel.invokeMethod('setCookie', args);
+  }
+
+  Future<List<Cookie>> getCookies({
+    @required String url,
+    String name,
+  }) async {
+    assert(url != null && url.isNotEmpty);
+
+    final Map<String, dynamic> args = <String, dynamic>{
+      "url": url,
+    };
+    List<dynamic> cookieListMap =
+        await _channel.invokeMethod('getCookies', args);
+    cookieListMap = cookieListMap.cast<Map<dynamic, dynamic>>();
+    List<Cookie> cookies = [];
+
+    for (final cookie in cookieListMap) {
+      if (name != null && name.isNotEmpty) {
+        if (cookie["name"] == name)
+          cookies.add(Cookie(cookie["name"], cookie["value"]));
+      } else {
+        cookies.add(Cookie(cookie["name"], cookie["value"]));
+      }
+    }
+
+    return cookies;
+  }
+
+  Future<void> deleteCookie({
+    @required String url,
+    @required String name,
+    String domain,
+    String path = "/",
+  }) async {
+    if (domain == null || domain.isEmpty) domain = _getDomainName(url);
+
+    assert(url != null && url.isNotEmpty);
+    assert(name != null && name.isNotEmpty);
+    assert(domain != null && url.isNotEmpty);
+    assert(path != null && url.isNotEmpty);
+
+    final Map<String, dynamic> args = <String, dynamic>{
+      "url": url,
+      "name": name,
+      "domain": domain,
+      "path": path,
+    };
+    await _channel.invokeMethod('deleteCookie', args);
+  }
+
+  Future<void> deleteCookies({
+    @required String url,
+    String domain = "",
+    String path = "/",
+  }) async {
+    if (domain == null || domain.isEmpty) domain = _getDomainName(url);
+
+    assert(url != null && url.isNotEmpty);
+    assert(domain != null && url.isNotEmpty);
+    assert(path != null && url.isNotEmpty);
+
+    final Map<String, dynamic> args = <String, dynamic>{
+      "url": url,
+      "domain": domain,
+      "path": path,
+    };
+    await _channel.invokeMethod('deleteCookies', args);
+  }
+
+  Future<void> deleteAllCookies() async {
+    final Map<String, dynamic> args = <String, dynamic>{};
+    await _channel.invokeMethod('deleteAllCookies', args);
+  }
+
+  String _getDomainName(String url) {
+    Uri uri = Uri.parse(url);
+    String domain = uri.host;
+    if (domain == null) return "";
+    return domain.startsWith("www.") ? domain.substring(4) : domain;
+  }
+}

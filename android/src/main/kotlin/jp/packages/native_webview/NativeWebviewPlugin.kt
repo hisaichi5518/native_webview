@@ -1,22 +1,15 @@
 package jp.packages.native_webview
 
-import android.app.Activity
-import android.content.Context
 import androidx.annotation.NonNull;
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import io.flutter.plugin.common.BinaryMessenger
-import io.flutter.plugin.common.MethodCall
-import io.flutter.plugin.common.MethodChannel
-import io.flutter.plugin.common.MethodChannel.MethodCallHandler
-import io.flutter.plugin.common.MethodChannel.Result
-import io.flutter.plugin.common.PluginRegistry.Registrar
-import io.flutter.plugin.platform.PlatformViewFactory
 import io.flutter.plugin.platform.PlatformViewRegistry
-import io.flutter.view.FlutterView
 
 class NativeWebviewPlugin : FlutterPlugin, ActivityAware {
+    private var cookieManager: MyCookieManager? = null
+
     override fun onAttachedToEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
         Locator.binding = binding
 
@@ -35,10 +28,13 @@ class NativeWebviewPlugin : FlutterPlugin, ActivityAware {
             "packages.jp/native_webview",
             FlutterWebViewFactory(messenger)
         )
+        cookieManager = MyCookieManager(messenger)
     }
 
     override fun onDetachedFromActivity() {
         Locator.activity = null
+        cookieManager?.dispose()
+        cookieManager = null
     }
 
     override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {
