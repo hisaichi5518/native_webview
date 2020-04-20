@@ -17,7 +17,7 @@ window.\(JAVASCRIPT_BRIDGE_NAME).callHandler = function() {
 
 public class FlutterWebViewController: NSObject, FlutterPlatformView {
 
-    static let processPool = WKProcessPool()
+    static private let processPool = WKProcessPool()
 
     var parent: UIView
     var webview: NativeWebView
