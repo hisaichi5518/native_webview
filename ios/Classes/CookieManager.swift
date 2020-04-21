@@ -8,7 +8,7 @@ class CookieManager: NSObject, FlutterPlugin {
 
     static func register(with registrar: FlutterPluginRegistrar) {
         let manager = CookieManager()
-        manager.channel = FlutterMethodChannel(name: "packages.jp/native_webview_cookie_manager", binaryMessenger: registrar.messenger())
+        manager.channel = FlutterMethodChannel(name: "com.hisaichi5518/native_webview_cookie_manager", binaryMessenger: registrar.messenger())
         registrar.addMethodCallDelegate(manager, channel: manager.channel!)
     }
 

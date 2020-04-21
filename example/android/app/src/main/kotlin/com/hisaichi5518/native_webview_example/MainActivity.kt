@@ -1,4 +1,4 @@
-package jp.packages.native_webview_example
+package com.hisaichi5518.native_webview_example
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity

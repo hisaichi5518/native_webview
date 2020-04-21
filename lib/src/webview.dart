@@ -258,7 +258,7 @@ class WebView extends StatefulWidget {
 }
 
 class _WebViewState extends State<WebView> {
-  static const String viewType = "packages.jp/native_webview";
+  static const String viewType = "com.hisaichi5518/native_webview";
 
   @override
   Widget build(BuildContext context) {

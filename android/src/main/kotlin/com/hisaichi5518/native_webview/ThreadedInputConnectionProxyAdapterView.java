@@ -1,4 +1,4 @@
-package jp.packages.native_webview;
+package com.hisaichi5518.native_webview;
 
 // Copyright 2019 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 
-import jp.packages.native_webview.InputAwareWebView;
+import com.hisaichi5518.native_webview.InputAwareWebView;
 
 /**
  * A fake View only exposed to InputMethodManager.

@@ -12,7 +12,7 @@ class WebViewController {
   final Map<String, JavascriptHandlerCallback> _javascriptChannelMap = {};
 
   WebViewController(this._widget, int id)
-      : _channel = MethodChannel("packages.jp/native_webview_$id") {
+      : _channel = MethodChannel("com.hisaichi5518/native_webview_$id") {
     _channel.setMethodCallHandler(_onMethodCall);
   }
 

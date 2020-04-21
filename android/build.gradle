@@ -1,4 +1,4 @@
-group 'jp.packages.native_webview'
+group 'com.hisaichi5518.native_webview'
 version '1.0-SNAPSHOT'
 
 buildscript {

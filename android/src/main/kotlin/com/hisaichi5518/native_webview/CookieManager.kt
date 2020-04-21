@@ -1,4 +1,4 @@
-package jp.packages.native_webview
+package com.hisaichi5518.native_webview
 
 import android.webkit.CookieManager
 import io.flutter.plugin.common.BinaryMessenger
@@ -12,7 +12,7 @@ import kotlin.collections.HashMap
 
 class MyCookieManager(messenger: BinaryMessenger?) : MethodCallHandler {
 
-    private var channel = MethodChannel(messenger, "packages.jp/native_webview_cookie_manager")
+    private var channel = MethodChannel(messenger, "com.hisaichi5518/native_webview_cookie_manager")
     private var cookieManager: CookieManager = CookieManager.getInstance()
 
     init {

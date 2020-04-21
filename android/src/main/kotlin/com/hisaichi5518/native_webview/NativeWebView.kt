@@ -1,4 +1,4 @@
-package jp.packages.native_webview
+package com.hisaichi5518.native_webview
 
 import android.annotation.SuppressLint
 import android.content.Context

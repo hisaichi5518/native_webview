@@ -12,7 +12,7 @@ class Cookie {
 class CookieManager {
   static CookieManager _instance;
   static const MethodChannel _channel =
-      MethodChannel('packages.jp/native_webview_cookie_manager');
+      MethodChannel('com.hisaichi5518/native_webview_cookie_manager');
 
   static CookieManager instance() {
     return (_instance != null) ? _instance : _init();

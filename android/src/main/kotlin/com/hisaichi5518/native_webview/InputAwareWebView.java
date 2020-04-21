@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-package jp.packages.native_webview;
+package com.hisaichi5518.native_webview;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
 
