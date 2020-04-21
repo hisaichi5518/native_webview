@@ -51,6 +51,7 @@ public class FlutterWebViewController: NSObject, FlutterPlatformView {
         let initialData = args["initialData"] as? [String: String]
         let initialHeaders = args["initialHeaders"] as? [String: String]
 
+        webview.backgroundColor = UIColor.init(red: 0, green: 0, blue: 0, alpha: 0)
         webview.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         self.parent.addSubview(webview)
 
