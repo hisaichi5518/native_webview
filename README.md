@@ -15,6 +15,8 @@ native_webview is designed to provide users with a standard set of WebView featu
 The native_webview is dependent on the PlatformView. Since this PlatformView is currently in the Developer Preview, this plugin should also be considered a Developer Preview.
 Known issues are tagged with the  [flutter/flutter’s platform-views label](https://github.com/flutter/flutter/labels/a%3A%20platform-views). 
 
+If you want to run native_webview on iOS, please test it on an actual device such as an iPhone.
+
 ## Requirements
 
 - Dart: >=2.6.0 <3.0.0
@@ -53,5 +55,7 @@ If you want to see other examples, see [example](./example) or see DartDoc.
 ## Known issues
 
 - The following is an issue with Flutter's PlatformView.
-  - Crashes when using window.prompt in iOS
+  - WebView scroll bars appear above the content in the iOS simulator.
+  - The app becomes inoperable when using window.prompt in the iOS simulator.
+  - Sometimes Dropdown doesn't work in the iOS simulator.
   - [Keyboard support](https://github.com/flutter/flutter/labels/p%3A%20webview-keyboard)

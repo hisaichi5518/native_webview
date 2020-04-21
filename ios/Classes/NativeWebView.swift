@@ -225,6 +225,7 @@ extension NativeWebView: WKUIDelegate {
         let alertController = UIAlertController(title: nil, message: message, preferredStyle: .alert)
 
         alertController.addTextField { (textField) in
+            textField.text = defaultText
         }
 
         alertController.addAction(UIAlertAction(title: okTitle, style: .default, handler: { (action) in
