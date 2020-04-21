@@ -16,7 +16,7 @@ public class FlutterWebViewFactory: NSObject, FlutterPlatformViewFactory {
 
     public func create(withFrame frame: CGRect, viewIdentifier viewId: Int64, arguments args: Any?) -> FlutterPlatformView {
         let arguments = args as? NSDictionary ?? [:]
-        let channel = FlutterMethodChannel(name: "packages.jp/native_webview_\(viewId)", binaryMessenger: registrar.messenger())
+        let channel = FlutterMethodChannel(name: "com.hisaichi5518/native_webview_\(viewId)", binaryMessenger: registrar.messenger())
 
         return FlutterWebViewController(
             parent: UIView(frame: frame),

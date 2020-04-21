@@ -1,3 +1,7 @@
+## 0.10.0
+
+- Rename to com.hisaichi5518
+
 ## 0.9.0
 
 - Prevent screen flickering on iOS devices.

@@ -1,4 +1,4 @@
-package jp.packages.native_webview
+package com.hisaichi5518.native_webview
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.engine.plugins.FlutterPlugin
@@ -25,7 +25,7 @@ class NativeWebviewPlugin : FlutterPlugin, ActivityAware {
 
     private fun onAttachedToEngine(messenger: BinaryMessenger, registry: PlatformViewRegistry) {
         registry.registerViewFactory(
-            "packages.jp/native_webview",
+            "com.hisaichi5518/native_webview",
             FlutterWebViewFactory(messenger)
         )
         cookieManager = MyCookieManager(messenger)

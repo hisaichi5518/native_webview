@@ -1,4 +1,4 @@
-package jp.packages.native_webview
+package com.hisaichi5518.native_webview
 
 import android.content.Context
 import android.view.View
@@ -12,7 +12,7 @@ class FlutterWebViewFactory(
     private val messenger: BinaryMessenger
 ) : PlatformViewFactory(StandardMessageCodec.INSTANCE) {
     override fun create(context: Context, viewId: Int, args: Any): PlatformView {
-        val channel = MethodChannel(messenger, "packages.jp/native_webview_$viewId")
+        val channel = MethodChannel(messenger, "com.hisaichi5518/native_webview_$viewId")
 
         return FlutterWebViewController(
             channel,
