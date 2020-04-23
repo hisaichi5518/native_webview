@@ -37,7 +37,9 @@ public class FlutterWebViewController: NSObject, FlutterPlatformView {
         configuration.userContentController = userController
         configuration.processPool = FlutterWebViewController.processPool
 
-        self.webview = NativeWebView(frame: parent.bounds, configuration: configuration, channel: channel)
+        let hasShouldOverrideUrlLoading = args["hasShouldOverrideUrlLoading"] as? Bool ?? false
+
+        self.webview = NativeWebView(frame: parent.bounds, configuration: configuration, channel: channel, options: WebViewOptions(hasShouldOverrideUrlLoading: hasShouldOverrideUrlLoading))
         self.channel = channel
 
         super.init()

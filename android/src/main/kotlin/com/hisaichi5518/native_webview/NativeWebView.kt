@@ -4,9 +4,9 @@ import android.annotation.SuppressLint
 import android.content.Context
 import io.flutter.plugin.common.MethodChannel
 
-class NativeWebView(channel: MethodChannel, context: Context) : InputAwareWebView(context, null) {
+class NativeWebView(channel: MethodChannel, context: Context, options: WebViewOptions) : InputAwareWebView(context, null) {
     init {
-        webViewClient = NativeWebViewClient(channel)
+        webViewClient = NativeWebViewClient(channel, options)
         webChromeClient = NativeWebChromeClient(channel)
         @SuppressLint("SetJavaScriptEnabled")
         settings.javaScriptEnabled = true
@@ -15,7 +15,6 @@ class NativeWebView(channel: MethodChannel, context: Context) : InputAwareWebVie
 
     fun load(initialData: Map<String, String>?, initialFile: String?, initialURL: String, initialHeaders: Map<String, String>?) {
         initialData?.let {
-            it["data"]
             val data = it["data"]
             val mimeType = it["mimeType"]
             val encoding = it["encoding"]

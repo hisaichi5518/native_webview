@@ -4,9 +4,14 @@ import WebKit
 
 public class NativeWebView: WKWebView {
     var channel: FlutterMethodChannel?
+    var options: WebViewOptions?
+    // This flag is used to block the "shouldOverrideUrlLoading" event when the WKWebView is loading the first time,
+    // in order to have the same behavior as Android
+    var activateShouldOverrideUrlLoading = false
 
-    init(frame: CGRect, configuration: WKWebViewConfiguration, channel: FlutterMethodChannel) {
+    init(frame: CGRect, configuration: WKWebViewConfiguration, channel: FlutterMethodChannel, options: WebViewOptions) {
         self.channel = channel
+        self.options = options
         super.init(frame: frame, configuration: configuration)
         navigationDelegate = self
         uiDelegate = self
@@ -56,13 +61,22 @@ extension NativeWebView: WKNavigationDelegate {
         decidePolicyFor navigationAction: WKNavigationAction,
         decisionHandler: @escaping (WKNavigationActionPolicy) -> Void
     ) {
-        if let url = navigationAction.request.url {
-            // target="_blank"
-            if navigationAction.targetFrame == nil {
-                webView.load(URLRequest(url: url))
-                decisionHandler(.cancel)
-                return
-            }
+
+        if let url = navigationAction.request.url, activateShouldOverrideUrlLoading, let options = options, options.hasShouldOverrideUrlLoading {
+            let isForMainFrame = navigationAction.targetFrame?.isMainFrame ?? false
+
+            shouldOverrideUrlLoading(
+                url: url,
+                method: navigationAction.request.httpMethod,
+                headers: navigationAction.request.allHTTPHeaderFields,
+                isForMainFrame: isForMainFrame,
+                navigationType: navigationAction.navigationType,
+                decisionHandler: decisionHandler
+            )
+            return
+        }
+        if !activateShouldOverrideUrlLoading {
+            activateShouldOverrideUrlLoading = true
         }
 
         decisionHandler(.allow)
@@ -84,6 +98,47 @@ extension NativeWebView: WKNavigationDelegate {
     public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         let arguments: [String: String?] = ["url": webView.url?.absoluteString]
         channel?.invokeMethod("onPageFinished", arguments: arguments)
+    }
+
+    private func shouldOverrideUrlLoading(
+        url: URL,
+        method: String?,
+        headers: [String: String]?,
+        isForMainFrame: Bool,
+        navigationType: WKNavigationType,
+        decisionHandler: @escaping (WKNavigationActionPolicy) -> Void
+    ) {
+        let arguments: [String: Any?] = [
+            "url": url.absoluteString,
+            "method": method,
+            "headers": headers,
+            "isForMainFrame": isForMainFrame,
+            "androidHasGesture": nil,
+            "androidIsRedirect": nil,
+            "iosWKNavigationType": navigationType.rawValue
+        ]
+
+        channel?.invokeMethod("shouldOverrideUrlLoading", arguments: arguments, result: { (result) -> Void in
+            if result is FlutterError, let result = result as? FlutterError {
+                NSLog("\n\(result.message ?? "message is nil")")
+                decisionHandler(.allow)
+                return
+            }
+
+            guard let response = result as? [String: Any] else {
+                decisionHandler(.allow)
+                return
+            }
+
+            let action = response["action"] as? Int ?? 0
+            switch action {
+            case 0:
+                decisionHandler(.allow)
+                break
+            default:
+                decisionHandler(.cancel)
+            }
+        })
     }
 }
 

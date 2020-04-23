@@ -60,6 +60,22 @@ class WebViewController {
           return {};
         }
         return _widget.onJsPrompt(this, message, defaultText)?.toMap();
+      case 'shouldOverrideUrlLoading':
+        if (_widget.shouldOverrideUrlLoading == null) {
+          return {};
+        }
+
+        final url = call.arguments['url'] as String;
+        final method = call.arguments['method'] as String;
+        final headers = call.arguments['headers']?.cast<String, String>();
+        final isForMainFrame = call.arguments['isForMainFrame'] as bool;
+        final request = ShouldOverrideUrlLoadingRequest(
+          url: url,
+          method: method,
+          headers: headers,
+          isForMainFrame: isForMainFrame,
+        );
+        return _widget.shouldOverrideUrlLoading(this, request)?.toMap();
     }
     throw MissingPluginException(
       '${call.method} was invoked but has no handler',
