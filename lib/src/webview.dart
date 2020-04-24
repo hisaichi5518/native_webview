@@ -268,7 +268,7 @@ class WebView extends StatefulWidget {
   final JsConfirmResponse Function(WebViewController, String) onJsConfirm;
   final JsAlertResponse Function(WebViewController, String) onJsAlert;
   final JsPromptResponse Function(WebViewController, String, String) onJsPrompt;
-  final ShouldOverrideUrlLoadingAction Function(
+  final Future<ShouldOverrideUrlLoadingAction> Function(
     WebViewController,
     ShouldOverrideUrlLoadingRequest,
   ) shouldOverrideUrlLoading;
