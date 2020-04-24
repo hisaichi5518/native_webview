@@ -388,7 +388,7 @@ void webViewTests() {
                   break;
               }
             },
-            shouldOverrideUrlLoading: (controller, request) {
+            shouldOverrideUrlLoading: (controller, request) async {
               print("shouldOverrideUrlLoading: ${request.url}");
               shouldOverrideUrlLoading.add(request);
               completer.complete(request.url);
@@ -461,7 +461,7 @@ void webViewTests() {
                   break;
               }
             },
-            shouldOverrideUrlLoading: (controller, request) {
+            shouldOverrideUrlLoading: (controller, request) async {
               print("shouldOverrideUrlLoading: ${request.url}");
               shouldOverrideUrlLoading.add(request);
               return ShouldOverrideUrlLoadingAction.allow;
@@ -553,7 +553,7 @@ void webViewTests() {
                   break;
               }
             },
-            shouldOverrideUrlLoading: (controller, request) {
+            shouldOverrideUrlLoading: (controller, request) async {
               print("shouldOverrideUrlLoading: ${request.url}");
               shouldOverrideUrlLoading.add(request);
               completer.complete(request.url);
@@ -638,7 +638,7 @@ void webViewTests() {
                   break;
               }
             },
-            shouldOverrideUrlLoading: (controller, request) {
+            shouldOverrideUrlLoading: (controller, request) async {
               print("shouldOverrideUrlLoading: ${request.url}");
               shouldOverrideUrlLoading.add(request);
               return ShouldOverrideUrlLoadingAction.allow;

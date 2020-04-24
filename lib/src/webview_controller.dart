@@ -75,7 +75,7 @@ class WebViewController {
           headers: headers,
           isForMainFrame: isForMainFrame,
         );
-        return _widget.shouldOverrideUrlLoading(this, request)?.toMap();
+        return (await _widget.shouldOverrideUrlLoading(this, request))?.toMap();
     }
     throw MissingPluginException(
       '${call.method} was invoked but has no handler',
