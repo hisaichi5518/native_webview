@@ -5,7 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:native_webview/native_webview.dart';
 
-void webViewTests() {
+void main() {
   group("initalUrl", () {
     testWidgets('https://flutter.dev/', (tester) async {
       final controllerCompleter = Completer<WebViewController>();
