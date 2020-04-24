@@ -1,3 +1,7 @@
+## 0.11.1
+
+- shouldOverrideUrlLoading returns Future<ShouldOverrideUrlLoadingAction>.
+
 ## 0.11.0
 
 - Add ShouldOverrideUrlLoading
