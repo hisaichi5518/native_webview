@@ -16,13 +16,15 @@ class FlutterWebViewController(
         val initialFile = args["initialFile"] as? String
         val initialUrl = args["initialUrl"] as? String ?: "about:blank"
         val initialHeaders = args["initialHeaders"] as? Map<String, String>
-
+        val hasShouldOverrideUrlLoading = args["hasShouldOverrideUrlLoading"] as? Boolean ?: false
+        val options = WebViewOptions(
+            hasShouldOverrideUrlLoading = hasShouldOverrideUrlLoading
+        )
         channel.setMethodCallHandler(this)
 
-        webview = NativeWebView(channel, Locator.activity!!)
+        webview = NativeWebView(channel, Locator.activity!!, options)
         webview.load(initialData, initialFile, initialUrl, initialHeaders)
     }
-
     override fun getView(): View {
         return webview
     }

@@ -352,4 +352,331 @@ void webViewTests() {
       expect(progressValues.last, 100);
     });
   });
+
+  group("shouldOverrideUrlLoading", () {
+    testWidgets('cancel iOS', (tester) async {
+      if (!Platform.isIOS) {
+        return;
+      }
+      final controllerCompleter = Completer<WebViewController>();
+      final started = StreamController<String>();
+      final finished = StreamController<String>();
+      final List<ShouldOverrideUrlLoadingRequest> shouldOverrideUrlLoading = [];
+      final completer = Completer<String>();
+
+      await tester.pumpWidget(
+        Directionality(
+          textDirection: TextDirection.ltr,
+          child: WebView(
+            initialUrl: 'about:blank',
+            onWebViewCreated: (WebViewController controller) {
+              controllerCompleter.complete(controller);
+            },
+            onPageStarted: (controller, url) {
+              print("onPageStarted: ${url}");
+              started.add(url);
+            },
+            onPageFinished: (controller, url) async {
+              print("onPageFinished: ${url}");
+              finished.add(url);
+              switch (url) {
+                case "about:blank":
+                  await controller.loadUrl("https://flutter.dev/");
+                  break;
+                case "https://flutter.dev/":
+                  fail("not allow");
+                  break;
+              }
+            },
+            shouldOverrideUrlLoading: (controller, request) {
+              print("shouldOverrideUrlLoading: ${request.url}");
+              shouldOverrideUrlLoading.add(request);
+              completer.complete(request.url);
+              return ShouldOverrideUrlLoadingAction.cancel;
+            },
+          ),
+        ),
+      );
+
+      await completer.future;
+
+      expect(shouldOverrideUrlLoading.map((v) => v.url).toList(), [
+        "https://flutter.dev/",
+      ]);
+
+      expect(shouldOverrideUrlLoading.map((v) => v.method).toList(), [
+        "GET",
+      ]);
+
+      expect(shouldOverrideUrlLoading.map((v) => v.isForMainFrame).toList(), [
+        true,
+      ]);
+
+      if (Platform.isIOS) {
+        expect(shouldOverrideUrlLoading.map((v) => v.headers).toList(), [
+          {
+            "Accept": isNotNull,
+            "User-Agent": isNotNull,
+          },
+        ]);
+      } else {
+        expect(shouldOverrideUrlLoading.map((v) => v.headers).toList(), [
+          null,
+        ]);
+      }
+    });
+
+    testWidgets('allow iOS', (tester) async {
+      if (!Platform.isIOS) {
+        return;
+      }
+      final controllerCompleter = Completer<WebViewController>();
+      final started = StreamController<String>();
+      final finished = StreamController<String>();
+      final List<ShouldOverrideUrlLoadingRequest> shouldOverrideUrlLoading = [];
+      final completer = Completer<String>();
+
+      await tester.pumpWidget(
+        Directionality(
+          textDirection: TextDirection.ltr,
+          child: WebView(
+            initialUrl: 'about:blank',
+            onWebViewCreated: (WebViewController controller) {
+              controllerCompleter.complete(controller);
+            },
+            onPageStarted: (controller, url) {
+              print("onPageStarted: ${url}");
+              started.add(url);
+            },
+            onPageFinished: (controller, url) async {
+              print("onPageFinished: ${url}");
+              finished.add(url);
+              switch (url) {
+                case "about:blank":
+                  await controller.loadUrl("https://flutter.dev/");
+                  break;
+                case "https://flutter.dev/":
+                  completer.complete(url);
+                  await finished.close();
+                  break;
+              }
+            },
+            shouldOverrideUrlLoading: (controller, request) {
+              print("shouldOverrideUrlLoading: ${request.url}");
+              shouldOverrideUrlLoading.add(request);
+              return ShouldOverrideUrlLoadingAction.allow;
+            },
+          ),
+        ),
+      );
+
+      expect(
+          started.stream,
+          emitsInOrder([
+            "about:blank",
+            "https://flutter.dev/",
+          ]));
+
+      expect(
+          finished.stream,
+          emitsInOrder([
+            "about:blank",
+            "https://flutter.dev/",
+          ]));
+
+      await completer.future;
+
+      expect(shouldOverrideUrlLoading.map((v) => v.url).toList(), [
+        "https://flutter.dev/",
+        "https://www.youtube.com/embed/W1pNjxmNHNQ",
+        "https://www.youtube.com/embed/fq4N0hgOWzU?cc_lang_pref=en&cc_load_policy=1&enablejsapi=1",
+      ]);
+
+      expect(shouldOverrideUrlLoading.map((v) => v.method).toList(), [
+        "GET",
+        "GET",
+        "GET",
+      ]);
+
+      expect(shouldOverrideUrlLoading.map((v) => v.isForMainFrame).toList(), [
+        true,
+        false,
+        false,
+      ]);
+
+      expect(shouldOverrideUrlLoading.map((v) => v.headers).toList(), [
+        {
+          "Accept": isNotNull,
+          "User-Agent": isNotNull,
+        },
+        {
+          'Referer': 'https://flutter.dev/',
+          "Accept": isNotNull,
+          "User-Agent": isNotNull,
+        },
+        {
+          'Referer': 'https://flutter.dev/',
+          "Accept": isNotNull,
+          "User-Agent": isNotNull,
+        },
+      ]);
+    });
+
+    testWidgets('cancel Android', (tester) async {
+      if (!Platform.isAndroid) {
+        return;
+      }
+      final controllerCompleter = Completer<WebViewController>();
+      final started = StreamController<String>();
+      final finished = StreamController<String>();
+      final List<ShouldOverrideUrlLoadingRequest> shouldOverrideUrlLoading = [];
+      final completer = Completer<String>();
+
+      await tester.pumpWidget(
+        Directionality(
+          textDirection: TextDirection.ltr,
+          child: WebView(
+            initialUrl: 'about:blank',
+            onWebViewCreated: (WebViewController controller) {
+              controllerCompleter.complete(controller);
+            },
+            onPageStarted: (controller, url) {
+              print("onPageStarted: ${url}");
+              started.add(url);
+            },
+            onPageFinished: (controller, url) async {
+              print("onPageFinished: ${url}");
+              finished.add(url);
+              switch (url) {
+                case "about:blank":
+                  await controller.loadUrl("https://google.com");
+                  break;
+              }
+            },
+            shouldOverrideUrlLoading: (controller, request) {
+              print("shouldOverrideUrlLoading: ${request.url}");
+              shouldOverrideUrlLoading.add(request);
+              completer.complete(request.url);
+              return ShouldOverrideUrlLoadingAction.cancel;
+            },
+          ),
+        ),
+      );
+
+      expect(
+          started.stream,
+          emitsInOrder([
+            "https://google.com/",
+          ]));
+
+      expect(
+          finished.stream,
+          emitsInOrder([
+            "about:blank",
+            "https://www.google.com/",
+          ]));
+      await completer.future;
+
+      expect(shouldOverrideUrlLoading.map((v) => v.url).toList(), [
+        "https://www.google.com/",
+      ]);
+
+      expect(shouldOverrideUrlLoading.map((v) => v.method).toList(), [
+        "GET",
+      ]);
+
+      expect(shouldOverrideUrlLoading.map((v) => v.isForMainFrame).toList(), [
+        true,
+      ]);
+
+      if (Platform.isIOS) {
+        expect(shouldOverrideUrlLoading.map((v) => v.headers).toList(), [
+          {
+            "Accept": isNotNull,
+            "User-Agent": isNotNull,
+          },
+        ]);
+      } else {
+        expect(shouldOverrideUrlLoading.map((v) => v.headers).toList(), [
+          null,
+        ]);
+      }
+    });
+
+    testWidgets('allow Android', (tester) async {
+      if (!Platform.isAndroid) {
+        return;
+      }
+      final controllerCompleter = Completer<WebViewController>();
+      final started = StreamController<String>();
+      final finished = StreamController<String>();
+      final List<ShouldOverrideUrlLoadingRequest> shouldOverrideUrlLoading = [];
+      final completer = Completer<String>();
+
+      await tester.pumpWidget(
+        Directionality(
+          textDirection: TextDirection.ltr,
+          child: WebView(
+            initialUrl: 'about:blank',
+            onWebViewCreated: (WebViewController controller) {
+              controllerCompleter.complete(controller);
+            },
+            onPageStarted: (controller, url) {
+              print("onPageStarted: ${url}");
+              started.add(url);
+            },
+            onPageFinished: (controller, url) async {
+              print("onPageFinished: ${url}");
+              finished.add(url);
+              switch (url) {
+                case "about:blank":
+                  await controller.loadUrl("https://google.com");
+                  break;
+                case "https://www.google.com/":
+                  completer.complete(url);
+                  await finished.close();
+                  break;
+              }
+            },
+            shouldOverrideUrlLoading: (controller, request) {
+              print("shouldOverrideUrlLoading: ${request.url}");
+              shouldOverrideUrlLoading.add(request);
+              return ShouldOverrideUrlLoadingAction.allow;
+            },
+          ),
+        ),
+      );
+
+      expect(
+          started.stream,
+          emitsInOrder([
+            "https://google.com/",
+          ]));
+
+      expect(
+          finished.stream,
+          emitsInOrder([
+            "about:blank",
+            "https://www.google.com/",
+          ]));
+
+      await completer.future;
+
+      expect(shouldOverrideUrlLoading.map((v) => v.url).toList(), [
+        "https://www.google.com/",
+      ]);
+
+      expect(shouldOverrideUrlLoading.map((v) => v.method).toList(), [
+        "GET",
+      ]);
+
+      expect(shouldOverrideUrlLoading.map((v) => v.isForMainFrame).toList(), [
+        true,
+      ]);
+
+      expect(shouldOverrideUrlLoading.map((v) => v.headers).toList(), [
+        null,
+      ]);
+    });
+  });
 }

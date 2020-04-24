@@ -224,6 +224,37 @@ class JsPromptResponse {
   }
 }
 
+class ShouldOverrideUrlLoadingRequest {
+  final String url;
+
+  final String method;
+
+  final Map<String, String> headers;
+
+  final bool isForMainFrame;
+
+  ShouldOverrideUrlLoadingRequest({
+    this.url,
+    this.method,
+    this.headers,
+    this.isForMainFrame,
+  });
+}
+
+enum ShouldOverrideUrlLoadingAction {
+  allow,
+  cancel,
+}
+
+extension ShouldOverrideUrlLoadingActionExtension
+    on ShouldOverrideUrlLoadingAction {
+  Map<String, dynamic> toMap() {
+    return {
+      "action": this.index,
+    };
+  }
+}
+
 class WebView extends StatefulWidget {
   final String initialUrl;
   final String initialFile;
@@ -237,6 +268,10 @@ class WebView extends StatefulWidget {
   final JsConfirmResponse Function(WebViewController, String) onJsConfirm;
   final JsAlertResponse Function(WebViewController, String) onJsAlert;
   final JsPromptResponse Function(WebViewController, String, String) onJsPrompt;
+  final ShouldOverrideUrlLoadingAction Function(
+    WebViewController,
+    ShouldOverrideUrlLoadingRequest,
+  ) shouldOverrideUrlLoading;
 
   const WebView({
     Key key,
@@ -251,6 +286,7 @@ class WebView extends StatefulWidget {
     this.onJsConfirm,
     this.onJsAlert,
     this.onJsPrompt,
+    this.shouldOverrideUrlLoading,
   });
 
   @override
@@ -306,6 +342,7 @@ class _CreationParams {
       "initialFile": widget.initialFile,
       "initialHeaders": widget.initialHeaders,
       "initialData": widget.initialData?.toMap(),
+      "hasShouldOverrideUrlLoading": widget.shouldOverrideUrlLoading != null,
     };
   }
 }
