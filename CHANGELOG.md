@@ -1,3 +1,7 @@
+## 0.11.0
+
+- Add ShouldOverrideUrlLoading
+
 ## 0.10.0
 
 - Rename to com.hisaichi5518
