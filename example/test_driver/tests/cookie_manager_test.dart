@@ -5,7 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:native_webview/native_webview.dart';
 
-void cookieManagerTests() {
+void main() {
   setUp(() async {
     await CookieManager.instance().deleteAllCookies();
   });
