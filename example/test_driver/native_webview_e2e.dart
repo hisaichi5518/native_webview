@@ -1,14 +1,23 @@
 import 'package:e2e/e2e.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'tests/cookieManagerTests.dart';
-import 'tests/webViewControllerTests.dart';
-import 'tests/webViewTests.dart';
+import "tests/webview_page_callback_android_test.dart" as webview_page_callback_android_test;
+import "tests/webview_should_override_url_loading_ios_test.dart" as webview_should_override_url_loading_ios_test;
+import "tests/webview_controller_test.dart" as webview_controller_test;
+import "tests/webview_should_override_url_loading_android_test.dart" as webview_should_override_url_loading_android_test;
+import "tests/webview_page_callback_ios_test.dart" as webview_page_callback_ios_test;
+import "tests/cookie_manager_test.dart" as cookie_manager_test;
+import "tests/webview_test.dart" as webview_test;
+
 
 void main() {
   E2EWidgetsFlutterBinding.ensureInitialized();
+  group("webview_page_callback_android_test", webview_page_callback_android_test.main);
+  group("webview_should_override_url_loading_ios_test", webview_should_override_url_loading_ios_test.main);
+  group("webview_controller_test", webview_controller_test.main);
+  group("webview_should_override_url_loading_android_test", webview_should_override_url_loading_android_test.main);
+  group("webview_page_callback_ios_test", webview_page_callback_ios_test.main);
+  group("cookie_manager_test", cookie_manager_test.main);
+  group("webview_test", webview_test.main);
 
-  group("WebView", webViewTests);
-  group("WebViewController", webViewControllerTests);
-  group("CookieManager", cookieManagerTests);
 }

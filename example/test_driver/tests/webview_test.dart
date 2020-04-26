@@ -1,682 +1,263 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:native_webview/native_webview.dart';
 
+import '../utils.dart';
+
 void main() {
   group("initalUrl", () {
-    testWidgets('https://flutter.dev/', (tester) async {
-      final controllerCompleter = Completer<WebViewController>();
-
+    testWebView('https://flutter.dev/', (tester, context) async {
       await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: WebView(
-            initialUrl: 'https://flutter.dev/',
-            onWebViewCreated: (WebViewController controller) {
-              controllerCompleter.complete(controller);
-            },
-          ),
+        WebView(
+          initialUrl: 'https://flutter.dev/',
+          onWebViewCreated: context.onWebViewCreated,
         ),
       );
-      final controller = await controllerCompleter.future;
+      final controller = await context.webviewController.future;
       final currentUrl = await controller.currentUrl();
       expect(currentUrl, 'https://flutter.dev/');
+      context.complete();
     });
 
-    testWidgets('about:blank', (tester) async {
-      final controllerCompleter = Completer<WebViewController>();
-
+    testWebView('about:blank', (tester, context) async {
       await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: WebView(
-            initialUrl: 'about:blank',
-            onWebViewCreated: (WebViewController controller) {
-              controllerCompleter.complete(controller);
-            },
-          ),
+        WebView(
+          initialUrl: 'about:blank',
+          onWebViewCreated: context.onWebViewCreated,
         ),
       );
-      final controller = await controllerCompleter.future;
+      final controller = await context.webviewController.future;
       final currentUrl = await controller.currentUrl();
       expect(currentUrl, 'about:blank');
+      context.complete();
     });
 
-    testWidgets('with headers', (WidgetTester tester) async {
-      final controllerCompleter = Completer<WebViewController>();
-      final finishedCompleter = Completer<String>();
+    testWebView('with headers', (tester, context) async {
       final headers = <String, String>{'test_header': 'flutter_test_header'};
       await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: WebView(
-            initialUrl: 'https://flutter-header-echo.herokuapp.com/',
-            initialHeaders: headers,
-            onWebViewCreated: (WebViewController controller) {
-              controllerCompleter.complete(controller);
-            },
-            onPageFinished: (controller, url) {
-              finishedCompleter.complete(url);
-            },
-          ),
+        WebView(
+          initialUrl: 'https://flutter-header-echo.herokuapp.com/',
+          initialHeaders: headers,
+          onWebViewCreated: context.onWebViewCreated,
+          onPageFinished: context.onPageFinished,
         ),
       );
-      final controller = await controllerCompleter.future;
+      final controller = await context.webviewController.future;
       final currentUrl = await controller.currentUrl();
       expect(currentUrl, 'https://flutter-header-echo.herokuapp.com/');
 
-      await finishedCompleter.future;
-
-      final content = await controller.evaluateJavascript(
-        '(() => document.documentElement.innerText)()',
-      );
-      expect(content.contains('flutter_test_header'), isTrue);
+      context.pageFinished.stream.listen(onData([
+        (event) async {
+          final content = await controller.evaluateJavascript(
+            '(() => document.documentElement.innerText)()',
+          );
+          expect(content.contains('flutter_test_header'), isTrue);
+          context.complete();
+        },
+      ]));
     });
   });
 
   group("initalData", () {
-    testWidgets('with baseUrl', (tester) async {
-      final controllerCompleter = Completer<WebViewController>();
-      final finishedCompleter = Completer<String>();
-
+    testWebView('with baseUrl', (tester, context) async {
       final baseUrl = "https://flutter.dev/";
 
       await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: WebView(
-            initialData: WebViewData(
-              '<html><body>yoshitaka-yuriko</body></html>',
-              baseUrl: baseUrl,
-            ),
-            onWebViewCreated: (WebViewController controller) {
-              controllerCompleter.complete(controller);
-            },
-            onPageFinished: (controller, url) {
-              finishedCompleter.complete(url);
-            },
+        WebView(
+          initialData: WebViewData(
+            '<html><body>yoshitaka-yuriko</body></html>',
+            baseUrl: baseUrl,
           ),
+          onWebViewCreated: context.onWebViewCreated,
+          onPageFinished: context.onPageFinished,
         ),
       );
-      final controller = await controllerCompleter.future;
-      final url = await finishedCompleter.future;
-      expect(url, baseUrl);
+      final controller = await context.webviewController.future;
 
-      final content = await controller.evaluateJavascript(
-        '(() => document.documentElement.innerText)()',
-      );
-      expect(content, "yoshitaka-yuriko");
+      context.pageFinished.stream.listen(onData([
+        (event) async {
+          expect(event, baseUrl);
 
-      final currentUrl = await controller.currentUrl();
-      if (Platform.isIOS) {
-        expect(currentUrl, baseUrl);
-      } else if (Platform.isAndroid) {
-        expect(currentUrl, "about:blank");
-      }
+          final content = await controller.evaluateJavascript(
+            '(() => document.documentElement.innerText)()',
+          );
+          expect(content, "yoshitaka-yuriko");
+
+          final currentUrl = await controller.currentUrl();
+          if (Platform.isIOS) {
+            expect(currentUrl, baseUrl);
+          } else if (Platform.isAndroid) {
+            expect(currentUrl, "about:blank");
+          }
+          context.complete();
+        }
+      ]));
     });
-    testWidgets('without baseUrl', (tester) async {
-      final controllerCompleter = Completer<WebViewController>();
-      final finishedCompleter = Completer<String>();
 
+    testWebView('without baseUrl', (tester, context) async {
       await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: WebView(
-            initialData: WebViewData(
-              '<html><body>yoshitaka-yuriko</body></html>',
-            ),
-            onWebViewCreated: (WebViewController controller) {
-              controllerCompleter.complete(controller);
-            },
-            onPageFinished: (controller, url) {
-              finishedCompleter.complete(url);
-            },
+        WebView(
+          initialData: WebViewData(
+            '<html><body>yoshitaka-yuriko</body></html>',
           ),
+          onWebViewCreated: context.onWebViewCreated,
+          onPageFinished: context.onPageFinished,
         ),
       );
-      final controller = await controllerCompleter.future;
+      final controller = await context.webviewController.future;
 
-      await finishedCompleter.future;
+      context.pageFinished.stream.listen(onData([
+        (event) async {
+          final content = await controller.evaluateJavascript(
+            '(() => document.documentElement.innerText)()',
+          );
+          expect(content, "yoshitaka-yuriko");
+          final currentUrl = await controller.currentUrl();
+          expect(currentUrl, "about:blank");
 
-      final content = await controller.evaluateJavascript(
-        '(() => document.documentElement.innerText)()',
-      );
-      expect(content, "yoshitaka-yuriko");
-
-      final currentUrl = await controller.currentUrl();
-      expect(currentUrl, "about:blank");
-    }, skip: Platform.isAndroid);
+          context.complete();
+        },
+      ]));
+    });
   });
 
   group("initalFile", () {
-    testWidgets('from assets', (tester) async {
-      final controllerCompleter = Completer<WebViewController>();
-      final finishedCompleter = Completer<String>();
-
+    testWebView('from assets', (tester, context) async {
       await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: WebView(
-            initialFile: "test_assets/initial_file.html",
-            onWebViewCreated: (WebViewController controller) {
-              controllerCompleter.complete(controller);
-            },
-            onPageFinished: (controller, url) {
-              finishedCompleter.complete(url);
-            },
-          ),
+        WebView(
+          initialFile: "test_assets/initial_file.html",
+          onWebViewCreated: context.onWebViewCreated,
+          onPageFinished: context.onPageFinished,
         ),
       );
-      final controller = await controllerCompleter.future;
+      final controller = await context.webviewController.future;
 
-      final url = await finishedCompleter.future;
-      final currentUrl = await controller.currentUrl();
-      expect(currentUrl, url);
+      context.pageFinished.stream.listen(onData([
+        (event) async {
+          final currentUrl = await controller.currentUrl();
+          expect(event, currentUrl);
 
-      final content = await controller.evaluateJavascript(
-        '(() => document.documentElement.innerText)()',
-      );
-      expect(content, "yoshitaka-yuriko");
+          final content = await controller.evaluateJavascript(
+            '(() => document.documentElement.innerText)()',
+          );
+          expect(content, "yoshitaka-yuriko");
+
+          context.complete();
+        },
+      ]));
     });
   });
 
   group("onJsConfirm", () {
-    testWidgets("handled", (tester) async {
-      final controllerCompleter = Completer<WebViewController>();
-      final finishedCompleter = Completer<String>();
-
+    testWebView("handled", (tester, context) async {
+      var count = 0;
       await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: WebView(
-            initialData: WebViewData(
-              '<html><body><script>window.confirm("confirm")</script></body></html>',
-            ),
-            onWebViewCreated: (controller) {
-              controllerCompleter.complete(controller);
-            },
-            onJsConfirm: (controller, message) {
-              return JsConfirmResponse.handled(JsConfirmResponseAction.cancel);
-            },
-            onPageFinished: (controller, url) {
-              finishedCompleter.complete(url);
-            },
+        WebView(
+          initialData: WebViewData(
+            '<html><body><script>window.confirm("confirm")</script></body></html>',
           ),
+          onJsConfirm: (controller, message) {
+            count++;
+            return JsConfirmResponse.handled(JsConfirmResponseAction.cancel);
+          },
+          onWebViewCreated: context.onWebViewCreated,
+          onPageFinished: context.onPageFinished,
         ),
       );
-      await controllerCompleter.future;
-      await finishedCompleter.future;
+      context.pageFinished.stream.listen(onData([
+        (event) async {
+          Future.delayed(Duration(seconds: 5), () {
+            expect(count, 1);
+            context.complete();
+          });
+        },
+      ]));
     });
   });
 
   group("onJsAlert", () {
-    testWidgets("handled", (tester) async {
-      final controllerCompleter = Completer<WebViewController>();
-      final finishedCompleter = Completer<String>();
+    testWebView("handled", (tester, context) async {
+      var count = 0;
 
       await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: WebView(
-            initialData: WebViewData(
-              '<html><body><script>window.alert("alert")</script></body></html>',
-            ),
-            onWebViewCreated: (controller) {
-              controllerCompleter.complete(controller);
-            },
-            onJsAlert: (controller, message) {
-              return JsAlertResponse.handled();
-            },
-            onPageFinished: (controller, url) {
-              finishedCompleter.complete(url);
-            },
+        WebView(
+          initialData: WebViewData(
+            '<html><body><script>window.alert("alert")</script></body></html>',
           ),
+          onJsAlert: (controller, message) {
+            count++;
+            return JsAlertResponse.handled();
+          },
+          onWebViewCreated: context.onWebViewCreated,
+          onPageFinished: context.onPageFinished,
         ),
       );
-      await controllerCompleter.future;
-      await finishedCompleter.future;
+      context.pageFinished.stream.listen(onData([
+        (event) async {
+          Future.delayed(Duration(seconds: 5), () {
+            expect(count, 1);
+            context.complete();
+          });
+        },
+      ]));
     });
   });
 
   group("onJsPrompt", () {
-    testWidgets("handled", (tester) async {
-      final controllerCompleter = Completer<WebViewController>();
-      final finishedCompleter = Completer<String>();
+    testWebView("handled", (tester, context) async {
+      var count = 0;
 
       await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: WebView(
-            initialData: WebViewData(
-              '<html><body><script>window.prompt("prompt", "text")</script></body></html>',
-            ),
-            onWebViewCreated: (controller) {
-              controllerCompleter.complete(controller);
-            },
-            onJsPrompt: (controller, message, defaultText) {
-              return JsPromptResponse.handled(
-                JsPromptResponseAction.ok,
-                "value",
-              );
-            },
-            onPageFinished: (controller, url) {
-              finishedCompleter.complete(url);
-            },
+        WebView(
+          initialData: WebViewData(
+            '<html><body><script>window.prompt("prompt", "text")</script></body></html>',
           ),
+          onJsPrompt: (controller, message, defaultText) {
+            count++;
+            return JsPromptResponse.handled(
+              JsPromptResponseAction.ok,
+              "value",
+            );
+          },
+          onWebViewCreated: context.onWebViewCreated,
+          onPageFinished: context.onPageFinished,
         ),
       );
-      await controllerCompleter.future;
-      await finishedCompleter.future;
-    });
-  });
-
-  group("onPageStarted", () {
-    testWidgets('wait for page started', (tester) async {
-      final controllerCompleter = Completer<WebViewController>();
-      final finishedCompleter = Completer<String>();
-
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: WebView(
-            initialUrl: 'https://flutter.dev/',
-            onWebViewCreated: (WebViewController controller) {
-              controllerCompleter.complete(controller);
-            },
-            onPageStarted: (controller, url) {
-              finishedCompleter.complete(url);
-            },
-          ),
-        ),
-      );
-
-      final url = await finishedCompleter.future;
-      expect(url, "https://flutter.dev/");
-    });
-  });
-
-  group("onPageFinished", () {
-    testWidgets('wait for page finished', (tester) async {
-      final controllerCompleter = Completer<WebViewController>();
-      final finishedCompleter = Completer<String>();
-
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: WebView(
-            initialUrl: 'https://flutter.dev/',
-            onWebViewCreated: (WebViewController controller) {
-              controllerCompleter.complete(controller);
-            },
-            onPageFinished: (controller, url) {
-              finishedCompleter.complete(url);
-            },
-          ),
-        ),
-      );
-
-      final url = await finishedCompleter.future;
-      expect(url, "https://flutter.dev/");
+      context.pageFinished.stream.listen(onData([
+        (event) async {
+          Future.delayed(Duration(seconds: 5), () {
+            expect(count, 1);
+            context.complete();
+          });
+        },
+      ]));
     });
   });
 
   group("onProgressChanged", () {
-    testWidgets('wait for page finished', (tester) async {
-      final controllerCompleter = Completer<WebViewController>();
-      final finishedCompleter = Completer<String>();
-
+    testWebView('wait for page finished', (tester, context) async {
       List<int> progressValues = [];
       await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: WebView(
-            initialUrl: 'https://flutter.dev/',
-            onWebViewCreated: (WebViewController controller) {
-              controllerCompleter.complete(controller);
-            },
-            onProgressChanged: (controller, progress) {
-              progressValues.add(progress);
-            },
-            onPageFinished: (controller, url) {
-              finishedCompleter.complete(url);
-            },
-          ),
-        ),
-      );
-
-      final url = await finishedCompleter.future;
-      expect(url, "https://flutter.dev/");
-      expect(progressValues.last, 100);
-    });
-  });
-
-  group("shouldOverrideUrlLoading", () {
-    testWidgets('cancel iOS', (tester) async {
-      if (!Platform.isIOS) {
-        return;
-      }
-      final controllerCompleter = Completer<WebViewController>();
-      final started = StreamController<String>();
-      final finished = StreamController<String>();
-      final List<ShouldOverrideUrlLoadingRequest> shouldOverrideUrlLoading = [];
-      final completer = Completer<String>();
-
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: WebView(
-            initialUrl: 'about:blank',
-            onWebViewCreated: (WebViewController controller) {
-              controllerCompleter.complete(controller);
-            },
-            onPageStarted: (controller, url) {
-              print("onPageStarted: ${url}");
-              started.add(url);
-            },
-            onPageFinished: (controller, url) async {
-              print("onPageFinished: ${url}");
-              finished.add(url);
-              switch (url) {
-                case "about:blank":
-                  await controller.loadUrl("https://flutter.dev/");
-                  break;
-                case "https://flutter.dev/":
-                  fail("not allow");
-                  break;
-              }
-            },
-            shouldOverrideUrlLoading: (controller, request) async {
-              print("shouldOverrideUrlLoading: ${request.url}");
-              shouldOverrideUrlLoading.add(request);
-              completer.complete(request.url);
-              return ShouldOverrideUrlLoadingAction.cancel;
-            },
-          ),
-        ),
-      );
-
-      await completer.future;
-
-      expect(shouldOverrideUrlLoading.map((v) => v.url).toList(), [
-        "https://flutter.dev/",
-      ]);
-
-      expect(shouldOverrideUrlLoading.map((v) => v.method).toList(), [
-        "GET",
-      ]);
-
-      expect(shouldOverrideUrlLoading.map((v) => v.isForMainFrame).toList(), [
-        true,
-      ]);
-
-      if (Platform.isIOS) {
-        expect(shouldOverrideUrlLoading.map((v) => v.headers).toList(), [
-          {
-            "Accept": isNotNull,
-            "User-Agent": isNotNull,
+        WebView(
+          initialUrl: 'https://flutter.dev/',
+          onProgressChanged: (controller, progress) {
+            progressValues.add(progress);
           },
-        ]);
-      } else {
-        expect(shouldOverrideUrlLoading.map((v) => v.headers).toList(), [
-          null,
-        ]);
-      }
-    });
-
-    testWidgets('allow iOS', (tester) async {
-      if (!Platform.isIOS) {
-        return;
-      }
-      final controllerCompleter = Completer<WebViewController>();
-      final started = StreamController<String>();
-      final finished = StreamController<String>();
-      final List<ShouldOverrideUrlLoadingRequest> shouldOverrideUrlLoading = [];
-      final completer = Completer<String>();
-
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: WebView(
-            initialUrl: 'about:blank',
-            onWebViewCreated: (WebViewController controller) {
-              controllerCompleter.complete(controller);
-            },
-            onPageStarted: (controller, url) {
-              print("onPageStarted: ${url}");
-              started.add(url);
-            },
-            onPageFinished: (controller, url) async {
-              print("onPageFinished: ${url}");
-              finished.add(url);
-              switch (url) {
-                case "about:blank":
-                  await controller.loadUrl("https://flutter.dev/");
-                  break;
-                case "https://flutter.dev/":
-                  completer.complete(url);
-                  await finished.close();
-                  break;
-              }
-            },
-            shouldOverrideUrlLoading: (controller, request) async {
-              print("shouldOverrideUrlLoading: ${request.url}");
-              shouldOverrideUrlLoading.add(request);
-              return ShouldOverrideUrlLoadingAction.allow;
-            },
-          ),
+          onWebViewCreated: context.onWebViewCreated,
+          onPageFinished: context.onPageFinished,
         ),
       );
 
-      expect(
-          started.stream,
-          emitsInOrder([
-            "about:blank",
-            "https://flutter.dev/",
-          ]));
-
-      expect(
-          finished.stream,
-          emitsInOrder([
-            "about:blank",
-            "https://flutter.dev/",
-          ]));
-
-      await completer.future;
-
-      expect(shouldOverrideUrlLoading.map((v) => v.url).toList(), [
-        "https://flutter.dev/",
-        "https://www.youtube.com/embed/W1pNjxmNHNQ",
-        "https://www.youtube.com/embed/fq4N0hgOWzU?cc_lang_pref=en&cc_load_policy=1&enablejsapi=1",
-      ]);
-
-      expect(shouldOverrideUrlLoading.map((v) => v.method).toList(), [
-        "GET",
-        "GET",
-        "GET",
-      ]);
-
-      expect(shouldOverrideUrlLoading.map((v) => v.isForMainFrame).toList(), [
-        true,
-        false,
-        false,
-      ]);
-
-      expect(shouldOverrideUrlLoading.map((v) => v.headers).toList(), [
-        {
-          "Accept": isNotNull,
-          "User-Agent": isNotNull,
+      context.pageFinished.stream.listen(onData([
+        (event) async {
+          Future.delayed(Duration(seconds: 5), () {
+            expect(progressValues.last, 100);
+            context.complete();
+          });
         },
-        {
-          'Referer': 'https://flutter.dev/',
-          "Accept": isNotNull,
-          "User-Agent": isNotNull,
-        },
-        {
-          'Referer': 'https://flutter.dev/',
-          "Accept": isNotNull,
-          "User-Agent": isNotNull,
-        },
-      ]);
-    });
-
-    testWidgets('cancel Android', (tester) async {
-      if (!Platform.isAndroid) {
-        return;
-      }
-      final controllerCompleter = Completer<WebViewController>();
-      final started = StreamController<String>();
-      final finished = StreamController<String>();
-      final List<ShouldOverrideUrlLoadingRequest> shouldOverrideUrlLoading = [];
-      final completer = Completer<String>();
-
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: WebView(
-            initialUrl: 'about:blank',
-            onWebViewCreated: (WebViewController controller) {
-              controllerCompleter.complete(controller);
-            },
-            onPageStarted: (controller, url) {
-              print("onPageStarted: ${url}");
-              started.add(url);
-            },
-            onPageFinished: (controller, url) async {
-              print("onPageFinished: ${url}");
-              finished.add(url);
-              switch (url) {
-                case "about:blank":
-                  await controller.loadUrl("https://google.com");
-                  break;
-              }
-            },
-            shouldOverrideUrlLoading: (controller, request) async {
-              print("shouldOverrideUrlLoading: ${request.url}");
-              shouldOverrideUrlLoading.add(request);
-              completer.complete(request.url);
-              return ShouldOverrideUrlLoadingAction.cancel;
-            },
-          ),
-        ),
-      );
-
-      expect(
-          started.stream,
-          emitsInOrder([
-            "https://google.com/",
-          ]));
-
-      expect(
-          finished.stream,
-          emitsInOrder([
-            "about:blank",
-            "https://www.google.com/",
-          ]));
-      await completer.future;
-
-      expect(shouldOverrideUrlLoading.map((v) => v.url).toList(), [
-        "https://www.google.com/",
-      ]);
-
-      expect(shouldOverrideUrlLoading.map((v) => v.method).toList(), [
-        "GET",
-      ]);
-
-      expect(shouldOverrideUrlLoading.map((v) => v.isForMainFrame).toList(), [
-        true,
-      ]);
-
-      if (Platform.isIOS) {
-        expect(shouldOverrideUrlLoading.map((v) => v.headers).toList(), [
-          {
-            "Accept": isNotNull,
-            "User-Agent": isNotNull,
-          },
-        ]);
-      } else {
-        expect(shouldOverrideUrlLoading.map((v) => v.headers).toList(), [
-          null,
-        ]);
-      }
-    });
-
-    testWidgets('allow Android', (tester) async {
-      if (!Platform.isAndroid) {
-        return;
-      }
-      final controllerCompleter = Completer<WebViewController>();
-      final started = StreamController<String>();
-      final finished = StreamController<String>();
-      final List<ShouldOverrideUrlLoadingRequest> shouldOverrideUrlLoading = [];
-      final completer = Completer<String>();
-
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: WebView(
-            initialUrl: 'about:blank',
-            onWebViewCreated: (WebViewController controller) {
-              controllerCompleter.complete(controller);
-            },
-            onPageStarted: (controller, url) {
-              print("onPageStarted: ${url}");
-              started.add(url);
-            },
-            onPageFinished: (controller, url) async {
-              print("onPageFinished: ${url}");
-              finished.add(url);
-              switch (url) {
-                case "about:blank":
-                  await controller.loadUrl("https://google.com");
-                  break;
-                case "https://www.google.com/":
-                  completer.complete(url);
-                  await finished.close();
-                  break;
-              }
-            },
-            shouldOverrideUrlLoading: (controller, request) async {
-              print("shouldOverrideUrlLoading: ${request.url}");
-              shouldOverrideUrlLoading.add(request);
-              return ShouldOverrideUrlLoadingAction.allow;
-            },
-          ),
-        ),
-      );
-
-      expect(
-          started.stream,
-          emitsInOrder([
-            "https://google.com/",
-          ]));
-
-      expect(
-          finished.stream,
-          emitsInOrder([
-            "about:blank",
-            "https://www.google.com/",
-          ]));
-
-      await completer.future;
-
-      expect(shouldOverrideUrlLoading.map((v) => v.url).toList(), [
-        "https://www.google.com/",
-      ]);
-
-      expect(shouldOverrideUrlLoading.map((v) => v.method).toList(), [
-        "GET",
-      ]);
-
-      expect(shouldOverrideUrlLoading.map((v) => v.isForMainFrame).toList(), [
-        true,
-      ]);
-
-      expect(shouldOverrideUrlLoading.map((v) => v.headers).toList(), [
-        null,
-      ]);
+      ]));
     });
   });
 }

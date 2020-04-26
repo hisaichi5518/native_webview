@@ -1,9 +1,9 @@
-import 'dart:async';
 import 'dart:io';
 
-import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:native_webview/native_webview.dart';
+
+import '../utils.dart';
 
 void main() {
   setUp(() async {
@@ -11,49 +11,37 @@ void main() {
   });
 
   group("getCookies", () {
-    testWidgets('no name', (tester) async {
-      final controllerCompleter = Completer<WebViewController>();
-      final finished = Completer<String>();
+    testWebView('no name', (tester, context) async {
       await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: WebView(
-            initialUrl: 'https://flutter.dev/',
-            onWebViewCreated: (WebViewController controller) {
-              controllerCompleter.complete(controller);
-            },
-            onPageFinished: (controller, url) {
-              finished.complete(url);
-            },
-          ),
+        WebView(
+          initialUrl: 'https://flutter.dev/',
+          onWebViewCreated: context.onWebViewCreated,
+          onPageFinished: context.onPageFinished,
         ),
       );
-      final currentUrl = await finished.future;
+      final controller = await context.webviewController.future;
+      final currentUrl = await controller.currentUrl();
       final cookieManager = CookieManager.instance();
-      final cookies = await cookieManager.getCookies(url: currentUrl);
 
-      expect(cookies.length, greaterThanOrEqualTo(1));
+      context.pageFinished.stream.listen(onData([
+        (event) async {
+          final cookies = await cookieManager.getCookies(url: currentUrl);
+          expect(cookies.length, greaterThanOrEqualTo(1));
+          context.complete();
+        },
+      ]));
     });
 
-    testWidgets('has name', (tester) async {
-      final controllerCompleter = Completer<WebViewController>();
-      final finished = Completer<String>();
+    testWebView('has name', (tester, context) async {
       await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: WebView(
-            initialUrl: 'https://flutter.dev/',
-            onWebViewCreated: (WebViewController controller) {
-              controllerCompleter.complete(controller);
-            },
-            onPageFinished: (controller, url) {
-              finished.complete(url);
-            },
-          ),
+        WebView(
+          initialUrl: 'https://flutter.dev/',
+          onWebViewCreated: context.onWebViewCreated,
         ),
       );
 
-      final currentUrl = await finished.future;
+      final controller = await context.webviewController.future;
+      final currentUrl = await controller.currentUrl();
       final cookieManager = CookieManager.instance();
 
       final emptyCookies = await cookieManager.getCookies(
@@ -82,29 +70,20 @@ void main() {
       expect(cookies.length, 1);
       expect(cookies.first.name, "myCookie");
       expect(cookies.first.value, "myValue");
+      context.complete();
     });
   });
 
   group("setCookie", () {
-    testWidgets('expire cookie', (tester) async {
-      final controllerCompleter = Completer<WebViewController>();
-      final finished = Completer<String>();
+    testWebView('expire cookie', (tester, context) async {
       await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: WebView(
-            initialUrl: 'https://flutter.dev/',
-            onWebViewCreated: (WebViewController controller) {
-              controllerCompleter.complete(controller);
-            },
-            onPageFinished: (controller, url) {
-              finished.complete(url);
-            },
-          ),
+        WebView(
+          initialUrl: 'https://flutter.dev/',
+          onWebViewCreated: context.onWebViewCreated,
         ),
       );
-
-      final currentUrl = await finished.future;
+      final controller = await context.webviewController.future;
+      final currentUrl = await controller.currentUrl();
       final cookieManager = CookieManager.instance();
       final cookies = (await cookieManager.getCookies(url: currentUrl))
           .where((e) => e.name == "myCookie");
@@ -135,27 +114,20 @@ void main() {
         );
         expect(cookies2.length, 0);
       }
+
+      context.complete();
     });
 
-    testWidgets('normal cookie', (tester) async {
-      final controllerCompleter = Completer<WebViewController>();
-      final finished = Completer<String>();
+    testWebView('normal cookie', (tester, context) async {
       await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: WebView(
-            initialUrl: 'https://flutter.dev/',
-            onWebViewCreated: (WebViewController controller) {
-              controllerCompleter.complete(controller);
-            },
-            onPageFinished: (controller, url) {
-              finished.complete(url);
-            },
-          ),
+        WebView(
+          initialUrl: 'https://flutter.dev/',
+          onWebViewCreated: context.onWebViewCreated,
         ),
       );
 
-      final currentUrl = await finished.future;
+      final controller = await context.webviewController.future;
+      final currentUrl = await controller.currentUrl();
       final cookieManager = CookieManager.instance();
       final emptyCookies = await cookieManager.getCookies(
         url: currentUrl,
@@ -177,27 +149,20 @@ void main() {
       expect(cookies.length, 1);
       expect(cookies.first.name, "myCookie");
       expect(cookies.first.value, "myValue");
+
+      context.complete();
     });
 
-    testWidgets('secure cookie', (tester) async {
-      final controllerCompleter = Completer<WebViewController>();
-      final finished = Completer<String>();
+    testWebView('secure cookie', (tester, context) async {
       await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: WebView(
-            initialUrl: 'https://flutter.dev/',
-            onWebViewCreated: (WebViewController controller) {
-              controllerCompleter.complete(controller);
-            },
-            onPageFinished: (controller, url) {
-              finished.complete(url);
-            },
-          ),
+        WebView(
+          initialUrl: 'https://flutter.dev/',
+          onWebViewCreated: context.onWebViewCreated,
         ),
       );
 
-      final currentUrl = await finished.future;
+      final controller = await context.webviewController.future;
+      final currentUrl = await controller.currentUrl();
       final cookieManager = CookieManager.instance();
       final emptyCookies = await cookieManager.getCookies(
         url: currentUrl,
@@ -219,28 +184,19 @@ void main() {
       expect(cookies.length, 1);
       expect(cookies.first.name, "myCookie");
       expect(cookies.first.value, "myValue");
+      context.complete();
     });
   });
 
-  testWidgets('deleteCookie', (tester) async {
-    final controllerCompleter = Completer<WebViewController>();
-    final finished = Completer<String>();
+  testWebView('deleteCookie', (tester, context) async {
     await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: WebView(
-          initialUrl: 'https://flutter.dev/',
-          onWebViewCreated: (WebViewController controller) {
-            controllerCompleter.complete(controller);
-          },
-          onPageFinished: (controller, url) {
-            finished.complete(url);
-          },
-        ),
+      WebView(
+        initialUrl: 'https://flutter.dev/',
+        onWebViewCreated: context.onWebViewCreated,
       ),
     );
-
-    final currentUrl = await finished.future;
+    final controller = await context.webviewController.future;
+    final currentUrl = await controller.currentUrl();
     final cookieManager = CookieManager.instance();
 
     await cookieManager.setCookie(
@@ -259,27 +215,19 @@ void main() {
       name: "myCookie",
     );
     expect(cookies.length, 0);
+    context.complete();
   });
 
-  testWidgets('deleteCookies', (tester) async {
-    final controllerCompleter = Completer<WebViewController>();
-    final finished = Completer<String>();
+  testWebView('deleteCookies', (tester, context) async {
     await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: WebView(
-          initialUrl: 'https://flutter.dev/',
-          onWebViewCreated: (WebViewController controller) {
-            controllerCompleter.complete(controller);
-          },
-          onPageFinished: (controller, url) {
-            finished.complete(url);
-          },
-        ),
+      WebView(
+        initialUrl: 'https://flutter.dev/',
+        onWebViewCreated: context.onWebViewCreated,
       ),
     );
 
-    final currentUrl = await finished.future;
+    final controller = await context.webviewController.future;
+    final currentUrl = await controller.currentUrl();
     final cookieManager = CookieManager.instance();
 
     await cookieManager.setCookie(
@@ -297,27 +245,20 @@ void main() {
       name: "myCookie",
     );
     expect(cookies.length, 0);
+
+    context.complete();
   });
 
-  testWidgets('deleteAllCookies', (tester) async {
-    final controllerCompleter = Completer<WebViewController>();
-    final finished = Completer<String>();
+  testWebView('deleteAllCookies', (tester, context) async {
     await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: WebView(
-          initialUrl: 'https://flutter.dev/',
-          onWebViewCreated: (WebViewController controller) {
-            controllerCompleter.complete(controller);
-          },
-          onPageFinished: (controller, url) {
-            finished.complete(url);
-          },
-        ),
+      WebView(
+        initialUrl: 'https://flutter.dev/',
+        onWebViewCreated: context.onWebViewCreated,
       ),
     );
 
-    final currentUrl = await finished.future;
+    final controller = await context.webviewController.future;
+    final currentUrl = await controller.currentUrl();
     final cookieManager = CookieManager.instance();
 
     await cookieManager.setCookie(
@@ -333,5 +274,6 @@ void main() {
       name: "myCookie",
     );
     expect(cookies.length, 0);
+    context.complete();
   });
 }
