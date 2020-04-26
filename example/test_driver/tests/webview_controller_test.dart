@@ -177,6 +177,7 @@ class Rectangle {
             await controller.evaluateJavascript('() => ');
             fail("syntax error did not occur.");
           } catch (error) {
+            // For Android, it's not an error.
             expect(error, isA<PlatformException>());
             expect(error.toString(),
                 contains("SyntaxError: Unexpected end of script"));
@@ -202,6 +203,7 @@ class Rectangle {
           try {
             await controller.evaluateJavascript('(() => function test() {})()');
           } catch (error) {
+            // For Android, it's not an error.
             expect(error, isA<PlatformException>());
             expect(
                 error.toString(),
