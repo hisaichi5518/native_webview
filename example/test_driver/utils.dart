@@ -97,7 +97,7 @@ void testWebView(
       context.dispose();
     },
     skip: skip,
-    timeout: test.Timeout(Duration(seconds: 30)),
+    timeout: test.Timeout(Duration(seconds: 120)),
   );
 }
 
