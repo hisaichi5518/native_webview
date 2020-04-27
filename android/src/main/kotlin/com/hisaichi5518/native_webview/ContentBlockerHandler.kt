@@ -13,7 +13,6 @@ import java.util.regex.Pattern
 
 
 class ContentBlocker(val trigger: ContentBlockerTrigger, val action: ContentBlockerAction) {
-
     companion object {
         fun fromMap(map: Map<String, Map<String?, Any?>>): ContentBlocker {
             val trigger = map["trigger"] as Map<String?, Any?>
@@ -25,7 +24,6 @@ class ContentBlocker(val trigger: ContentBlockerTrigger, val action: ContentBloc
             )
         }
     }
-
 }
 
 
