@@ -55,6 +55,7 @@ If you want to see other examples, see [example](./example) or see DartDoc.
 ## Known issues
 
 - The following is an issue with Flutter's PlatformView.
+  - [Sometimes the screen flickers when using WebView in the Android device](https://github.com/hisaichi5518/native_webview/issues/22)
   - WebView scroll bars appear above the content in the iOS simulator.
   - The app becomes inoperable when using window.prompt in the iOS simulator.
   - Sometimes Dropdown doesn't work in the iOS simulator.
