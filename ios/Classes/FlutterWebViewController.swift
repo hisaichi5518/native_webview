@@ -63,7 +63,6 @@ public class FlutterWebViewController: NSObject, FlutterPlatformView {
         let contentBlockers = args["contentBlockers"] as? [[String: [String : Any]]]
         if let contentBlockers = contentBlockers, contentBlockers.count > 0 {
             do {
-
                 let jsonData = try JSONSerialization.data(withJSONObject: contentBlockers, options: [])
                 let blockRules = String(data: jsonData, encoding: String.Encoding.utf8)
 
@@ -93,9 +92,6 @@ public class FlutterWebViewController: NSObject, FlutterPlatformView {
         }
 
         self.webview.configuration.userContentController.removeAllContentRuleLists()
-
-
-
 
         load(initialData, initialFile, initialURL, initialHeaders)
     }
