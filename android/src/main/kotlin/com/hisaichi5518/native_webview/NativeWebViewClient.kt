@@ -2,6 +2,7 @@ package com.hisaichi5518.native_webview
 
 import android.graphics.Bitmap
 import android.webkit.WebResourceRequest
+import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import io.flutter.Log
@@ -12,11 +13,27 @@ class NativeWebViewClient(private val channel: MethodChannel, private val option
         const val JAVASCRIPT_BRIDGE_NAME = "nativeWebView"
     }
 
+    private val contentBlockerHandler = ContentBlockerHandler(options.contentBlockers.map {
+        ContentBlocker.fromMap(it)
+    })
+
     private val javascript = """
         window.${JAVASCRIPT_BRIDGE_NAME}.callHandler = function() {
             window.${JAVASCRIPT_BRIDGE_NAME}._callHandler(arguments[0], JSON.stringify(Array.prototype.slice.call(arguments, 1)));
         };
         """.trimIndent()
+
+    override fun shouldInterceptRequest(view: WebView?, request: WebResourceRequest): WebResourceResponse? {
+        if (contentBlockerHandler.ruleList.isNotEmpty() && view != null) {
+            try {
+                return this.contentBlockerHandler.handleURL(view, request.url)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Log.e("NativeWebView", e.toString())
+            }
+        }
+        return null
+    }
 
     override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
         super.onPageStarted(view, url, favicon)

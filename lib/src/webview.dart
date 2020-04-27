@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:native_webview/src/content_blocker.dart';
 import 'package:native_webview/src/webview_controller.dart';
 
 ///Initial [data] as a content for an [WebViewData] instance, using [baseUrl] as the base URL for it.
@@ -272,6 +273,7 @@ class WebView extends StatefulWidget {
     WebViewController,
     ShouldOverrideUrlLoadingRequest,
   ) shouldOverrideUrlLoading;
+  final List<ContentBlocker> contentBlockers;
 
   const WebView({
     Key key,
@@ -287,6 +289,7 @@ class WebView extends StatefulWidget {
     this.onJsAlert,
     this.onJsPrompt,
     this.shouldOverrideUrlLoading,
+    this.contentBlockers,
   });
 
   @override
@@ -343,6 +346,8 @@ class _CreationParams {
       "initialHeaders": widget.initialHeaders,
       "initialData": widget.initialData?.toMap(),
       "hasShouldOverrideUrlLoading": widget.shouldOverrideUrlLoading != null,
+      "contentBlockers":
+          (widget.contentBlockers ?? []).map((v) => v.toMap()).toList(),
     };
   }
 }

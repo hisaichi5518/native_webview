@@ -60,6 +60,43 @@ public class FlutterWebViewController: NSObject, FlutterPlatformView {
 
         channel.setMethodCallHandler(handle)
 
+        let contentBlockers = args["contentBlockers"] as? [[String: [String : Any]]]
+        if let contentBlockers = contentBlockers, contentBlockers.count > 0 {
+            do {
+
+                let jsonData = try JSONSerialization.data(withJSONObject: contentBlockers, options: [])
+                let blockRules = String(data: jsonData, encoding: String.Encoding.utf8)
+
+                WKContentRuleListStore.default().compileContentRuleList(
+                    forIdentifier: "ContentBlockingRules",
+                    encodedContentRuleList: blockRules
+                ) { [weak self] (contentRuleList, error) in
+                    if let error = error {
+                        NSLog("\n\(error)")
+                        return
+                    }
+
+                    guard let strongSelf = self, let contentRuleList = contentRuleList else {
+                        NSLog("\ncontentRuleList is null")
+                        return
+                    }
+
+                    strongSelf.webview.configuration.userContentController.add(contentRuleList)
+
+                    // Perform the first load after contentRuleList has been updated.
+                    strongSelf.load(initialData, initialFile, initialURL, initialHeaders)
+                }
+                return
+            } catch {
+                NSLog("\n\(error)")
+            }
+        }
+
+        self.webview.configuration.userContentController.removeAllContentRuleLists()
+
+
+
+
         load(initialData, initialFile, initialURL, initialHeaders)
     }
 
