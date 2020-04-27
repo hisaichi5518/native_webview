@@ -17,8 +17,11 @@ class FlutterWebViewController(
         val initialUrl = args["initialUrl"] as? String ?: "about:blank"
         val initialHeaders = args["initialHeaders"] as? Map<String, String>
         val hasShouldOverrideUrlLoading = args["hasShouldOverrideUrlLoading"] as? Boolean ?: false
+        val contentBlockers = args["contentBlockers"] as? List<Map<String, Map<String?, Any?>>> ?: listOf()
+
         val options = WebViewOptions(
-            hasShouldOverrideUrlLoading = hasShouldOverrideUrlLoading
+            hasShouldOverrideUrlLoading = hasShouldOverrideUrlLoading,
+            contentBlockers = contentBlockers
         )
         channel.setMethodCallHandler(this)
 
