@@ -1,3 +1,7 @@
+## 0.12.0
+
+- Add ContentBlocker
+
 ## 0.11.1
 
 - shouldOverrideUrlLoading returns Future<ShouldOverrideUrlLoadingAction>.
