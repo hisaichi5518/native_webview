@@ -300,11 +300,13 @@ class ContentBlockerActionType {
 
   ///Hides elements of the page based on a CSS selector. A selector field contains the selector list. Any matching element has its display property set to none, which hides it.
   ///
-  ///**NOTE**: on Android, JavaScript must be enabled.
+  ///**NOTE**: cssDisplayNone is not supported on Android
   static const cssDisplayNone =
       ContentBlockerActionType._internal('css-display-none');
 
   ///Changes a URL from http to https. URLs with a specified (nondefault) port and links using other protocols are unaffected.
+  ///
+  ///**NOTE**: makeHttps is not supported on Android
   static const makeHttps = ContentBlockerActionType._internal('make-https');
 
   bool operator ==(value) => value == _value;
