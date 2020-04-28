@@ -16,8 +16,10 @@ flutter_drive_android_task:
   container:
     image: cirrusci/flutter:latest
     kvm: true
+    cpu: 4
+    memory: 16G
   env:
-    EMULATOR_API_LEVEL: 28
+    EMULATOR_API_LEVEL: 29
     ANDROID_ABI: "default;x86"
   fix_kvm_script: sudo chown cirrus:cirrus /dev/kvm
   update_emulator_script: sdkmanager --verbose --channel=0 "emulator"
@@ -28,5 +30,6 @@ flutter_drive_android_task:
     - ./scripts/android-wait-for-emulator.sh
   pub_cache:
     folder: ~/.pub-cache
-  devices_script: flutter devices
+  android_cache:
+    folder: ~/.android/build-cache/
   test_script: make test
