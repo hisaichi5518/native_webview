@@ -1,6 +1,6 @@
 flutter_analyze_task:
   container:
-    image: cirrusci/flutter:latest
+    image: cirrusci/flutter:stable
   pub_cache:
     folder: ~/.pub-cache
   pub_get_script: flutter pub get
@@ -14,7 +14,7 @@ flutter_drive_ios_task:
 
 flutter_drive_android_task:
   container:
-    image: cirrusci/flutter:latest
+    image: cirrusci/flutter:stable
     kvm: true
     cpu: 4
     memory: 16G
