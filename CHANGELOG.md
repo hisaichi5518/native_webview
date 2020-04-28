@@ -1,3 +1,9 @@
+## 0.13.0
+
+- Add goBack and goForward for Android
+- changed Android min sdk version
+- Chrome version >= 74.0.3729.185
+
 ## 0.12.0
 
 - Add ContentBlocker
