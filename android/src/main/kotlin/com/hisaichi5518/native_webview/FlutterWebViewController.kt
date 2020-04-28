@@ -61,6 +61,23 @@ class FlutterWebViewController(
                 webview.loadUrl(url, arguments["headers"] as? Map<String, String>)
                 result.success(true)
             }
+            "canGoBack" -> {
+                result.success(webview.canGoBack())
+            }
+            "goBack" -> {
+                webview.goBack()
+                result.success(true)
+            }
+            "canGoForward" -> {
+                result.success(webview.canGoForward())
+            }
+            "goForward" -> {
+                webview.goForward()
+                result.success(true)
+            }
+            else -> {
+                result.notImplemented()
+            }
         }
     }
 

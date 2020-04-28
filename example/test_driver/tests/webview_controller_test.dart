@@ -216,4 +216,77 @@ class Rectangle {
       ]));
     }, skip: Platform.isAndroid);
   });
+
+  group("goBack/goForward", () {
+    testWebView("can go back/forward(iOS)", (tester, context) async {
+      await tester.pumpWidget(
+        WebView(
+          initialUrl: 'about:blank',
+          onWebViewCreated: context.onWebViewCreated,
+          onPageStarted: context.onPageStarted,
+          onPageFinished: context.onPageFinished,
+        ),
+      );
+      final controller = await context.webviewController.future;
+
+      context.pageFinished.stream.listen(onData([
+        (event) async {
+          await controller.loadUrl("https://www.google.com/");
+          expect(await controller.canGoBack(), false);
+          expect(await controller.canGoForward(), false);
+        },
+        (event) async {
+          expect(await controller.canGoBack(), true);
+          expect(await controller.canGoForward(), false);
+          await controller.goBack();
+        },
+        (event) async {
+          expect(await controller.canGoBack(), false);
+          expect(await controller.canGoForward(), true);
+          await controller.goForward();
+        },
+        (event) async {
+          expect(await controller.canGoBack(), true);
+          expect(await controller.canGoForward(), false);
+          context.complete();
+        },
+      ]));
+    }, skip: !Platform.isIOS);
+
+    testWebView("can go back/forward(Android)", (tester, context) async {
+      await tester.pumpWidget(
+        WebView(
+          initialUrl: 'about:blank',
+          onWebViewCreated: context.onWebViewCreated,
+          onPageFinished: context.onPageFinished,
+        ),
+      );
+      final controller = await context.webviewController.future;
+
+      context.pageFinished.stream.listen(onData([
+        (event) async {
+          expect(await controller.canGoBack(), false);
+          expect(await controller.canGoForward(), false);
+          await controller.loadUrl("https://www.google.com/");
+        },
+        (event) async {
+          expect(await controller.canGoBack(), true);
+          expect(await controller.canGoForward(), false);
+          expect(event, "https://www.google.com/");
+          await controller.goBack();
+        },
+        (event) async {
+          expect(await controller.canGoBack(), false);
+          expect(await controller.canGoForward(), true);
+          await controller.goForward();
+        },
+        (event) async {
+          expect(await controller.canGoBack(), true);
+          expect(await controller.canGoForward(), false);
+          context.complete();
+        },
+      ]));
+    }, skip: !Platform.isAndroid);
+  });
+  ;
 }
