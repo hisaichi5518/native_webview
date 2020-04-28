@@ -36,6 +36,9 @@ void main() {
     ]));
     context.pageStarted.stream.listen(onData([
       (event) {
+        expect(event, "about:blank");
+      },
+      (event) {
         expect(event, "https://www.google.com/");
       },
     ]));
@@ -49,7 +52,7 @@ void main() {
       (event) {
         expect(event, "https://www.google.com/");
         expect(context.loadingRequestEvents.length, 1);
-        expect(context.pageStartedEvents.length, 1);
+        expect(context.pageStartedEvents.length, 2);
         context.complete();
       },
     ]));
@@ -87,7 +90,7 @@ void main() {
         );
 
         Future.delayed(Duration(seconds: 5), () {
-          expect(count, 2);
+          expect(count, 3);
           context.complete();
         });
       },
@@ -113,6 +116,9 @@ void main() {
 
     context.pageStarted.stream.listen(onData([
       (event) {
+        expect(event, "about:blank");
+      },
+      (event) {
         expect(event, "https://www.google.com/");
       },
     ]));
@@ -124,7 +130,7 @@ void main() {
       (event) {
         expect(event, "https://www.google.com/");
         expect(context.loadingRequestEvents.length, 0);
-        expect(context.pageStartedEvents.length, 1);
+        expect(context.pageStartedEvents.length, 2);
         context.complete();
       },
     ]));

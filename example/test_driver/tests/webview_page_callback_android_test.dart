@@ -26,11 +26,17 @@ void main() {
         ),
       );
 
+      context.pageStarted.stream.listen(onData([
+        (event) {
+          expect(event, "about:blank");
+        },
+      ]));
+
       context.pageFinished.stream.listen(onData([
         (event) {
           expect(event, "about:blank");
           expect(context.loadingRequestEvents.length, 0);
-          expect(context.pageStartedEvents.length, 0);
+          expect(context.pageStartedEvents.length, 1);
           context.complete();
         },
       ]));
@@ -65,38 +71,26 @@ void main() {
       ]));
     });
 
-    testWebView('https://google.com', (tester, context) async {
+    testWebView('ShouldOverrideLoadingUrl is not used.',
+        (tester, context) async {
       await tester.pumpWidget(
         WebView(
-          initialUrl: 'https://google.com',
+          initialUrl: 'https://flutter.dev/',
           onWebViewCreated: context.onWebViewCreated,
-          shouldOverrideUrlLoading: (_, request) async {
-            context.shouldOverrideUrlLoading(request);
-            return ShouldOverrideUrlLoadingAction.allow;
-          },
           onPageStarted: context.onPageStarted,
           onPageFinished: context.onPageFinished,
         ),
       );
 
-      context.loadingRequests.stream.listen(onData([
-        (event) {
-          expect(event.url, "https://www.google.com/");
-          expect(event.method, "GET");
-          expect(event.headers, null);
-          expect(event.isForMainFrame, true);
-        },
-      ]));
-
       context.pageStarted.stream.listen(onData([
         (event) {
-          expect(event, "https://google.com/");
+          expect(event, "https://flutter.dev/");
         },
       ]));
       context.pageFinished.stream.listen(onData([
         (event) {
-          expect(event, "https://www.google.com/");
-          expect(context.loadingRequestEvents.length, 1);
+          expect(event, "https://flutter.dev/");
+          expect(context.loadingRequestEvents.length, 0);
           expect(context.pageStartedEvents.length, 1);
 
           context.complete();
@@ -256,6 +250,9 @@ void main() {
 
     context.pageStarted.stream.listen(onData([
       (event) {
+        expect(event, "about:blank");
+      },
+      (event) {
         expect(event, "https://www.google.com/");
       },
     ]));
@@ -267,7 +264,7 @@ void main() {
       (event) {
         expect(event, "https://www.google.com/");
         expect(context.loadingRequestEvents.length, 0);
-        expect(context.pageStartedEvents.length, 1);
+        expect(context.pageStartedEvents.length, 2);
         context.complete();
       },
     ]));
@@ -293,6 +290,9 @@ void main() {
 
     context.pageStarted.stream.listen(onData([
       (event) {
+        expect(event, "about:blank");
+      },
+      (event) {
         expect(event, "https://www.google.com/");
       },
     ]));
@@ -308,7 +308,7 @@ void main() {
       (event) {
         expect(event, "https://www.google.com/");
         expect(context.loadingRequestEvents.length, 0);
-        expect(context.pageStartedEvents.length, 1);
+        expect(context.pageStartedEvents.length, 2);
 
         context.complete();
       }
@@ -342,6 +342,9 @@ void main() {
     ]));
     context.pageStarted.stream.listen(onData([
       (event) {
+        expect(event, "about:blank");
+      },
+      (event) {
         expect(event, "https://www.google.com/");
       },
     ]));
@@ -355,7 +358,7 @@ void main() {
       (event) {
         expect(event, "https://www.google.com/");
         expect(context.loadingRequestEvents.length, 1);
-        expect(context.pageStartedEvents.length, 1);
+        expect(context.pageStartedEvents.length, 2);
 
         context.complete();
       },
