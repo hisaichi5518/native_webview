@@ -1,6 +1,7 @@
 package com.hisaichi5518.native_webview
 
 import android.graphics.Bitmap
+import android.view.KeyEvent
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
@@ -105,4 +106,6 @@ class NativeWebViewClient(private val channel: MethodChannel, private val option
         // so if the request is not for the main frame, the navigation is allowed.
         return request.isForMainFrame
     }
+
+    override fun onUnhandledKeyEvent(view: WebView?, event: KeyEvent?) {}
 }

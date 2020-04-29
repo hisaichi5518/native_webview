@@ -1,7 +1,6 @@
 package com.hisaichi5518.native_webview
 
 import android.content.Context
-import android.view.View
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.StandardMessageCodec
@@ -15,6 +14,7 @@ class FlutterWebViewFactory(
         val channel = MethodChannel(messenger, "com.hisaichi5518/native_webview_$viewId")
 
         return FlutterWebViewController(
+            context,
             channel,
             args as Map<String, Any>
         )

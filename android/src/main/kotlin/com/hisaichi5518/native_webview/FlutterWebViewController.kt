@@ -1,46 +1,69 @@
 package com.hisaichi5518.native_webview
 
+import android.content.Context
+import android.hardware.display.DisplayManager
 import android.view.View
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
+import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.platform.PlatformView
 
 class FlutterWebViewController(
-    private val channel: MethodChannel,
-    args: Map<String, Any>
-) : PlatformView, MethodChannel.MethodCallHandler {
-    private val webview: InputAwareWebView
+    context: Context,
+    private val  methodChannel: MethodChannel,
+    params: Map<String, Any?>
+) : PlatformView, MethodCallHandler {
+    private val webview: NativeWebView
 
     init {
-        val initialData = args["initialData"] as? Map<String, String>
-        val initialFile = args["initialFile"] as? String
-        val initialUrl = args["initialUrl"] as? String ?: "about:blank"
-        val initialHeaders = args["initialHeaders"] as? Map<String, String>
-        val hasShouldOverrideUrlLoading = args["hasShouldOverrideUrlLoading"] as? Boolean ?: false
-        val contentBlockers = args["contentBlockers"] as? List<Map<String, Map<String?, Any?>>> ?: listOf()
+        val displayListenerProxy = DisplayListenerProxy()
+        val displayManager = Locator.activity!!.getSystemService(Context.DISPLAY_SERVICE) as DisplayManager
+        displayListenerProxy.onPreWebViewInitialization(displayManager)
+        displayListenerProxy.onPostWebViewInitialization(displayManager)
+
+        val initialData = params["initialData"] as? Map<String, String>
+        val initialFile = params["initialFile"] as? String
+        val initialUrl = params["initialUrl"] as? String ?: "about:blank"
+        val initialHeaders = params["initialHeaders"] as? Map<String, String>
+        val hasShouldOverrideUrlLoading = params["hasShouldOverrideUrlLoading"] as? Boolean ?: false
+        val contentBlockers = params["contentBlockers"] as? List<Map<String, Map<String?, Any?>>> ?: listOf()
 
         val options = WebViewOptions(
-            hasShouldOverrideUrlLoading = hasShouldOverrideUrlLoading,
-            contentBlockers = contentBlockers
+            hasShouldOverrideUrlLoading,
+            contentBlockers
         )
-        channel.setMethodCallHandler(this)
 
-        webview = NativeWebView(channel, Locator.activity!!, options)
+        methodChannel.setMethodCallHandler(this)
+        // The app crashes when pass `Locator.activity` to NativeWebView
+        // https://github.com/hisaichi5518/native_webview/issues/29
+        webview = NativeWebView(context, methodChannel, options)
         webview.load(initialData, initialFile, initialUrl, initialHeaders)
     }
+
     override fun getView(): View {
         return webview
     }
 
-    override fun dispose() {
-        channel.setMethodCallHandler(null)
+    override fun onInputConnectionUnlocked() {
+        webview.unlockInputConnection()
+    }
+
+    override fun onInputConnectionLocked() {
+        webview.lockInputConnection()
+    }
+
+    override fun onFlutterViewAttached(flutterView: View) {
+        webview.setContainerView(flutterView)
+    }
+
+    override fun onFlutterViewDetached() {
+        webview.setContainerView(null)
     }
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
             "evaluateJavascript" -> {
                 val javaScriptString = call.arguments as String
-
                 webview.post {
                     webview.evaluateJavascript(javaScriptString) {
                         result.success(it)
@@ -81,11 +104,9 @@ class FlutterWebViewController(
         }
     }
 
-    override fun onFlutterViewAttached(flutterView: View) {
-        webview.setContainerView(flutterView)
-    }
-
-    override fun onFlutterViewDetached() {
-        webview.setContainerView(null)
+    override fun dispose() {
+        methodChannel.setMethodCallHandler(null)
+        webview.dispose()
+        webview.destroy()
     }
 }

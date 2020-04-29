@@ -10,12 +10,6 @@ class InitialUrlScreen extends StatelessWidget {
       ),
       body: WebView(
         initialUrl: "https://flutter.dev",
-        contentBlockers: [
-          ContentBlocker(
-            action: ContentBlockerAction.block(),
-            trigger: ContentBlockerTrigger(urlFilter: ".*"),
-          ),
-        ],
       ),
     );
   }
