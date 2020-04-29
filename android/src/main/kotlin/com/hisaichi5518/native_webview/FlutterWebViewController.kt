@@ -3,6 +3,9 @@ package com.hisaichi5518.native_webview
 import android.content.Context
 import android.hardware.display.DisplayManager
 import android.view.View
+import android.webkit.WebChromeClient
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.platform.PlatformView
@@ -42,6 +45,16 @@ class FlutterWebViewController(
 
     override fun dispose() {
         channel.setMethodCallHandler(null)
+
+        webview.webChromeClient = WebChromeClient()
+        webview.webViewClient = object: WebViewClient() {
+            override fun onPageFinished(view: WebView?, url: String?) {
+                webview.dispose()
+                webview.destroy()
+                super.onPageFinished(view, url)
+            }
+        }
+        webview.loadUrl("about:blank")
     }
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
