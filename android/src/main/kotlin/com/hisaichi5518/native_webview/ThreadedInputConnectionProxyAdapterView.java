@@ -10,8 +10,6 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 
-import com.hisaichi5518.native_webview.InputAwareWebView;
-
 /**
  * A fake View only exposed to InputMethodManager.
  *
