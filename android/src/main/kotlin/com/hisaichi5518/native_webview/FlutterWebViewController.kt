@@ -81,6 +81,13 @@ class FlutterWebViewController(
         }
     }
 
+    override fun onInputConnectionLocked() {
+        webview.lockInputConnection()
+    }
+
+    override fun onInputConnectionUnlocked() {
+        webview.unlockInputConnection()
+    }
     override fun onFlutterViewAttached(flutterView: View) {
         webview.setContainerView(flutterView)
     }
