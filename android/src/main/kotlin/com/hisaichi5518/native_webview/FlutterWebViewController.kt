@@ -1,5 +1,7 @@
 package com.hisaichi5518.native_webview
 
+import android.content.Context
+import android.hardware.display.DisplayManager
 import android.view.View
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -12,6 +14,10 @@ class FlutterWebViewController(
     private val webview: InputAwareWebView
 
     init {
+        val displayListenerProxy = DisplayListenerProxy()
+        val displayManager = Locator.activity!!.getSystemService(Context.DISPLAY_SERVICE) as DisplayManager
+        displayListenerProxy.onPreWebViewInitialization(displayManager)
+
         val initialData = args["initialData"] as? Map<String, String>
         val initialFile = args["initialFile"] as? String
         val initialUrl = args["initialUrl"] as? String ?: "about:blank"
@@ -26,6 +32,8 @@ class FlutterWebViewController(
         channel.setMethodCallHandler(this)
 
         webview = NativeWebView(channel, Locator.activity!!, options)
+        displayListenerProxy.onPostWebViewInitialization(displayManager)
+
         webview.load(initialData, initialFile, initialUrl, initialHeaders)
     }
     override fun getView(): View {
