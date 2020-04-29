@@ -2,14 +2,17 @@ package com.hisaichi5518.native_webview
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.view.View
 import io.flutter.plugin.common.MethodChannel
 
-class NativeWebView(channel: MethodChannel, context: Context, options: WebViewOptions) : InputAwareWebView(context, null) {
+class NativeWebView(context: Context, channel: MethodChannel, options: WebViewOptions) : InputAwareWebView(context, null as View?) {
     init {
         webViewClient = NativeWebViewClient(channel, options)
         webChromeClient = NativeWebChromeClient(channel)
         @SuppressLint("SetJavaScriptEnabled")
         settings.javaScriptEnabled = true
+        settings.domStorageEnabled = true
+        settings.javaScriptCanOpenWindowsAutomatically = true
         addJavascriptInterface(JavascriptHandler(channel), NativeWebViewClient.JAVASCRIPT_BRIDGE_NAME)
     }
 
