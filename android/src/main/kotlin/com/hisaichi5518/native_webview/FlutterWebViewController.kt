@@ -34,9 +34,9 @@ class FlutterWebViewController(
         )
 
         methodChannel.setMethodCallHandler(this)
-        // The app crashes when pass `Locator.activity` to NativeWebView
-        // https://github.com/hisaichi5518/native_webview/issues/29
-        webview = NativeWebView(context, methodChannel, options)
+
+        // refs https://github.com/hisaichi5518/native_webview/issues/31
+        webview = NativeWebView(PresentationContext(context, Locator.activity!!), methodChannel, options)
         webview.load(initialData, initialFile, initialUrl, initialHeaders)
     }
 
