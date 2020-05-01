@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:native_webview/src/content_blocker.dart';
@@ -275,6 +276,10 @@ class WebView extends StatefulWidget {
   ) shouldOverrideUrlLoading;
   final List<ContentBlocker> contentBlockers;
 
+  ///On Android, if you use multiple WebViews, the WebView may turn black the page is loaded.
+  ///If you specify androidBackgroundColor, it won't happen.
+  final Color androidBackgroundColor;
+
   const WebView({
     Key key,
     this.initialUrl,
@@ -290,6 +295,7 @@ class WebView extends StatefulWidget {
     this.onJsPrompt,
     this.shouldOverrideUrlLoading,
     this.contentBlockers,
+    this.androidBackgroundColor = Colors.white,
   });
 
   @override
@@ -298,6 +304,8 @@ class WebView extends StatefulWidget {
 
 class _WebViewState extends State<WebView> {
   static const String viewType = "com.hisaichi5518/native_webview";
+
+  var isFirstLoading = true;
 
   @override
   Widget build(BuildContext context) {
@@ -310,19 +318,35 @@ class _WebViewState extends State<WebView> {
         creationParamsCodec: const StandardMessageCodec(),
       );
     } else if (Platform.isAndroid) {
-      return AndroidView(
-        viewType: viewType,
-        onPlatformViewCreated: _onPlatformViewCreated,
-        gestureRecognizers: Set.from([]),
-        creationParams: _CreationParams.from(widget).toMap(),
-        creationParamsCodec: const StandardMessageCodec(),
+      return Stack(
+        children: <Widget>[
+          AndroidView(
+            viewType: viewType,
+            onPlatformViewCreated: _onPlatformViewCreated,
+            gestureRecognizers: Set.from([]),
+            creationParams: _CreationParams.from(widget).toMap(),
+            creationParamsCodec: const StandardMessageCodec(),
+          ),
+          if (isFirstLoading)
+            Container(
+              color: this.widget.androidBackgroundColor,
+            )
+        ],
       );
     }
     throw UnsupportedError("${Platform.operatingSystem} is not supported.");
   }
 
   void _onPlatformViewCreated(int id) {
-    final controller = WebViewController(widget, id);
+    final controller = WebViewController(widget, id, () {
+      // https://github.com/hisaichi5518/native_webview/issues/22
+      if (!isFirstLoading) {
+        return;
+      }
+      setState(() {
+        isFirstLoading = false;
+      });
+    });
     if (widget.onWebViewCreated == null) {
       return;
     }
