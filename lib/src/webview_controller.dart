@@ -10,8 +10,9 @@ class WebViewController {
   final WebView _widget;
   final MethodChannel _channel;
   final Map<String, JavascriptHandlerCallback> _javascriptChannelMap = {};
+  final void Function() updateFirstLoading;
 
-  WebViewController(this._widget, int id)
+  WebViewController(this._widget, int id, this.updateFirstLoading)
       : _channel = MethodChannel("com.hisaichi5518/native_webview_$id") {
     _channel.setMethodCallHandler(_onMethodCall);
   }
@@ -19,11 +20,17 @@ class WebViewController {
   Future<dynamic> _onMethodCall(MethodCall call) async {
     switch (call.method) {
       case 'onPageStarted':
+        if (this.updateFirstLoading != null) {
+          this.updateFirstLoading();
+        }
         if (_widget.onPageStarted != null) {
           _widget.onPageStarted(this, call.arguments['url'] as String);
         }
         return true;
       case 'onPageFinished':
+        if (this.updateFirstLoading != null) {
+          this.updateFirstLoading();
+        }
         if (_widget.onPageFinished != null) {
           _widget.onPageFinished(this, call.arguments['url'] as String);
         }
