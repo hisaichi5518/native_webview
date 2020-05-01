@@ -1,3 +1,12 @@
+## 0.14.0
+
+- Fix [Sometimes the screen flickers when using WebView #22](https://github.com/hisaichi5518/native_webview/issues/22)
+- Fix [Attempt to read from field 'android.view.WindowManager$LayoutParams android.view.ViewRootImpl.mWindowAttributes' on a null object reference #29](https://github.com/hisaichi5518/native_webview/issues/29)
+- Fix [java.lang.ClassCastException: $Proxy0 cannot be cast to android.view.WindowManagerImpl #32](https://github.com/hisaichi5518/native_webview/pull/32)
+- Update ThreadedInputConnectionProxyAdapterView
+- Add DisplayListenerProxy
+- Update InputAwareWebView
+
 ## 0.13.0
 
 - Add goBack and goForward for Android
