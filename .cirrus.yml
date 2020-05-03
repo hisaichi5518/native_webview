@@ -6,6 +6,13 @@ flutter_analyze_task:
   pub_get_script: flutter pub get
   lint_script: flutter analyze
 
+flutter_test_task:
+  container:
+    image: cirrusci/flutter:stable
+  pub_cache:
+    folder: ~/.pub-cache
+  test_script: flutter test
+
 flutter_drive_ios_task:
   osx_instance:
     image: catalina-flutter
