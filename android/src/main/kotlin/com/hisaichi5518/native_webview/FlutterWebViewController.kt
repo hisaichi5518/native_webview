@@ -3,6 +3,7 @@ package com.hisaichi5518.native_webview
 import android.content.Context
 import android.hardware.display.DisplayManager
 import android.view.View
+import android.webkit.WebView
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
@@ -30,6 +31,9 @@ class FlutterWebViewController(
 
         // This only works on iOS.
         // val gestureNavigationEnabled = params["gestureNavigationEnabled"] as? Boolean ?: false
+
+        val debuggingEnabled = params["debuggingEnabled"] as? Boolean ?: false
+        WebView.setWebContentsDebuggingEnabled(debuggingEnabled)
 
         val options = WebViewOptions(
             hasShouldOverrideUrlLoading,

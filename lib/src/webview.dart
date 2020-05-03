@@ -387,6 +387,19 @@ class WebView extends StatefulWidget {
   final List<ContentBlocker> contentBlockers;
   final void Function(WebResourceError error) onWebResourceError;
 
+  /// Controls whether WebView debugging is enabled.
+  ///
+  /// Setting this to true enables [WebView debugging on Android](https://developers.google.com/web/tools/chrome-devtools/remote-debugging/).
+  ///
+  /// WebView debugging is enabled by default in dev builds on iOS.
+  ///
+  /// To debug WebViews on iOS:
+  /// - Enable developer options (Open Safari, go to Preferences -> Advanced and make sure "Show Develop Menu in Menubar" is on.)
+  /// - From the Menu-bar (of Safari) select Develop -> iPhone Simulator -> <your webview page>
+  ///
+  /// By default `debuggingEnabled` is false.
+  final bool debuggingEnabled;
+
   /// A Boolean value indicating whether horizontal swipe gestures will trigger back-forward list navigations.
   ///
   /// This only works on iOS.
@@ -416,6 +429,7 @@ class WebView extends StatefulWidget {
     this.contentBlockers,
     this.androidBackgroundColor = Colors.white,
     this.gestureNavigationEnabled = false,
+    this.debuggingEnabled = false,
   });
 
   @override
@@ -492,7 +506,8 @@ class _CreationParams {
       "hasShouldOverrideUrlLoading": widget.shouldOverrideUrlLoading != null,
       "contentBlockers":
           (widget.contentBlockers ?? []).map((v) => v.toMap()).toList(),
-      "gestureNavigationEnabled": widget.gestureNavigationEnabled ?? false
+      "gestureNavigationEnabled": widget.gestureNavigationEnabled ?? false,
+      "debuggingEnabled": widget.debuggingEnabled ?? false,
     };
   }
 }
