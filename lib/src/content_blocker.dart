@@ -140,14 +140,15 @@ class ContentBlockerTrigger {
     });
 
     return ContentBlockerTrigger(
-        urlFilter: map["url-filter"],
-        urlFilterIsCaseSensitive: map["url-filter-is-case-sensitive"],
-        ifDomain: List<String>.from(map["if-domain"] ?? []),
-        unlessDomain: List<String>.from(map["unless-domain"] ?? []),
-        resourceType: resourceType,
-        loadType: loadType,
-        ifTopUrl: List<String>.from(map["if-top-url"] ?? []),
-        unlessTopUrl: List<String>.from(map["unless-top-url"] ?? []));
+      urlFilter: map["url-filter"],
+      urlFilterIsCaseSensitive: map["url-filter-is-case-sensitive"],
+      ifDomain: List<String>.from(map["if-domain"] ?? []),
+      unlessDomain: List<String>.from(map["unless-domain"] ?? []),
+      resourceType: resourceType,
+      loadType: loadType,
+      ifTopUrl: List<String>.from(map["if-top-url"] ?? []),
+      unlessTopUrl: List<String>.from(map["unless-top-url"] ?? []),
+    );
   }
 }
 
@@ -205,15 +206,18 @@ class ContentBlockerAction {
 
   static ContentBlockerAction fromMap(Map<String, dynamic> map) {
     return ContentBlockerAction._(
-        type: ContentBlockerActionType.fromValue(map["type"]),
-        selector: map["selector"]);
+      type: ContentBlockerActionType.fromValue(map["type"]),
+      selector: map["selector"],
+    );
   }
 }
 
 ///ContentBlockerTriggerResourceType class represents the possible resource type defined for a [ContentBlockerTrigger].
 class ContentBlockerTriggerResourceType {
   final String _value;
-  const ContentBlockerTriggerResourceType._internal(this._value);
+
+  const ContentBlockerTriggerResourceType._(this._value);
+
   static ContentBlockerTriggerResourceType fromValue(String value) {
     return ([
       "document",
@@ -223,29 +227,28 @@ class ContentBlockerTriggerResourceType {
       "font",
       "media",
       "svg-document",
-      "raw"
+      "raw",
     ].contains(value))
-        ? ContentBlockerTriggerResourceType._internal(value)
+        ? ContentBlockerTriggerResourceType._(value)
         : null;
   }
 
   String toValue() => _value;
+
   @override
   String toString() => _value;
 
-  static const document =
-      ContentBlockerTriggerResourceType._internal('document');
-  static const image = ContentBlockerTriggerResourceType._internal('image');
-  static const styleSheet =
-      ContentBlockerTriggerResourceType._internal('style-sheet');
-  static const script = ContentBlockerTriggerResourceType._internal('script');
-  static const font = ContentBlockerTriggerResourceType._internal('font');
-  static const media = ContentBlockerTriggerResourceType._internal('media');
+  static const document = ContentBlockerTriggerResourceType._('document');
+  static const image = ContentBlockerTriggerResourceType._('image');
+  static const styleSheet = ContentBlockerTriggerResourceType._('style-sheet');
+  static const script = ContentBlockerTriggerResourceType._('script');
+  static const font = ContentBlockerTriggerResourceType._('font');
+  static const media = ContentBlockerTriggerResourceType._('media');
   static const svgDocument =
-      ContentBlockerTriggerResourceType._internal('svg-document');
+      ContentBlockerTriggerResourceType._('svg-document');
 
   ///Any untyped load
-  static const raw = ContentBlockerTriggerResourceType._internal('raw');
+  static const raw = ContentBlockerTriggerResourceType._('raw');
 
   bool operator ==(value) => value == _value;
 
@@ -256,10 +259,10 @@ class ContentBlockerTriggerResourceType {
 ///ContentBlockerTriggerLoadType class represents the possible load type for a [ContentBlockerTrigger].
 class ContentBlockerTriggerLoadType {
   final String _value;
-  const ContentBlockerTriggerLoadType._internal(this._value);
+  const ContentBlockerTriggerLoadType._(this._value);
   static ContentBlockerTriggerLoadType fromValue(String value) {
     return (["first-party", "third-party"].contains(value))
-        ? ContentBlockerTriggerLoadType._internal(value)
+        ? ContentBlockerTriggerLoadType._(value)
         : null;
   }
 
@@ -268,12 +271,10 @@ class ContentBlockerTriggerLoadType {
   String toString() => _value;
 
   ///firstParty is triggered only if the resource has the same scheme, domain, and port as the main page resource.
-  static const firstParty =
-      ContentBlockerTriggerLoadType._internal('first-party');
+  static const firstParty = ContentBlockerTriggerLoadType._('first-party');
 
   ///thirdParty is triggered if the resource is not from the same domain as the main page resource.
-  static const thirdParty =
-      ContentBlockerTriggerLoadType._internal('third-party');
+  static const thirdParty = ContentBlockerTriggerLoadType._('third-party');
 
   bool operator ==(value) => value == _value;
 
@@ -284,10 +285,12 @@ class ContentBlockerTriggerLoadType {
 ///ContentBlockerActionType class represents the kind of action that can be used with a [ContentBlockerTrigger].
 class ContentBlockerActionType {
   final String _value;
-  const ContentBlockerActionType._internal(this._value);
+
+  const ContentBlockerActionType._(this._value);
+
   static ContentBlockerActionType fromValue(String value) {
     return (["block", "css-display-none", "make-https"].contains(value))
-        ? ContentBlockerActionType._internal(value)
+        ? ContentBlockerActionType._(value)
         : null;
   }
 
@@ -296,18 +299,17 @@ class ContentBlockerActionType {
   String toString() => _value;
 
   ///Stops loading of the resource. If the resource was cached, the cache is ignored.
-  static const block = ContentBlockerActionType._internal('block');
+  static const block = ContentBlockerActionType._('block');
 
   ///Hides elements of the page based on a CSS selector. A selector field contains the selector list. Any matching element has its display property set to none, which hides it.
   ///
   ///**NOTE**: cssDisplayNone is not supported on Android
-  static const cssDisplayNone =
-      ContentBlockerActionType._internal('css-display-none');
+  static const cssDisplayNone = ContentBlockerActionType._('css-display-none');
 
   ///Changes a URL from http to https. URLs with a specified (nondefault) port and links using other protocols are unaffected.
   ///
   ///**NOTE**: makeHttps is not supported on Android
-  static const makeHttps = ContentBlockerActionType._internal('make-https');
+  static const makeHttps = ContentBlockerActionType._('make-https');
 
   bool operator ==(value) => value == _value;
 
