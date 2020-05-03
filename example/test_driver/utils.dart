@@ -15,9 +15,11 @@ class WebViewTestContext {
   final List<ShouldOverrideUrlLoadingRequest> loadingRequestEvents = [];
   final List<String> pageStartedEvents = [];
   final List<String> pageFinishedEvents = [];
+  final List<WebResourceError> webResourceErrorEvents = [];
 
   final loadingRequests = StreamController<ShouldOverrideUrlLoadingRequest>();
   final pageStarted = StreamController<String>();
+  final webResourceError = StreamController<WebResourceError>();
   final pageFinished = StreamController<String>();
 
   final webviewController = Completer<WebViewController>();
@@ -40,6 +42,11 @@ class WebViewTestContext {
   void onPageFinished(WebViewController controller, String url) {
     pageFinishedEvents.add(url);
     pageFinished.add(url);
+  }
+
+  void onWebResourceError(WebResourceError error) {
+    webResourceErrorEvents.add(error);
+    webResourceError.add(error);
   }
 
   void complete() {

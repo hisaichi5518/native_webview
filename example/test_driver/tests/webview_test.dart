@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:native_webview/native_webview.dart';
 
@@ -147,6 +148,40 @@ void main() {
         },
       ]));
     });
+  });
+
+  testWebView('onWebResourceError', (tester, context) async {
+    await tester.pumpWidget(
+      WebView(
+        key: GlobalKey(),
+        initialUrl: 'https://www.notawebsite..com',
+        onWebResourceError: context.onWebResourceError,
+        shouldOverrideUrlLoading: (_, request) async {
+          context.shouldOverrideUrlLoading(request);
+          return ShouldOverrideUrlLoadingAction.allow;
+        },
+        onPageStarted: context.onPageStarted,
+        onPageFinished: context.onPageFinished,
+      ),
+    );
+
+    context.webResourceError.stream.listen(onData([
+      (event) {
+        expect(event, isNotNull);
+        expect(event.description, isNotNull);
+        expect(event.errorCode, isNotNull);
+
+        if (Platform.isAndroid) {
+          expect(event.domain, isNull);
+          expect(event.errorType, WebResourceErrorType.hostLookup);
+        } else {
+          expect(event.domain, "NSURLErrorDomain");
+          expect(event.errorType, isNull);
+        }
+
+        context.complete();
+      },
+    ]));
   });
 
   group("onJsConfirm", () {

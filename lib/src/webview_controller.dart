@@ -35,6 +35,26 @@ class WebViewController {
           _widget.onPageFinished(this, call.arguments['url'] as String);
         }
         return true;
+      case 'onWebResourceError':
+        if (_widget.onWebResourceError == null) {
+          return true;
+        }
+        _widget.onWebResourceError(
+          WebResourceError(
+            errorCode: call.arguments['errorCode'],
+            description: call.arguments['description'],
+            domain: call.arguments['domain'],
+            errorType: call.arguments['errorType'] == null
+                ? null
+                : WebResourceErrorType.values.firstWhere(
+                    (WebResourceErrorType type) {
+                      return type.toString() ==
+                          '$WebResourceErrorType.${call.arguments['errorType']}';
+                    },
+                  ),
+          ),
+        );
+        return true;
       case 'onProgressChanged':
         if (_widget.onProgressChanged != null) {
           _widget.onProgressChanged(this, call.arguments['progress'] as int);

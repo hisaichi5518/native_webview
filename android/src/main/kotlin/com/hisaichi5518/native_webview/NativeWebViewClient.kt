@@ -1,13 +1,13 @@
 package com.hisaichi5518.native_webview
 
+import android.annotation.TargetApi
 import android.graphics.Bitmap
+import android.os.Build
 import android.view.KeyEvent
-import android.webkit.WebResourceRequest
-import android.webkit.WebResourceResponse
-import android.webkit.WebView
-import android.webkit.WebViewClient
+import android.webkit.*
 import io.flutter.Log
 import io.flutter.plugin.common.MethodChannel
+import java.util.*
 
 class NativeWebViewClient(private val channel: MethodChannel, private val options: WebViewOptions) : WebViewClient() {
     companion object {
@@ -108,4 +108,44 @@ class NativeWebViewClient(private val channel: MethodChannel, private val option
     }
 
     override fun onUnhandledKeyEvent(view: WebView?, event: KeyEvent?) {}
+
+    override fun onReceivedError(
+        view: WebView?, request: WebResourceRequest?, error: WebResourceError) {
+        onWebResourceError(
+            error.errorCode, error.description.toString())
+    }
+
+    private fun onWebResourceError(errorCode: Int, description: String) {
+        val args = mutableMapOf<String, Any>(
+            "errorCode" to errorCode,
+            "description" to description,
+            "errorType" to   errorCodeToString(errorCode)
+        )
+        channel.invokeMethod("onWebResourceError", args)
+    }
+
+    private fun errorCodeToString(errorCode: Int): String {
+        when (errorCode) {
+            ERROR_AUTHENTICATION -> return "authentication"
+            ERROR_BAD_URL -> return "badUrl"
+            ERROR_CONNECT -> return "connect"
+            ERROR_FAILED_SSL_HANDSHAKE -> return "failedSslHandshake"
+            ERROR_FILE -> return "file"
+            ERROR_FILE_NOT_FOUND -> return "fileNotFound"
+            ERROR_HOST_LOOKUP -> return "hostLookup"
+            ERROR_IO -> return "io"
+            ERROR_PROXY_AUTHENTICATION -> return "proxyAuthentication"
+            ERROR_REDIRECT_LOOP -> return "redirectLoop"
+            ERROR_TIMEOUT -> return "timeout"
+            ERROR_TOO_MANY_REQUESTS -> return "tooManyRequests"
+            ERROR_UNKNOWN -> return "unknown"
+            ERROR_UNSAFE_RESOURCE -> return "unsafeResource"
+            ERROR_UNSUPPORTED_AUTH_SCHEME -> return "unsupportedAuthScheme"
+            ERROR_UNSUPPORTED_SCHEME -> return "unsupportedScheme"
+        }
+
+        val message = "Could not find a string for errorCode: %d".format(Locale.getDefault(), errorCode)
+        throw IllegalArgumentException(message)
+    }
+
 }
