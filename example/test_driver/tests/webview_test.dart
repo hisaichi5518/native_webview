@@ -320,4 +320,26 @@ void main() {
       ]));
     });
   });
+
+  group("debuggingEnabled", () {
+    testWebView('is true', (tester, context) async {
+      await tester.pumpWidget(
+        WebView(
+          initialData: WebViewData("""
+<!doctype html><html lang="en"><head></head><body>native_webview</body></html>
+        """),
+          onWebViewCreated: context.onWebViewCreated,
+          onPageFinished: context.onPageFinished,
+          debuggingEnabled: true,
+        ),
+      );
+
+      context.pageFinished.stream.listen(onData([
+        (event) async {
+          expect(event, "about:blank");
+          context.complete();
+        },
+      ]));
+    });
+  });
 }

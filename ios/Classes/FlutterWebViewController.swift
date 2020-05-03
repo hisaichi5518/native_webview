@@ -39,6 +39,7 @@ public class FlutterWebViewController: NSObject, FlutterPlatformView {
 
         let hasShouldOverrideUrlLoading = args["hasShouldOverrideUrlLoading"] as? Bool ?? false
 
+        // debugging is always enabled on iOS.
         self.webview = NativeWebView(frame: parent.bounds, configuration: configuration, channel: channel, options: WebViewOptions(hasShouldOverrideUrlLoading: hasShouldOverrideUrlLoading))
         self.channel = channel
 
