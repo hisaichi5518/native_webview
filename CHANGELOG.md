@@ -1,6 +1,7 @@
 ## 0.15.0
 
 - Add gestureNavigationEnabled
+- Add onWebResourceError
 
 ## 0.14.0
 

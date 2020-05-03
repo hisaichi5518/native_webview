@@ -267,6 +267,14 @@ extension NativeWebView: WKUIDelegate {
         return
     }
 
+    public func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+        onWebResourceError(error as NSError)
+    }
+
+    public func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
+        onWebResourceError(error as NSError)
+    }
+
     private func createPromptDialog(
         message: String,
         defaultText: String?,
@@ -338,6 +346,33 @@ extension NativeWebView: WKUIDelegate {
 
         if let window = window, let controller = window.rootViewController {
             controller.present(alertController, animated: true, completion: nil)
+        }
+    }
+
+    private func onWebResourceError(_ error: NSError) {
+        let arguments: [String: Any?] = [
+            "errorCode": error.code,
+            "domain": error.domain,
+            "description": error.description,
+            "errorType": errorCodeToString(error.code)
+        ]
+        channel?.invokeMethod("onWebResourceError", arguments: arguments)
+    }
+
+    private func errorCodeToString(_ code: Int) -> String? {
+        switch code {
+        case WKError.unknown.rawValue:
+            return "unknown"
+        case WKError.webContentProcessTerminated.rawValue:
+            return "webContentProcessTerminated"
+        case WKError.webViewInvalidated.rawValue:
+            return "webViewInvalidated"
+        case WKError.javaScriptExceptionOccurred.rawValue:
+            return "javaScriptExceptionOccurred"
+        case WKError.javaScriptResultTypeIsUnsupported.rawValue:
+            return "javaScriptResultTypeIsUnsupported"
+        default:
+            return nil
         }
     }
 }
