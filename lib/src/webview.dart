@@ -276,6 +276,13 @@ class WebView extends StatefulWidget {
   ) shouldOverrideUrlLoading;
   final List<ContentBlocker> contentBlockers;
 
+  /// A Boolean value indicating whether horizontal swipe gestures will trigger back-forward list navigations.
+  ///
+  /// This only works on iOS.
+  ///
+  /// By default `gestureNavigationEnabled` is false.
+  final bool gestureNavigationEnabled;
+
   ///On Android, if you use multiple WebViews, the WebView may turn black the page is loaded.
   ///If you specify androidBackgroundColor, it won't happen.
   final Color androidBackgroundColor;
@@ -296,6 +303,7 @@ class WebView extends StatefulWidget {
     this.shouldOverrideUrlLoading,
     this.contentBlockers,
     this.androidBackgroundColor = Colors.white,
+    this.gestureNavigationEnabled = false,
   });
 
   @override
@@ -372,6 +380,7 @@ class _CreationParams {
       "hasShouldOverrideUrlLoading": widget.shouldOverrideUrlLoading != null,
       "contentBlockers":
           (widget.contentBlockers ?? []).map((v) => v.toMap()).toList(),
+      "gestureNavigationEnabled": widget.gestureNavigationEnabled ?? false
     };
   }
 }
