@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-// Originally written by  pichillilorenzo
+// Originally written by pichillilorenzo
 // https://github.com/pichillilorenzo/flutter_inappwebview/
 
 ///ContentBlocker class represents a set of rules to use block content in the browser window.
