@@ -28,6 +28,9 @@ class FlutterWebViewController(
         val hasShouldOverrideUrlLoading = params["hasShouldOverrideUrlLoading"] as? Boolean ?: false
         val contentBlockers = params["contentBlockers"] as? List<Map<String, Map<String?, Any?>>> ?: listOf()
 
+        // This only works on iOS.
+        // val gestureNavigationEnabled = params["gestureNavigationEnabled"] as? Boolean ?: false
+
         val options = WebViewOptions(
             hasShouldOverrideUrlLoading,
             contentBlockers

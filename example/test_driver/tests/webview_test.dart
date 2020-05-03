@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -256,6 +255,32 @@ void main() {
             expect(progressValues.last, 100);
             context.complete();
           });
+        },
+      ]));
+    });
+  });
+
+  group("gestureNavigationEnabled", () {
+    testWebView('is true', (tester, context) async {
+      List<int> progressValues = [];
+      await tester.pumpWidget(
+        WebView(
+          initialData: WebViewData("""
+<!doctype html><html lang="en"><head></head><body>native_webview</body></html>
+        """),
+          onProgressChanged: (controller, progress) {
+            progressValues.add(progress);
+          },
+          onWebViewCreated: context.onWebViewCreated,
+          onPageFinished: context.onPageFinished,
+          gestureNavigationEnabled: true,
+        ),
+      );
+
+      context.pageFinished.stream.listen(onData([
+        (event) async {
+          expect(event, "about:blank");
+          context.complete();
         },
       ]));
     });

@@ -1,3 +1,7 @@
+## 0.15.0
+
+- Add gestureNavigationEnabled
+
 ## 0.14.0
 
 - Fix [Sometimes the screen flickers when using WebView #22](https://github.com/hisaichi5518/native_webview/issues/22)
