@@ -3,6 +3,7 @@
 - Add debuggingEnabled
 - Add gestureNavigationEnabled
 - Add onWebResourceError
+- Fix iOS WebView not opening href with target="\_blank"
 
 ## 0.14.0
 
