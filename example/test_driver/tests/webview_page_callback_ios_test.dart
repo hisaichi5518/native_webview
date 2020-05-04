@@ -440,4 +440,58 @@ void main() {
       },
     ]));
   });
+
+  testWebView('Use window.open()', (tester, context) async {
+    await tester.pumpWidget(
+      WebView(
+        key: GlobalKey(),
+        initialUrl: "about:blank",
+        onWebViewCreated: context.onWebViewCreated,
+        shouldOverrideUrlLoading: (_, request) async {
+          context.shouldOverrideUrlLoading(request);
+          return ShouldOverrideUrlLoadingAction.allow;
+        },
+        onPageStarted: context.onPageStarted,
+        onPageFinished: context.onPageFinished,
+      ),
+    );
+
+    final controller = await context.webviewController.future;
+
+    context.loadingRequests.stream.listen(onData([
+      (event) {
+        expect(event.url, "https://www.google.com/");
+        expect(event.method, "GET");
+        expect(event.isForMainFrame, true);
+        expect(event.headers, {
+          "User-Agent": isNotEmpty,
+          "Accept": isNotEmpty,
+          'Referer': '',
+        });
+      },
+    ]));
+    context.pageStarted.stream.listen(onData([
+      (event) {
+        expect(event, "about:blank");
+      },
+      (event) {
+        expect(event, "https://www.google.com/");
+      },
+    ]));
+    context.pageFinished.stream.listen(onData([
+      (event) {
+        expect(event, "about:blank");
+        controller.evaluateJavascript(
+          "window.open('https://www.google.com/', '_blank');",
+        );
+      },
+      (event) {
+        expect(event, "https://www.google.com/");
+        expect(context.loadingRequestEvents.length, 1);
+        expect(context.pageStartedEvents.length, 2);
+
+        context.complete();
+      },
+    ]));
+  });
 }
