@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_driver/driver_extension.dart';
 import 'package:native_webview_example/screens/initial_data_screen.dart';
 import 'package:native_webview_example/screens/initial_data_with_base_url_screen.dart';
 import 'package:native_webview_example/screens/initial_url_screen.dart';
@@ -9,9 +8,6 @@ import 'package:native_webview_example/screens/open_dropdown_screen.dart';
 import 'package:native_webview_example/screens/target_blank_screen.dart';
 
 void main() {
-  // Enable integration testing with the Flutter Driver extension.
-  // See https://flutter.dev/testing/ for more info.
-  enableFlutterDriverExtension();
   runApp(MyApp());
 }
 
