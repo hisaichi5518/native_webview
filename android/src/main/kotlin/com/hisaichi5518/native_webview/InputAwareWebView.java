@@ -233,17 +233,4 @@ public class InputAwareWebView extends WebView {
         }
         return false;
     }
-
-    @Override
-    public IBinder getWindowToken() {
-        Activity activity = Locator.Companion.getActivity();
-        if (activity != null) {
-            Window window = activity.getWindow();
-            if (window != null) {
-                return window.getDecorView().getWindowToken();
-            }
-        }
-
-        return super.getWindowToken();
-    }
 }
