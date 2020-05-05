@@ -32,6 +32,10 @@ If you want to run native_webview on iOS, please test it on an actual device suc
 
 Opt-in to the embedded views preview by adding a boolean property to the app's Info.plist file with the key `io.flutter.embedded_views_preview` and the value `YES`.
 
+#### Android
+
+Change `android:windowSoftInputMode="adjustResize"` to `android:windowSoftInputMode="adjustPan"` in android/app/src/main/AndroidManifest.xml.
+
 ### Usage
 
 ```dart

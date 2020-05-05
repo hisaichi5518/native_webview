@@ -2,6 +2,7 @@ package com.hisaichi5518.native_webview
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.os.IBinder
 import android.view.View
 import io.flutter.plugin.common.MethodChannel
 
@@ -34,5 +35,15 @@ class NativeWebView(context: Context, channel: MethodChannel, options: WebViewOp
         }
 
         loadUrl(initialURL, initialHeaders)
+    }
+
+    // https://github.com/flutter/flutter/issues/36478
+    // https://github.com/hisaichi5518/native_webview/pull/46
+    override fun getWindowToken(): IBinder? {
+        val token = Locator.activity?.window?.decorView?.windowToken
+        if (token != null) {
+            return token
+        }
+        return super.getWindowToken()
     }
 }
