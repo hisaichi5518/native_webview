@@ -6,11 +6,14 @@ package com.hisaichi5518.native_webview;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Build;
+import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebView;
 import android.widget.ListPopupWindow;
@@ -229,5 +232,18 @@ public class InputAwareWebView extends WebView {
             }
         }
         return false;
+    }
+
+    @Override
+    public IBinder getWindowToken() {
+        Activity activity = Locator.Companion.getActivity();
+        if (activity != null) {
+            Window window = activity.getWindow();
+            if (window != null) {
+                return window.getDecorView().getWindowToken();
+            }
+        }
+
+        return super.getWindowToken();
     }
 }
