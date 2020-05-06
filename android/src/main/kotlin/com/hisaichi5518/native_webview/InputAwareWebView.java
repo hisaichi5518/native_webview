@@ -6,17 +6,35 @@ package com.hisaichi5518.native_webview;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
+import android.view.ActionMode;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.Window;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebView;
+import android.widget.AbsoluteLayout;
+import android.widget.LinearLayout;
 import android.widget.ListPopupWindow;
+import android.widget.PopupWindow;
+import android.widget.TextView;
+
+import androidx.core.widget.PopupWindowCompat;
 
 /**
  * A WebView subclass that mirrors the same implementation hacks that the system WebView does in
@@ -33,10 +51,131 @@ public class InputAwareWebView extends WebView {
     private View threadedInputConnectionProxyView;
     private ThreadedInputConnectionProxyAdapterView proxyAdapterView;
     private View containerView;
+    private MotionEvent motionEvent;
+    private LinearLayout floatingActionView;
 
     InputAwareWebView(Context context, View containerView) {
         super(context);
         this.containerView = containerView;
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        this.motionEvent = event;
+        return super.dispatchTouchEvent(event);
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN && floatingActionView != null) {
+            this.removeView(floatingActionView);
+            floatingActionView = null;
+        }
+        return super.onTouchEvent(event);
+    }
+
+    @Override
+    public ActionMode startActionMode(ActionMode.Callback callback) {
+        return rebuildActionMode(super.startActionMode(callback), callback);
+    }
+
+    @Override
+    public ActionMode startActionMode(ActionMode.Callback callback, int type) {
+        return rebuildActionMode(super.startActionMode(callback, type), callback);
+    }
+
+    private ActionMode rebuildActionMode(
+            final ActionMode actionMode,
+            final ActionMode.Callback callback
+    ) {
+        if (floatingActionView != null) {
+            this.removeView(floatingActionView);
+            floatingActionView = null;
+        }
+
+        if (actionMode == null) {
+            return null;
+        }
+
+        floatingActionView = (LinearLayout) LayoutInflater.from(getContext())
+                .inflate(R.layout.floating_action_mode, null);
+
+        for (int i = 0; i < actionMode.getMenu().size(); i++) {
+            final MenuItem menu = actionMode.getMenu().getItem(i);
+
+            TextView text = (TextView) LayoutInflater.from(getContext())
+                    .inflate(R.layout.floating_action_mode_item, null);
+
+            text.setText(menu.getTitle());
+            text.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    InputAwareWebView.this.removeView(floatingActionView);
+                    floatingActionView = null;
+                    Log.i("NativeWebView", menu.getTitle().toString() + actionMode.getTitle() + String.valueOf(actionMode.getType()));
+
+                    ClipboardManager manager = (ClipboardManager) getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+                    ClipData clip = manager.getPrimaryClip();
+                    if (clip != null) {
+                        for (int i=0; i<clip.getItemCount(); i++) {
+                            ClipData.Item item = clip.getItemAt(i);
+                            Log.i("NativeWebView", item.toString());
+                        }
+                    }
+                    callback.onActionItemClicked(actionMode, menu);
+                }
+            });
+
+            floatingActionView.addView(text);
+            // supports up to 4 options
+            if (i >= 4) {
+                break;
+            }
+        }
+
+        final int x = (int) motionEvent.getX();
+        final int y = (int) motionEvent.getY();
+
+        floatingActionView
+                .getViewTreeObserver()
+                .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        floatingActionView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                        onFloatingActionGlobalLayout(x, y);
+                    }
+                });
+
+        addView(floatingActionView, new AbsoluteLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, x, y));
+        actionMode.getMenu().clear();
+
+        return actionMode;
+    }
+
+    private void onFloatingActionGlobalLayout(int x, int y) {
+        int maxWidth = InputAwareWebView.this.getWidth();
+        int maxHeight = InputAwareWebView.this.getHeight();
+        int width = floatingActionView.getWidth();
+        int height = floatingActionView.getHeight();
+        int curx = x - width / 2;
+        if (curx < 0) {
+            curx = 0;
+        } else if (curx + width > maxWidth) {
+            curx = maxWidth - width;
+        }
+
+        float size = 12 * getContext().getResources().getDisplayMetrics().density;
+        float cury = y + size;
+        if (cury + height > maxHeight) {
+            cury = y - height - size;
+        }
+
+        InputAwareWebView.this.updateViewLayout(
+                floatingActionView,
+                new AbsoluteLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, curx, (int) cury + InputAwareWebView.this.getScrollY())
+        );
+        floatingActionView.setAlpha(1);
     }
 
     void setContainerView(View containerView) {

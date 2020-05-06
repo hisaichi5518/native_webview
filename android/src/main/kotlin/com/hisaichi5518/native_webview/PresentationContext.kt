@@ -24,21 +24,24 @@ class PresentationContext(
         }
 
     override fun getSystemService(name: String): Any? {
-        return if (isCalledFromAlertDialog) {
-            // Alert dialogs are showing on top of the entire application and should not be limited to
-            // the virtual
-            // display. If we detect that an android.app.AlertDialog constructor is what's fetching
-            // the window manager
-            // we return the one for the application's window.
-            //
-            // Note that if we don't do this AlertDialog will throw a ClassCastException as down the
-            // line it tries
-            // to case this instance to a WindowManagerImpl which the object returned by
-            // getWindowManager is not
-            // a subclass of.
-            activity.getSystemService(name)
-        } else {
-            super.getSystemService(name)
+        return when {
+            isCalledFromAlertDialog || name == Context.CLIPBOARD_SERVICE -> {
+                // Alert dialogs are showing on top of the entire application and should not be limited to
+                // the virtual
+                // display. If we detect that an android.app.AlertDialog constructor is what's fetching
+                // the window manager
+                // we return the one for the application's window.
+                //
+                // Note that if we don't do this AlertDialog will throw a ClassCastException as down the
+                // line it tries
+                // to case this instance to a WindowManagerImpl which the object returned by
+                // getWindowManager is not
+                // a subclass of.
+                activity.getSystemService(name)
+            }
+            else -> {
+                super.getSystemService(name)
+            }
         }
     }
 }
