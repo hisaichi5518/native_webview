@@ -36,7 +36,7 @@ class CookieManager {
     int maxAge,
     bool isSecure,
   }) async {
-    if (domain == null || domain.isNotEmpty) domain = _getDomainName(url);
+    if (domain == null || domain.isEmpty) domain = _getDomainName(url);
 
     assert(url != null && url.isNotEmpty);
     assert(name != null && name.isNotEmpty);
@@ -134,6 +134,6 @@ class CookieManager {
     Uri uri = Uri.parse(url);
     String domain = uri.host;
     if (domain == null) return "";
-    return domain.startsWith("www.") ? domain.substring(4) : domain;
+    return domain.startsWith("www.") ? domain.substring(3) : domain;
   }
 }
