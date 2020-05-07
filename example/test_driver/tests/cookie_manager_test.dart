@@ -186,6 +186,43 @@ void main() {
       expect(cookies.first.value, "myValue");
       context.complete();
     });
+
+    testWebView('Specify domain', (tester, context) async {
+      await tester.pumpWidget(
+        WebView(
+          initialUrl: 'https://en.wikipedia.org/wiki/Flutter_(software)',
+          onWebViewCreated: context.onWebViewCreated,
+        ),
+      );
+
+      final controller = await context.webviewController.future;
+      final currentUrl = await controller.currentUrl();
+      final cookieManager = CookieManager.instance();
+      final emptyCookies = await cookieManager.getCookies(
+        url: currentUrl,
+        name: "myCookie",
+      );
+      expect(emptyCookies.length, 0);
+
+      await cookieManager.setCookie(
+        url: currentUrl,
+        name: "myCookie",
+        value: "myValue",
+        domain: ".wikipedia.org",
+        isSecure: true,
+      );
+
+      await controller.loadUrl("https://ja.wikipedia.org/wiki/Flutter");
+
+      final cookies = await cookieManager.getCookies(
+        url: currentUrl,
+        name: "myCookie",
+      );
+      expect(cookies.length, 1);
+      expect(cookies.first.name, "myCookie");
+      expect(cookies.first.value, "myValue");
+      context.complete();
+    });
   });
 
   testWebView('deleteCookie', (tester, context) async {
