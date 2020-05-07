@@ -6,35 +6,14 @@ package com.hisaichi5518.native_webview;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Build;
-import android.os.IBinder;
 import android.util.Log;
-import android.view.ActionMode;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
-import android.view.Window;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebView;
-import android.widget.AbsoluteLayout;
-import android.widget.LinearLayout;
 import android.widget.ListPopupWindow;
-import android.widget.PopupWindow;
-import android.widget.TextView;
-
-import androidx.core.widget.PopupWindowCompat;
 
 /**
  * A WebView subclass that mirrors the same implementation hacks that the system WebView does in
@@ -51,8 +30,6 @@ public class InputAwareWebView extends WebView {
     private View threadedInputConnectionProxyView;
     private ThreadedInputConnectionProxyAdapterView proxyAdapterView;
     private View containerView;
-    private MotionEvent motionEvent;
-    private LinearLayout floatingActionView;
 
     InputAwareWebView(Context context, View containerView) {
         super(context);
