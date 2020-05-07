@@ -24,8 +24,8 @@ class CookieManager: NSObject, FlutterPlugin {
                 let value = arguments["value"] as! String
                 let domain = arguments["domain"] as! String
                 let path = arguments["path"] as! String
-                let expiresDate = arguments["expiresDate"] as? Int
-                let maxAge = arguments["maxAge"] as? Int
+                let expiresDate = (arguments["expiresDate"] as? String).flatMap({ Int($0) }) ?? arguments["expiresDate"] as? Int
+                let maxAge = (arguments["maxAge"] as? String).flatMap({ Int($0) }) ?? arguments["maxAge"] as? Int
                 let isSecure = arguments["isSecure"] as? Bool
 
                 setCookie(url: url, name: name, value: value, domain: domain, path: path, expiresDate: expiresDate, maxAge: maxAge, isSecure: isSecure, result: result)
@@ -80,7 +80,7 @@ class CookieManager: NSObject, FlutterPlugin {
             properties[.expires] = NSDate(timeIntervalSince1970: Double(expiresDate))
         }
         if let maxAge = maxAge {
-            properties[.maximumAge] = String(maxAge)
+            properties[.maximumAge] = maxAge
         }
 
         // https://github.com/pichillilorenzo/flutter_inappwebview/pull/311
