@@ -1,6 +1,6 @@
 ## 0.16.0
 
-- Change Cookie Manager API
+- [Change Cookie Manager API](https://github.com/hisaichi5518/native_webview/pull/52)
 - Fix [Keyboard persists after tapping outside text field](https://github.com/flutter/flutter/issues/36478#issuecomment-623542124)
 - Fix [The keyboard is not displayed in the example application.](https://github.com/hisaichi5518/native_webview/pull/45)
 - [Display selection popup on Android WebView](https://github.com/hisaichi5518/native_webview/pull/48)
