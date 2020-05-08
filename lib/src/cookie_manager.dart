@@ -49,7 +49,9 @@ class CookieManager {
       "value": value,
       "domain": domain,
       "path": path,
-      "maxAge": maxAge?.inSeconds != null ? maxAge.inSeconds.toString() : null,
+      "maxAge": maxAge?.inSeconds != null && maxAge.inSeconds > 0
+          ? maxAge.inSeconds.toString()
+          : null,
       "isSecure": isSecure,
     };
     await _channel.invokeMethod('setCookie', args);
