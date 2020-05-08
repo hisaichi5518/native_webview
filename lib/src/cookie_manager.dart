@@ -134,6 +134,6 @@ class CookieManager {
     Uri uri = Uri.parse(url);
     String domain = uri.host;
     if (domain == null) return "";
-    return domain.startsWith("www.") ? domain.substring(3) : domain;
+    return domain.startsWith("www.") ? domain.substring(4) : domain;
   }
 }
