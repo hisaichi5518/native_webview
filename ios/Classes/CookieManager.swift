@@ -74,7 +74,7 @@ class CookieManager: NSObject, FlutterPlugin {
         properties[.originURL] = url
         properties[.name] = name
         properties[.value] = value
-        properties[.domain] = domain
+        properties[.domain] = domain.hasPrefix(".") ? domain : ".\(domain)"
         properties[.path] = path
         if let expiresDate = expiresDate {
             properties[.expires] = NSDate(timeIntervalSince1970: Double(expiresDate))
