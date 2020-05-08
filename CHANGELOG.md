@@ -3,6 +3,8 @@
 - Fix [Keyboard persists after tapping outside text field](https://github.com/flutter/flutter/issues/36478#issuecomment-623542124)
 - Fix [The keyboard is not displayed in the example application.](https://github.com/hisaichi5518/native_webview/pull/45)
 - [Display selection popup on Android WebView](https://github.com/hisaichi5518/native_webview/pull/48)
+- Fix [expiresDate, maxAge settings are ignored on iOS](https://github.com/hisaichi5518/native_webview/pull/50)
+- Fix [The domain setting is not working on both OSs](https://github.com/hisaichi5518/native_webview/pull/50)
 
 ## 0.15.0
 
