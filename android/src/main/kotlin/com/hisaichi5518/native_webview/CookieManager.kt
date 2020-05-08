@@ -5,8 +5,6 @@ import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
-import java.text.SimpleDateFormat
-import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
@@ -27,11 +25,9 @@ class MyCookieManager(messenger: BinaryMessenger?) : MethodCallHandler {
                 val value = call.argument<String>("value")
                 val domain = call.argument<String>("domain")
                 val path = call.argument<String>("path")
-                val expiresDateString = call.argument<String>("expiresDate")
-                val expiresDate = expiresDateString?.toLong()
-                val maxAge = call.argument<Int>("maxAge")
+                val maxAge = call.argument<String>("maxAge")
                 val isSecure = call.argument<Boolean>("isSecure")
-                setCookie(url, name, value, domain, path, expiresDate, maxAge, isSecure, result)
+                setCookie(url, name, value, domain, path, maxAge, isSecure, result)
             }
             "getCookies" -> result.success(getCookies(call.argument<String>("url")))
             "deleteCookie" -> {
@@ -62,13 +58,11 @@ class MyCookieManager(messenger: BinaryMessenger?) : MethodCallHandler {
         value: String?,
         domain: String?,
         path: String?,
-        expiresDate: Long?,
-        maxAge: Int?,
+        maxAge: String?,
         isSecure: Boolean?,
         result: MethodChannel.Result
     ) {
         var cookieValue = "$name=$value; Domain=$domain; Path=$path"
-        if (expiresDate != null) cookieValue += "; Expires=" + getCookieExpirationDate(expiresDate)
         if (maxAge != null) cookieValue += "; Max-Age=$maxAge"
         if (isSecure != null && isSecure) cookieValue += "; Secure"
         cookieValue += ";"
@@ -116,11 +110,5 @@ class MyCookieManager(messenger: BinaryMessenger?) : MethodCallHandler {
     private fun deleteAllCookies(result: MethodChannel.Result) {
         cookieManager.removeAllCookies { result.success(true) }
         cookieManager.flush()
-    }
-
-    private fun getCookieExpirationDate(timestamp: Long): String {
-        val sdf = SimpleDateFormat("EEE, d MMM yyyy hh:mm:ss z")
-        sdf.timeZone = TimeZone.getTimeZone("GMT")
-        return sdf.format(Date(timestamp))
     }
 }
