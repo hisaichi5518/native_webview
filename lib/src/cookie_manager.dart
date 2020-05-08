@@ -33,7 +33,7 @@ class CookieManager {
     String domain,
     String path = "/",
     int expiresDate,
-    int maxAge,
+    Duration maxAge,
     bool isSecure,
   }) async {
     if (domain == null || domain.isEmpty) domain = _getDomainName(url);
@@ -51,7 +51,7 @@ class CookieManager {
       "domain": domain,
       "path": path,
       "expiresDate": expiresDate?.toString(),
-      "maxAge": maxAge,
+      "maxAge": maxAge?.inSeconds,
       "isSecure": isSecure,
     };
     await _channel.invokeMethod('setCookie', args);
