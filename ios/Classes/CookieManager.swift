@@ -101,7 +101,9 @@ class CookieManager: NSObject, FlutterPlugin {
         var cookieList: [[String: Any]] = []
         httpCookieStore.getAllCookies { (cookies) in
             for cookie in cookies {
-                if cookie.domain.contains(URL(string: url)!.host!) {
+                var domain = cookie.domain
+                domain = domain.hasPrefix(".") ? String(domain.suffix(domain.count - 1)) : domain
+                if let host = URL(string: url)?.host, host.hasSuffix(domain) {
                     cookieList.append([
                         "name": cookie.name,
                         "value": cookie.value
