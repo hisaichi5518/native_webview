@@ -24,11 +24,10 @@ class CookieManager: NSObject, FlutterPlugin {
                 let value = arguments["value"] as! String
                 let domain = arguments["domain"] as! String
                 let path = arguments["path"] as! String
-                let expiresDate = (arguments["expiresDate"] as? String).flatMap({ Int($0) }) ?? arguments["expiresDate"] as? Int
-                let maxAge = (arguments["maxAge"] as? String).flatMap({ Int($0) }) ?? arguments["maxAge"] as? Int
+                let maxAge = arguments["maxAge"] as? String
                 let isSecure = arguments["isSecure"] as? Bool
 
-                setCookie(url: url, name: name, value: value, domain: domain, path: path, expiresDate: expiresDate, maxAge: maxAge, isSecure: isSecure, result: result)
+                setCookie(url: url, name: name, value: value, domain: domain, path: path, maxAge: maxAge, isSecure: isSecure, result: result)
             case "getCookies":
                 guard let arguments = arguments else {
                     break
@@ -65,8 +64,7 @@ class CookieManager: NSObject, FlutterPlugin {
         value: String,
         domain: String,
         path: String,
-        expiresDate: Int?,
-        maxAge: Int?,
+        maxAge: String?,
         isSecure: Bool?,
         result: @escaping FlutterResult
     ) {
@@ -76,9 +74,7 @@ class CookieManager: NSObject, FlutterPlugin {
         properties[.value] = value
         properties[.domain] = domain.hasPrefix(".") ? domain : ".\(domain)"
         properties[.path] = path
-        if let expiresDate = expiresDate {
-            properties[.expires] = NSDate(timeIntervalSince1970: Double(expiresDate))
-        }
+
         if let maxAge = maxAge {
             properties[.maximumAge] = maxAge
         }
