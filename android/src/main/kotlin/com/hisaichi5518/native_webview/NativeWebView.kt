@@ -98,17 +98,18 @@ class NativeWebView(context: Context, channel: MethodChannel, options: WebViewOp
                 floatingActionView = null
                 callback.onActionItemClicked(actionMode, menu)
             }
-            floatingActionView!!.addView(text)
-            // supports up to 4 options
+            floatingActionView?.addView(text)
+
+            // Maximum 4 items for the sake of screen size.
             if (i >= 4) {
                 break
             }
         }
-        val x = motionEvent!!.x.toInt()
-        val y = motionEvent!!.y.toInt()
-        floatingActionView!!
-            .viewTreeObserver
-            .addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+        val x = motionEvent?.x?.toInt() ?: 0
+        val y = motionEvent?.y?.toInt() ?: 0
+        floatingActionView
+            ?.viewTreeObserver
+            ?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
                     floatingActionView!!.viewTreeObserver.removeOnGlobalLayoutListener(this)
                     onFloatingActionGlobalLayout(x, y)
