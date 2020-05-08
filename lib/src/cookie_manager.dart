@@ -36,7 +36,7 @@ class CookieManager {
     int maxAge,
     bool isSecure,
   }) async {
-    if (domain == null || domain.isNotEmpty) domain = _getDomainName(url);
+    if (domain == null || domain.isEmpty) domain = _getDomainName(url);
 
     assert(url != null && url.isNotEmpty);
     assert(name != null && name.isNotEmpty);

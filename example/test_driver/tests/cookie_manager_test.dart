@@ -106,14 +106,11 @@ void main() {
 
       sleep(Duration(seconds: 2));
 
-      // TODO: It doesn't work on iOS, so I'll temporarily skip it.
-      if (Platform.isAndroid) {
-        final cookies2 = await cookieManager.getCookies(
-          url: currentUrl,
-          name: "myCookie",
-        );
-        expect(cookies2.length, 0);
-      }
+      final cookies2 = await cookieManager.getCookies(
+        url: currentUrl,
+        name: "myCookie",
+      );
+      expect(cookies2.length, 0);
 
       context.complete();
     });
@@ -176,6 +173,44 @@ void main() {
         value: "myValue",
         isSecure: true,
       );
+
+      final cookies = await cookieManager.getCookies(
+        url: currentUrl,
+        name: "myCookie",
+      );
+      expect(cookies.length, 1);
+      expect(cookies.first.name, "myCookie");
+      expect(cookies.first.value, "myValue");
+      context.complete();
+    });
+
+    testWebView('specify domain', (tester, context) async {
+      await tester.pumpWidget(
+        WebView(
+          initialUrl: 'https://en.wikipedia.org/wiki/Flutter_(software)',
+          onWebViewCreated: context.onWebViewCreated,
+        ),
+      );
+
+      final controller = await context.webviewController.future;
+      var currentUrl = await controller.currentUrl();
+      final cookieManager = CookieManager.instance();
+      final emptyCookies = await cookieManager.getCookies(
+        url: currentUrl,
+        name: "myCookie",
+      );
+      expect(emptyCookies.length, 0);
+
+      await cookieManager.setCookie(
+        url: currentUrl,
+        name: "myCookie",
+        value: "myValue",
+        domain: ".wikipedia.org",
+        isSecure: true,
+      );
+
+      await controller.loadUrl("https://ja.wikipedia.org/wiki/Flutter");
+      currentUrl = await controller.currentUrl();
 
       final cookies = await cookieManager.getCookies(
         url: currentUrl,
