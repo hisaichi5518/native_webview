@@ -63,7 +63,7 @@ class MyCookieManager(messenger: BinaryMessenger?) : MethodCallHandler {
         result: MethodChannel.Result
     ) {
         var cookieValue = "$name=$value; Path=$path"
-        if (domain != null) cookieValue += "; Domain=$domain;"
+        if (domain != null) cookieValue += "; Domain=$domain"
         if (maxAge != null) cookieValue += "; Max-Age=$maxAge"
         if (isSecure != null && isSecure) cookieValue += "; Secure"
         cookieValue += ";"
