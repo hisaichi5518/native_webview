@@ -35,12 +35,9 @@ class CookieManager {
     Duration maxAge,
     bool isSecure,
   }) async {
-    if (domain == null || domain.isEmpty) domain = _getDomainName(url);
-
     assert(url != null && url.isNotEmpty);
     assert(name != null && name.isNotEmpty);
     assert(value != null && value.isNotEmpty);
-    assert(domain != null && domain.isNotEmpty);
     assert(path != null && path.isNotEmpty);
 
     Map<String, dynamic> args = <String, dynamic>{
