@@ -281,65 +281,263 @@ void main() {
     });
   });
 
-  test('deleteCookie', () async {
-    final currentUrl = "https://flutter.dev/";
-    final cookieManager = CookieManager.instance();
+  group("deleteCookie", () {
+    test("delete flutter.dev's cookie", () async {
+      final currentUrl = "https://flutter.dev/";
+      final wwwDomainUrl = "https://www.flutter.dev/";
+      final subDomainUrl = "https://sub.flutter.dev/";
+      final googleUrl = "https://www.google.com/";
+      final cookieManager = CookieManager.instance();
 
-    await cookieManager.setCookie(
-      url: currentUrl,
-      name: "myCookie",
-      value: "myValue",
-    );
+      await cookieManager.setCookie(
+        url: currentUrl,
+        name: "myCookie",
+        value: "myValue1",
+      );
 
-    await cookieManager.deleteCookie(
-      url: currentUrl,
-      name: "myCookie",
-    );
+      await cookieManager.setCookie(
+        url: wwwDomainUrl,
+        name: "myCookie",
+        value: "myValue2",
+      );
 
-    final cookies = await cookieManager.getCookies(
-      url: currentUrl,
-      name: "myCookie",
-    );
-    expect(cookies.length, 0);
+      await cookieManager.setCookie(
+        url: subDomainUrl,
+        name: "myCookie",
+        value: "myValue3",
+      );
+
+      await cookieManager.setCookie(
+        url: googleUrl,
+        name: "myCookie",
+        value: "myValue4",
+      );
+
+      await cookieManager.deleteCookie(
+        url: currentUrl,
+        name: "myCookie",
+      );
+
+      // TODO: sub-domain cookie is deleted.
+      final cookies = await cookieManager.getCookies(
+        url: currentUrl,
+        name: "myCookie",
+      );
+      expect(cookies.length, 1);
+      expect(cookies.map((e) => e.value).toList(), ["myValue1"]);
+
+      final wwwDomainCookies = await cookieManager.getCookies(
+        url: wwwDomainUrl,
+        name: "myCookie",
+      );
+      expect(wwwDomainCookies.length, 1);
+      expect(wwwDomainCookies.map((e) => e.value).toList(), ["myValue1"]);
+
+      final subDomainCookies = await cookieManager.getCookies(
+        url: subDomainUrl,
+        name: "myCookie",
+      );
+      expect(subDomainCookies.length, 2);
+      expect(
+        subDomainCookies.map((e) => e.value).toList(),
+        ["myValue1", "myValue3"],
+      );
+
+      final googleCookies = await cookieManager.getCookies(
+        url: googleUrl,
+        name: "myCookie",
+      );
+      expect(googleCookies.length, 1);
+    });
   });
 
-  test('deleteCookies', () async {
-    final currentUrl = "https://flutter.dev/";
-    final cookieManager = CookieManager.instance();
+  group("deleteCookies", () {
+    test("delete flutter.dev's cookies", () async {
+      final currentUrl = "https://flutter.dev/";
+      final wwwDomainUrl = "https://www.flutter.dev/";
+      final subDomainUrl = "https://sub.flutter.dev/";
+      final googleUrl = "https://www.google.com/";
+      final cookieManager = CookieManager.instance();
 
-    await cookieManager.setCookie(
-      url: currentUrl,
-      name: "myCookie",
-      value: "myValue",
-    );
+      await cookieManager.setCookie(
+        url: currentUrl,
+        name: "myCookie",
+        value: "myValue",
+      );
 
-    await cookieManager.deleteCookies(
-      url: currentUrl,
-    );
+      await cookieManager.setCookie(
+        url: wwwDomainUrl,
+        name: "myCookie",
+        value: "myValue",
+      );
 
-    final cookies = await cookieManager.getCookies(
-      url: currentUrl,
-      name: "myCookie",
-    );
-    expect(cookies.length, 0);
+      await cookieManager.setCookie(
+        url: subDomainUrl,
+        name: "myCookie",
+        value: "myValue",
+      );
+
+      await cookieManager.setCookie(
+        url: googleUrl,
+        name: "myCookie",
+        value: "myValue",
+      );
+
+      await cookieManager.deleteCookies(
+        url: currentUrl,
+      );
+
+      final cookies = await cookieManager.getCookies(
+        url: currentUrl,
+        name: "myCookie",
+      );
+      expect(cookies.length, 0);
+
+      final wwwDomainCookies = await cookieManager.getCookies(
+        url: wwwDomainUrl,
+        name: "myCookie",
+      );
+      expect(wwwDomainCookies.length, 0);
+
+      final subDomainCookies = await cookieManager.getCookies(
+        url: subDomainUrl,
+        name: "myCookie",
+      );
+      expect(subDomainCookies.length, 0);
+
+      final googleCookies = await cookieManager.getCookies(
+        url: googleUrl,
+        name: "myCookie",
+      );
+      expect(googleCookies.length, 1);
+    });
+
+    test("delete sub.flutter.dev's cookies", () async {
+      final currentUrl = "https://flutter.dev/";
+      final wwwDomainUrl = "https://www.flutter.dev/";
+      final subDomainUrl = "https://sub.flutter.dev/";
+      final googleUrl = "https://www.google.com/";
+      final cookieManager = CookieManager.instance();
+
+      await cookieManager.setCookie(
+        url: currentUrl,
+        name: "myCookie",
+        value: "myValue1",
+      );
+
+      await cookieManager.setCookie(
+        url: wwwDomainUrl,
+        name: "myCookie",
+        value: "myValue2",
+      );
+
+      await cookieManager.setCookie(
+        url: subDomainUrl,
+        name: "myCookie",
+        value: "myValue3",
+      );
+
+      await cookieManager.setCookie(
+        url: googleUrl,
+        name: "myCookie",
+        value: "myValue4",
+      );
+
+      await cookieManager.deleteCookies(
+        url: subDomainUrl,
+      );
+
+      final cookies = await cookieManager.getCookies(
+        url: currentUrl,
+        name: "myCookie",
+      );
+      expect(cookies.length, 1);
+
+      final wwwDomainCookies = await cookieManager.getCookies(
+        url: wwwDomainUrl,
+        name: "myCookie",
+      );
+      expect(wwwDomainCookies.length, 2);
+      expect(
+        wwwDomainCookies.map((e) => e.value).toList(),
+        ["myValue2", "myValue1"],
+      );
+
+      final subDomainCookies = await cookieManager.getCookies(
+        url: subDomainUrl,
+        name: "myCookie",
+      );
+      expect(subDomainCookies.length, 1);
+      expect(
+        subDomainCookies.map((e) => e.value).toList(),
+        ["myValue1"],
+      );
+
+      final googleCookies = await cookieManager.getCookies(
+        url: googleUrl,
+        name: "myCookie",
+      );
+      expect(googleCookies.length, 1);
+    });
   });
 
-  test('deleteAllCookies', () async {
-    final currentUrl = "https://flutter.dev/";
-    final cookieManager = CookieManager.instance();
+  group("deleteAllCookies", () {
+    test('delete all cookies', () async {
+      final currentUrl = "https://flutter.dev/";
+      final wwwDomainUrl = "https://www.flutter.dev/";
+      final subDomainUrl = "https://sub.flutter.dev/";
+      final googleUrl = "https://www.google.com/";
+      final cookieManager = CookieManager.instance();
 
-    await cookieManager.setCookie(
-      url: currentUrl,
-      name: "myCookie",
-      value: "myValue",
-    );
+      await cookieManager.setCookie(
+        url: currentUrl,
+        name: "myCookie",
+        value: "myValue",
+      );
 
-    await cookieManager.deleteAllCookies();
+      await cookieManager.setCookie(
+        url: wwwDomainUrl,
+        name: "myCookie",
+        value: "myValue",
+      );
 
-    final cookies = await cookieManager.getCookies(
-      url: currentUrl,
-      name: "myCookie",
-    );
-    expect(cookies.length, 0);
+      await cookieManager.setCookie(
+        url: subDomainUrl,
+        name: "myCookie",
+        value: "myValue",
+      );
+
+      await cookieManager.setCookie(
+        url: googleUrl,
+        name: "myCookie",
+        value: "myValue",
+      );
+
+      await cookieManager.deleteAllCookies();
+
+      final cookies = await cookieManager.getCookies(
+        url: currentUrl,
+        name: "myCookie",
+      );
+      expect(cookies.length, 0);
+
+      final wwwDomainCookies = await cookieManager.getCookies(
+        url: wwwDomainUrl,
+        name: "myCookie",
+      );
+      expect(wwwDomainCookies.length, 0);
+
+      final subDomainCookies = await cookieManager.getCookies(
+        url: subDomainUrl,
+        name: "myCookie",
+      );
+      expect(subDomainCookies.length, 0);
+
+      final googleCookies = await cookieManager.getCookies(
+        url: googleUrl,
+        name: "myCookie",
+      );
+      expect(googleCookies.length, 0);
+    });
   });
 }

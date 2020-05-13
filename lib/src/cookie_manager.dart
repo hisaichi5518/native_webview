@@ -105,7 +105,7 @@ class CookieManager {
 
   Future<void> deleteCookies({
     @required String url,
-    String domain = "",
+    String domain,
     String path = "/",
   }) async {
     if (domain == null || domain.isEmpty) domain = _getDomainName(url);
