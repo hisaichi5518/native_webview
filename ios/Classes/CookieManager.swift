@@ -22,7 +22,7 @@ class CookieManager: NSObject, FlutterPlugin {
                 let url = arguments["url"] as! String
                 let name = arguments["name"] as! String
                 let value = arguments["value"] as! String
-                let domain = arguments["domain"] as! String
+                let domain = arguments["domain"] as? String
                 let path = arguments["path"] as! String
                 let maxAge = arguments["maxAge"] as? String
                 let isSecure = arguments["isSecure"] as? Bool
@@ -62,7 +62,7 @@ class CookieManager: NSObject, FlutterPlugin {
         url: String,
         name: String,
         value: String,
-        domain: String,
+        domain: String?,
         path: String,
         maxAge: String?,
         isSecure: Bool?,
@@ -72,8 +72,11 @@ class CookieManager: NSObject, FlutterPlugin {
         properties[.originURL] = url
         properties[.name] = name
         properties[.value] = value
-        properties[.domain] = domain.hasPrefix(".") ? domain : ".\(domain)"
         properties[.path] = path
+
+        if let domain = domain {
+            properties[.domain] = domain.hasPrefix(".") ? domain : ".\(domain)"
+        }
 
         if let maxAge = maxAge {
             properties[.maximumAge] = maxAge
