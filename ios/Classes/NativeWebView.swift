@@ -16,6 +16,10 @@ public class NativeWebView: WKWebView {
         navigationDelegate = self
         uiDelegate = self
 
+        if #available(iOS 13.0, *) {
+            self.scrollView.automaticallyAdjustsScrollIndicatorInsets = false
+        }
+
         addObserver(
             self,
             forKeyPath: #keyPath(WKWebView.estimatedProgress),
