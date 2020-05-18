@@ -60,7 +60,6 @@ If you want to see other examples, see [example](./example) or see DartDoc.
 
 - [Can't paste text copied from other apps on Android 10](https://github.com/hisaichi5518/native_webview/issues/49)
 - The following is an issue with Flutter's PlatformView.
-  - WebView scroll bars appear above the content in the iOS simulator.
   - The app becomes inoperable when using window.prompt in the iOS simulator.
   - Sometimes Dropdown doesn't work in the iOS simulator.
   - [Keyboard support](https://github.com/flutter/flutter/labels/p%3A%20webview-keyboard)

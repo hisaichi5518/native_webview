@@ -1,6 +1,10 @@
+## 0.18.0
+
+- [Fix scroll bar appearing above contents problem](https://github.com/hisaichi5518/native_webview/pull/56)
+
 ## 0.17.0
 
-[Change the behavior when domain is not set](https://github.com/hisaichi5518/native_webview/pull/53)
+- [Change the behavior when domain is not set](https://github.com/hisaichi5518/native_webview/pull/53)
 
 ## 0.16.0
 
