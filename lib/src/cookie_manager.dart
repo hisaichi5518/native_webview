@@ -81,28 +81,6 @@ class CookieManager {
     return cookies;
   }
 
-  Future<void> deleteCookie({
-    @required String url,
-    @required String name,
-    String domain,
-    String path = "/",
-  }) async {
-    if (domain == null || domain.isEmpty) domain = _getDomainName(url);
-
-    assert(url != null && url.isNotEmpty);
-    assert(name != null && name.isNotEmpty);
-    assert(domain != null && url.isNotEmpty);
-    assert(path != null && url.isNotEmpty);
-
-    final Map<String, dynamic> args = <String, dynamic>{
-      "url": url,
-      "name": name,
-      "domain": domain,
-      "path": path,
-    };
-    await _channel.invokeMethod('deleteCookie', args);
-  }
-
   Future<void> deleteCookies({
     @required String url,
     String domain = "",

@@ -30,13 +30,6 @@ class MyCookieManager(messenger: BinaryMessenger?) : MethodCallHandler {
                 setCookie(url, name, value, domain, path, maxAge, isSecure, result)
             }
             "getCookies" -> result.success(getCookies(call.argument<String>("url")))
-            "deleteCookie" -> {
-                val url = call.argument<String>("url")
-                val name = call.argument<String>("name")
-                val domain = call.argument<String>("domain")
-                val path = call.argument<String>("path")
-                deleteCookie(url, name, domain, path, result)
-            }
             "deleteCookies" -> {
                 val url = call.argument<String>("url")
                 val domain = call.argument<String>("domain")
@@ -87,12 +80,6 @@ class MyCookieManager(messenger: BinaryMessenger?) : MethodCallHandler {
             cookieListMap.add(cookieMap)
         }
         return cookieListMap
-    }
-
-    private fun deleteCookie(url: String?, name: String?, domain: String?, path: String?, result: MethodChannel.Result) {
-        val cookieValue = "$name=; Path=$path; Domain=$domain; Max-Age=-1;"
-        cookieManager.setCookie(url, cookieValue) { result.success(true) }
-        cookieManager.flush()
     }
 
     private fun deleteCookies(url: String?, domain: String?, path: String?, result: MethodChannel.Result) {
