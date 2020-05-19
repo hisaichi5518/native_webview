@@ -4,6 +4,7 @@ import android.content.Context
 import android.hardware.display.DisplayManager
 import android.view.View
 import android.webkit.WebView
+import androidx.webkit.WebViewCompat
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
@@ -104,6 +105,23 @@ class FlutterWebViewController(
             "goForward" -> {
                 webview.goForward()
                 result.success(true)
+            }
+            "getAndroidWebViewInfo" -> {
+                val context = Locator.activity?.applicationContext
+                if (context == null) {
+                    result.success(null)
+                    return
+                }
+                val packageInfo = WebViewCompat.getCurrentWebViewPackage(context)
+                if (packageInfo == null) {
+                    result.success(null)
+                    return
+                }
+
+                result.success(mapOf(
+                    "versionName" to packageInfo.versionName,
+                    "packageName" to packageInfo.packageName
+                ))
             }
             else -> {
                 result.notImplemented()
