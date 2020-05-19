@@ -1,3 +1,7 @@
+## 0.19.0
+
+- [the keyboard does not appear on ASUS_X00PD](https://github.com/hisaichi5518/native_webview/pull/58)
+
 ## 0.18.0
 
 - [Fix scroll bar appearing above contents problem](https://github.com/hisaichi5518/native_webview/pull/56)

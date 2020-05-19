@@ -237,7 +237,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.18.0"
+    version: "0.19.0"
   node_interop:
     dependency: transitive
     description:
