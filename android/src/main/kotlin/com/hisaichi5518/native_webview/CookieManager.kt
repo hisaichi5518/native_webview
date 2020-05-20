@@ -28,21 +28,6 @@ class MyCookieManager(messenger: BinaryMessenger?) : MethodCallHandler {
                 setCookie(url, name, value, path, domain, maxAge, isSecure, result)
             }
             "getCookies" -> result.success(getCookies(call.argument<String>("url")))
-            "deleteCookie" -> {
-                val url = call.argument<String>("url")!!
-                val name = call.argument<String>("name")!!
-                val path = call.argument<String>("path")!!
-                val domain = call.argument<String>("domain")
-                val isSecure = call.argument<Boolean>("isSecure") ?: false
-                deleteCookie(url, name, path, domain, isSecure, result)
-            }
-            "deleteCookies" -> {
-                val url = call.argument<String>("url")!!
-                val path = call.argument<String>("path")!!
-                val domain = call.argument<String>("domain")
-                val isSecure = call.argument<Boolean>("isSecure") ?: false
-                deleteCookies(url, path, domain, isSecure, result)
-            }
             "deleteAllCookies" -> deleteAllCookies(result)
             else -> result.notImplemented()
         }
@@ -83,36 +68,6 @@ class MyCookieManager(messenger: BinaryMessenger?) : MethodCallHandler {
             ))
         }
         return cookieMapList
-    }
-
-    private fun deleteCookie(
-        url: String,
-        name: String,
-        path: String,
-        domain: String?,
-        isSecure: Boolean,
-        result: MethodChannel.Result
-    ) {
-        val cookieValue = buildCookieValue(name, "", path, domain, "-1", isSecure)
-        cookieManager.setCookie(url, cookieValue) { result.success(true) }
-        cookieManager.flush()
-    }
-
-    private fun deleteCookies(
-        url: String,
-        path: String,
-        domain: String?,
-        isSecure: Boolean,
-        result: MethodChannel.Result
-    ) {
-        val cookies = getCookies(url)
-        for (cookie in cookies) {
-            val name = cookie["name"] as String
-            val cookieValue = buildCookieValue(name, "", path, domain, "-1", isSecure)
-            cookieManager.setCookie(url, cookieValue, null)
-        }
-        cookieManager.flush()
-        result.success(true)
     }
 
     private fun deleteAllCookies(result: MethodChannel.Result) {

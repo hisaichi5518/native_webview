@@ -34,23 +34,6 @@ class CookieManager: NSObject, FlutterPlugin {
                 }
                 let url = arguments["url"] as! String
                 getCookies(url: url, result: result)
-            case "deleteCookie":
-                guard let arguments = arguments else {
-                    break
-                }
-                let url = arguments["url"] as! String
-                let name = arguments["name"] as! String
-                let domain = arguments["domain"] as! String
-                let path = arguments["path"] as! String
-                deleteCookie(url: url, name: name, domain: domain, path: path, result: result)
-            case "deleteCookies":
-                guard let arguments = arguments else {
-                    break
-                }
-                let url = arguments["url"] as! String
-                let domain = arguments["domain"] as! String
-                let path = arguments["path"] as! String
-                deleteCookies(url: url, domain: domain, path: path, result: result)
             case "deleteAllCookies":
                 deleteAllCookies(result: result)
             default:
@@ -100,9 +83,25 @@ class CookieManager: NSObject, FlutterPlugin {
         var cookieList: [[String: Any]] = []
         httpCookieStore.getAllCookies { (cookies) in
             for cookie in cookies {
+                // get url's domain
+                let dummyCookie = HTTPCookie(properties: [
+                    .originURL: url,
+                    .name: "test",
+                    .value: "test",
+                    .path: "/"
+                ])
                 var domain = cookie.domain
-                domain = domain.hasPrefix(".") ? String(domain.suffix(domain.count - 1)) : domain
-                if let host = URL(string: url)?.host, host.hasSuffix(domain) {
+                let canGetSubDomain = domain.hasPrefix(".")
+
+                if canGetSubDomain, let dummyCookie = dummyCookie {
+                    let mainDomain = String(domain.suffix(domain.count - 1))
+                    if dummyCookie.domain.hasSuffix(mainDomain) {
+                        cookieList.append([
+                            "name": cookie.name,
+                            "value": cookie.value
+                        ])
+                    }
+                } else if dummyCookie?.domain == domain {
                     cookieList.append([
                         "name": cookie.name,
                         "value": cookie.value
@@ -110,70 +109,6 @@ class CookieManager: NSObject, FlutterPlugin {
                 }
             }
             result(cookieList)
-        }
-    }
-
-    public func deleteCookie(url: String, name: String, domain: String, path: String, result: @escaping FlutterResult) {
-        httpCookieStore.getAllCookies { [weak self] (cookies) in
-            guard let strongSelf = self else {
-                result(false)
-                return
-            }
-
-            for cookie in cookies {
-                var originURL = ""
-                guard let properties = cookie.properties else {
-                    continue
-                }
-
-                if let url = properties[.originURL] as? String {
-                    originURL = url
-                } else if let url = properties[.originURL] as? URL {
-                    originURL = url.absoluteString
-                }
-
-                if !originURL.isEmpty, originURL != url {
-                    continue
-                }
-
-                if cookie.domain.contains(domain) && cookie.name == name && cookie.path == path {
-                    strongSelf.httpCookieStore.delete(cookie, completionHandler: {
-                        result(true)
-                    })
-                    return
-                }
-            }
-            result(false)
-        }
-    }
-
-    public func deleteCookies(url: String, domain: String, path: String, result: @escaping FlutterResult) {
-        httpCookieStore.getAllCookies { [weak self] (cookies) in
-            guard let strongSelf = self else {
-                result(false)
-                return
-            }
-            for cookie in cookies {
-                var originURL = ""
-                guard let properties = cookie.properties else {
-                    continue
-                }
-
-                if let url = properties[.originURL] as? String {
-                    originURL = url
-                } else if let url = properties[.originURL] as? URL {
-                    originURL = url.absoluteString
-                }
-
-                if !originURL.isEmpty, originURL != url {
-                    continue
-                }
-
-                if cookie.domain.contains(domain) && cookie.path == path {
-                    strongSelf.httpCookieStore.delete(cookie, completionHandler: nil)
-                }
-            }
-            result(true)
         }
     }
 
