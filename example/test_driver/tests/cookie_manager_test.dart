@@ -41,30 +41,21 @@ void main() {
       );
       expect(emptyCookies.length, 0);
 
-      // normal cookie
       await cookieManager.setCookie(
         url: currentUrl,
         name: "myCookie",
         value: "myValue",
       );
-      // set domain option
       await cookieManager.setCookie(
         url: currentUrl,
         name: "myCookie",
-        value: "WithDomainOption",
+        value: "withDomainOption",
         domain: ".flutter.dev", // == "flutter.dev"
       );
-      // Can't get it because the host is different.
       await cookieManager.setCookie(
         url: "https://google.com/",
         name: "myCookie",
         value: "myGoogle",
-      );
-      // Can't get it because the host is different.
-      await cookieManager.setCookie(
-        url: "https://sub.flutter.dev/",
-        name: "myCookie",
-        value: "SubDomain",
       );
 
       final cookies = await cookieManager.getCookies(
@@ -73,7 +64,21 @@ void main() {
       );
       expect(cookies.length, 2);
       expect(cookies.map((e) => e.name), ["myCookie", "myCookie"]);
-      expect(cookies.map((e) => e.value), ["myValue", "WithDomainOption"]);
+      expect(cookies.map((e) => e.value), ["myValue", "withDomainOption"]);
+
+      final googleCookies = await cookieManager.getCookies(
+        url: "https://google.com/",
+        name: "myCookie",
+      );
+      expect(googleCookies.length, 1);
+      expect(googleCookies.map((e) => e.name), ["myCookie"]);
+      expect(googleCookies.map((e) => e.value), ["myGoogle"]);
+
+      final subDomainCookies = await cookieManager.getCookies(
+        url: "https://sub.flutter.dev/",
+        name: "myCookie",
+      );
+      expect(subDomainCookies.length, 1);
     });
 
     test("get sub.flutter.dev's myCookie", () async {
@@ -86,20 +91,17 @@ void main() {
       );
       expect(emptyCookies.length, 0);
 
-      // normal cookie
       await cookieManager.setCookie(
         url: currentUrl,
         name: "myCookie",
         value: "myValue",
       );
-      // set domain option
       await cookieManager.setCookie(
         url: currentUrl,
         name: "myCookie",
-        value: "WithDomainOption",
+        value: "withDomainOption",
         domain: ".flutter.dev", // == "flutter.dev"
       );
-      // Can't get it because the host is different.
       await cookieManager.setCookie(
         url: "https://google.com/",
         name: "myCookie",
@@ -112,7 +114,14 @@ void main() {
       );
       expect(cookies.length, 2);
       expect(cookies.map((e) => e.name), ["myCookie", "myCookie"]);
-      expect(cookies.map((e) => e.value), ["myValue", "WithDomainOption"]);
+      expect(cookies.map((e) => e.value), ["myValue", "withDomainOption"]);
+
+      final mainDomainCookies = await cookieManager.getCookies(
+        url: "https://flutter.dev/",
+        name: "myCookie",
+      );
+      expect(mainDomainCookies.length, 1);
+      expect(mainDomainCookies.map((e) => e.value), ["withDomainOption"]);
     });
 
     test("get secure cookie", () async {
