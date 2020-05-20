@@ -9,6 +9,7 @@ import io.flutter.plugin.platform.PlatformViewRegistry
 
 class NativeWebviewPlugin : FlutterPlugin, ActivityAware {
     private var cookieManager: MyCookieManager? = null
+    private var webviewManager: WebViewManager? = null
 
     override fun onAttachedToEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
         Locator.binding = binding
@@ -29,12 +30,15 @@ class NativeWebviewPlugin : FlutterPlugin, ActivityAware {
             FlutterWebViewFactory(messenger)
         )
         cookieManager = MyCookieManager(messenger)
+        webviewManager = WebViewManager(messenger)
     }
 
     override fun onDetachedFromActivity() {
         Locator.activity = null
         cookieManager?.dispose()
         cookieManager = null
+        webviewManager?.dispose()
+        webviewManager = null
     }
 
     override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {

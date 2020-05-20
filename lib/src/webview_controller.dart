@@ -7,20 +7,6 @@ import 'package:native_webview/native_webview.dart';
 
 typedef Future<void> JavascriptHandlerCallback(List<dynamic> arguments);
 
-class AndroidWebViewInfo {
-  ///The name of Android WebView package. From the <manifest> tag's "name" attribute.
-  final String packageName;
-
-  ///The version name of Android WebView package, as specified by the <manifest> tag's versionName attribute.
-  final String versionName;
-
-  AndroidWebViewInfo._(this.packageName, this.versionName);
-
-  factory AndroidWebViewInfo.fromMap(Map<dynamic, dynamic> mapping) {
-    return AndroidWebViewInfo._(mapping["packageName"], mapping["versionName"]);
-  }
-}
-
 class WebViewController {
   final WebView _widget;
   final MethodChannel _channel;
@@ -177,18 +163,6 @@ class WebViewController {
       'goForward',
       <String, dynamic>{},
     );
-  }
-
-  Future<AndroidWebViewInfo> getAndroidWebViewInfo() async {
-    if (!Platform.isAndroid) {
-      return null;
-    }
-
-    final mapping = await _channel.invokeMethod<Map<dynamic, dynamic>>(
-      'getAndroidWebViewInfo',
-      <String, dynamic>{},
-    );
-    return AndroidWebViewInfo.fromMap(mapping);
   }
 
   void addJavascriptHandler(String name, JavascriptHandlerCallback callback) {

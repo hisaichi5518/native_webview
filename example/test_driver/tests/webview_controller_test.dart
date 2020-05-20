@@ -319,42 +319,4 @@ class Rectangle {
       ]));
     }, skip: !Platform.isAndroid);
   });
-
-  group("getAndroidWebViewInfo", () {
-    testWebView("return not null", (tester, context) async {
-      await tester.pumpWidget(
-        WebView(
-          initialUrl: 'about:blank',
-          onWebViewCreated: context.onWebViewCreated,
-          onPageStarted: context.onPageStarted,
-          onPageFinished: context.onPageFinished,
-        ),
-      );
-      final controller = await context.webviewController.future;
-      final webviewInfo = await controller.getAndroidWebViewInfo();
-
-      expect(webviewInfo, isNotNull);
-      expect(webviewInfo.versionName, isNotEmpty);
-      expect(webviewInfo.packageName, isNotEmpty);
-
-      context.complete();
-    }, skip: !Platform.isAndroid);
-
-    testWebView("return null", (tester, context) async {
-      await tester.pumpWidget(
-        WebView(
-          initialUrl: 'about:blank',
-          onWebViewCreated: context.onWebViewCreated,
-          onPageStarted: context.onPageStarted,
-          onPageFinished: context.onPageFinished,
-        ),
-      );
-      final controller = await context.webviewController.future;
-      final webviewInfo = await controller.getAndroidWebViewInfo();
-
-      expect(webviewInfo, isNull);
-
-      context.complete();
-    }, skip: !Platform.isIOS);
-  });
 }
