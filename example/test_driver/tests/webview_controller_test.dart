@@ -277,7 +277,7 @@ class Rectangle {
           context.complete();
         },
       ]));
-    }, skip: !Platform.isIOS);
+    }, skip: !Platform.isIOS, timeout: Duration(seconds: 300));
 
     testWebView("can go back/forward(Android)", (tester, context) async {
       await tester.pumpWidget(

@@ -93,6 +93,7 @@ void testWebView(
   String description,
   WidgetTesterCallback callback, {
   bool skip = false,
+  Duration timeout = const Duration(seconds: 120),
 }) {
   test.testWidgets(
     description,
@@ -104,7 +105,7 @@ void testWebView(
       context.dispose();
     },
     skip: skip,
-    timeout: test.Timeout(Duration(seconds: 120)),
+    timeout: test.Timeout(timeout),
   );
 }
 
