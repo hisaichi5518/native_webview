@@ -64,7 +64,8 @@ void main() {
       );
       expect(cookies.length, 2);
       expect(cookies.map((e) => e.name), ["myCookie", "myCookie"]);
-      expect(cookies.map((e) => e.value), ["myValue", "withDomainOption"]);
+      expect(cookies.map((e) => e.value), contains("myValue"));
+      expect(cookies.map((e) => e.value), contains("withDomainOption"));
 
       final googleCookies = await cookieManager.getCookies(
         url: "https://google.com/",
@@ -114,7 +115,8 @@ void main() {
       );
       expect(cookies.length, 2);
       expect(cookies.map((e) => e.name), ["myCookie", "myCookie"]);
-      expect(cookies.map((e) => e.value), ["myValue", "withDomainOption"]);
+      expect(cookies.map((e) => e.value), contains("myValue"));
+      expect(cookies.map((e) => e.value), contains("withDomainOption"));
 
       final mainDomainCookies = await cookieManager.getCookies(
         url: "https://flutter.dev/",
