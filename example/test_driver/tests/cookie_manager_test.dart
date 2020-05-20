@@ -10,8 +10,8 @@ void main() {
     await CookieManager.instance().deleteAllCookies();
   });
 
-  group("getCookies", () {
-    testWebView('no name', (tester, context) async {
+  group("setCookie/getCookies", () {
+    testWebView("get flutter.dev's cookies", (tester, context) async {
       await tester.pumpWidget(
         WebView(
           initialUrl: 'https://flutter.dev/',
@@ -31,7 +31,7 @@ void main() {
       ]));
     });
 
-    test('has name', () async {
+    test("get flutter.dev's myCookie", () async {
       final cookieManager = CookieManager.instance();
 
       final currentUrl = "https://flutter.dev/";
@@ -41,20 +41,67 @@ void main() {
       );
       expect(emptyCookies.length, 0);
 
+      // normal cookie
       await cookieManager.setCookie(
         url: currentUrl,
         name: "myCookie",
         value: "myValue",
       );
-
+      // set domain option
+      await cookieManager.setCookie(
+        url: currentUrl,
+        name: "myCookie",
+        value: "WithDomainOption",
+        domain: ".flutter.dev", // == "flutter.dev"
+      );
       // Can't get it because the host is different.
       await cookieManager.setCookie(
         url: "https://google.com/",
         name: "myCookie",
         value: "myGoogle",
       );
+      // Can't get it because the host is different.
       await cookieManager.setCookie(
-        url: "https://en.wikipedia.org/wiki/Flutter",
+        url: "https://sub.flutter.dev/",
+        name: "myCookie",
+        value: "SubDomain",
+      );
+
+      final cookies = await cookieManager.getCookies(
+        url: currentUrl,
+        name: "myCookie",
+      );
+      expect(cookies.length, 2);
+      expect(cookies.map((e) => e.name), ["myCookie", "myCookie"]);
+      expect(cookies.map((e) => e.value), ["myValue", "WithDomainOption"]);
+    });
+
+    test("get sub.flutter.dev's myCookie", () async {
+      final cookieManager = CookieManager.instance();
+
+      final currentUrl = "https://sub.flutter.dev/";
+      final emptyCookies = await cookieManager.getCookies(
+        url: currentUrl,
+        name: "myCookie",
+      );
+      expect(emptyCookies.length, 0);
+
+      // normal cookie
+      await cookieManager.setCookie(
+        url: currentUrl,
+        name: "myCookie",
+        value: "myValue",
+      );
+      // set domain option
+      await cookieManager.setCookie(
+        url: currentUrl,
+        name: "myCookie",
+        value: "WithDomainOption",
+        domain: ".flutter.dev", // == "flutter.dev"
+      );
+      // Can't get it because the host is different.
+      await cookieManager.setCookie(
+        url: "https://google.com/",
         name: "myCookie",
         value: "myGoogle",
       );
@@ -63,20 +110,15 @@ void main() {
         url: currentUrl,
         name: "myCookie",
       );
-      expect(cookies.length, 1);
-      expect(cookies.first.name, "myCookie");
-      expect(cookies.first.value, "myValue");
-    });
-  });
-
-  group("setCookie", () {
-    setUp(() async {
-      await CookieManager.instance().deleteAllCookies();
+      expect(cookies.length, 2);
+      expect(cookies.map((e) => e.name), ["myCookie", "myCookie"]);
+      expect(cookies.map((e) => e.value), ["myValue", "WithDomainOption"]);
     });
 
-    test('normal cookie', () async {
-      final currentUrl = "https://flutter.dev/";
+    test("get secure cookie", () async {
       final cookieManager = CookieManager.instance();
+
+      final currentUrl = "https://flutter.dev/";
       final emptyCookies = await cookieManager.getCookies(
         url: currentUrl,
         name: "myCookie",
@@ -87,10 +129,7 @@ void main() {
         url: currentUrl,
         name: "myCookie",
         value: "myValue",
-        path: "/",
-        domain: "flutter.dev",
-        isSecure: false,
-        maxAge: Duration(seconds: 0),
+        isSecure: true,
       );
 
       final cookies = await cookieManager.getCookies(
@@ -98,19 +137,20 @@ void main() {
         name: "myCookie",
       );
       expect(cookies.length, 1);
-      expect(cookies.first.name, "myCookie");
-      expect(cookies.first.value, "myValue");
+      expect(cookies.map((e) => e.name), ["myCookie"]);
+      expect(cookies.map((e) => e.value), ["myValue"]);
     });
 
-    group("maxAge", () {
+    group("set max-age option", () {
       test('is 1 second', () async {
-        final currentUrl = "https://flutter.dev/";
         final cookieManager = CookieManager.instance();
-        final cookies = await cookieManager.getCookies(
+
+        final currentUrl = "https://flutter.dev/";
+        final emptyCookies = await cookieManager.getCookies(
           url: currentUrl,
           name: "myCookie",
         );
-        expect(cookies.length, 0);
+        expect(emptyCookies.length, 0);
 
         await cookieManager.setCookie(
           url: currentUrl,
@@ -119,14 +159,14 @@ void main() {
           maxAge: Duration(seconds: 1),
         );
 
-        final cookies1 = await cookieManager.getCookies(
+        final cookies = await cookieManager.getCookies(
           url: currentUrl,
           name: "myCookie",
         );
-        expect(cookies1.length, 1);
-        expect(cookies1.first.value, "myValue");
+        expect(cookies.length, 1);
+        expect(cookies.first.value, "myValue");
 
-        sleep(Duration(seconds: 2));
+        await Future.delayed(const Duration(seconds: 2));
 
         // TODO: It doesn't work on iOS, so I'll temporarily skip it.
         if (Platform.isAndroid) {
@@ -139,13 +179,14 @@ void main() {
       });
 
       test('is 0 second', () async {
-        final currentUrl = "https://flutter.dev/";
         final cookieManager = CookieManager.instance();
-        final cookies = await cookieManager.getCookies(
+
+        final currentUrl = "https://flutter.dev/";
+        final emptyCookies = await cookieManager.getCookies(
           url: currentUrl,
           name: "myCookie",
         );
-        expect(cookies.length, 0);
+        expect(emptyCookies.length, 0);
 
         await cookieManager.setCookie(
           url: currentUrl,
@@ -171,13 +212,14 @@ void main() {
       });
 
       test('is 1 day', () async {
-        final currentUrl = "https://flutter.dev/";
         final cookieManager = CookieManager.instance();
-        final cookies = await cookieManager.getCookies(
+
+        final currentUrl = "https://flutter.dev/";
+        final emptyCookies = await cookieManager.getCookies(
           url: currentUrl,
           name: "myCookie",
         );
-        expect(cookies.length, 0);
+        expect(emptyCookies.length, 0);
 
         await cookieManager.setCookie(
           url: currentUrl,
@@ -201,34 +243,9 @@ void main() {
       });
     });
 
-    test('secure cookie', () async {
-      final currentUrl = "https://flutter.dev/";
-      final cookieManager = CookieManager.instance();
-      final emptyCookies = await cookieManager.getCookies(
-        url: currentUrl,
-        name: "myCookie",
-      );
-      expect(emptyCookies.length, 0);
-
-      await cookieManager.setCookie(
-        url: currentUrl,
-        name: "myCookie",
-        value: "myValue",
-        isSecure: true,
-      );
-
-      final cookies = await cookieManager.getCookies(
-        url: currentUrl,
-        name: "myCookie",
-      );
-      expect(cookies.length, 1);
-      expect(cookies.first.name, "myCookie");
-      expect(cookies.first.value, "myValue");
-    });
-
-    group("sub domain", () {
-      test('has prefix', () async {
-        final currentUrl = "https://en.wikipedia.org/wiki/Flutter_(software)";
+    group("set domain option", () {
+      test("get flutter.dev's cookie by https://sub.flutter.dev/", () async {
+        final currentUrl = "https://sub.flutter.dev/";
         final cookieManager = CookieManager.instance();
         final emptyCookies = await cookieManager.getCookies(
           url: currentUrl,
@@ -240,38 +257,11 @@ void main() {
           url: currentUrl,
           name: "myCookie",
           value: "myValue",
-          domain: ".wikipedia.org",
-          isSecure: true,
+          domain: "flutter.dev",
         );
 
         final cookies = await cookieManager.getCookies(
-          url: "https://ja.wikipedia.org/wiki/Flutter",
-          name: "myCookie",
-        );
-        expect(cookies.length, 1);
-        expect(cookies.first.name, "myCookie");
-        expect(cookies.first.value, "myValue");
-      });
-
-      test('no prefix', () async {
-        final currentUrl = "https://en.wikipedia.org/wiki/Flutter_(software)";
-        final cookieManager = CookieManager.instance();
-        final emptyCookies = await cookieManager.getCookies(
           url: currentUrl,
-          name: "myCookie",
-        );
-        expect(emptyCookies.length, 0);
-
-        await cookieManager.setCookie(
-          url: currentUrl,
-          name: "myCookie",
-          value: "myValue",
-          domain: "wikipedia.org",
-          isSecure: true,
-        );
-
-        final cookies = await cookieManager.getCookies(
-          url: "https://ja.wikipedia.org/wiki/Flutter",
           name: "myCookie",
         );
         expect(cookies.length, 1);
