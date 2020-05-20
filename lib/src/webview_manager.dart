@@ -1,12 +1,6 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
-import 'package:native_webview/src/content_blocker.dart';
-import 'package:native_webview/src/javascript_callback.dart';
-import 'package:native_webview/src/web_resource_error.dart';
-import 'package:native_webview/src/webview_controller.dart';
 
 class AndroidWebViewInfo {
   ///The name of Android WebView package. From the <manifest> tag's "name" attribute.
