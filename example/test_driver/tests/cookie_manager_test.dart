@@ -271,49 +271,6 @@ void main() {
     });
   });
 
-  test('deleteCookie', () async {
-    final currentUrl = "https://flutter.dev/";
-    final cookieManager = CookieManager.instance();
-
-    await cookieManager.setCookie(
-      url: currentUrl,
-      name: "myCookie",
-      value: "myValue",
-    );
-
-    await cookieManager.deleteCookie(
-      url: currentUrl,
-      name: "myCookie",
-    );
-
-    final cookies = await cookieManager.getCookies(
-      url: currentUrl,
-      name: "myCookie",
-    );
-    expect(cookies.length, 0);
-  });
-
-  test('deleteCookies', () async {
-    final currentUrl = "https://flutter.dev/";
-    final cookieManager = CookieManager.instance();
-
-    await cookieManager.setCookie(
-      url: currentUrl,
-      name: "myCookie",
-      value: "myValue",
-    );
-
-    await cookieManager.deleteCookies(
-      url: currentUrl,
-    );
-
-    final cookies = await cookieManager.getCookies(
-      url: currentUrl,
-      name: "myCookie",
-    );
-    expect(cookies.length, 0);
-  });
-
   test('deleteAllCookies', () async {
     final currentUrl = "https://flutter.dev/";
     final cookieManager = CookieManager.instance();
