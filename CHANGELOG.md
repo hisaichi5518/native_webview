@@ -1,3 +1,9 @@
+## 0.20.0
+
+- [Add WebViewManager](https://github.com/hisaichi5518/native_webview/pull/63)
+- [delete deleteCookie and deleteCookies](https://github.com/hisaichi5518/native_webview/pull/62)
+- [Fix getCookie for iOS](https://github.com/hisaichi5518/native_webview/pull/62)
+
 ## 0.19.0
 
 - [the keyboard does not appear on ASUS_X00PD](https://github.com/hisaichi5518/native_webview/pull/58)
