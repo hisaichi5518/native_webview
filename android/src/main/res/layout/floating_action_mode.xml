@@ -4,4 +4,4 @@
     android:layout_height="wrap_content"
     android:alpha="0"
     android:background="@drawable/floating_action_mode_shape"
-    android:elevation="4dp" />
+    android:elevation="2dp" />

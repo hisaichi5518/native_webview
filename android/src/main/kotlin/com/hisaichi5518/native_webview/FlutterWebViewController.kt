@@ -106,23 +106,6 @@ class FlutterWebViewController(
                 webview.goForward()
                 result.success(true)
             }
-            "getAndroidWebViewInfo" -> {
-                val context = Locator.activity?.applicationContext
-                if (context == null) {
-                    result.success(null)
-                    return
-                }
-                val packageInfo = WebViewCompat.getCurrentWebViewPackage(context)
-                if (packageInfo == null) {
-                    result.success(null)
-                    return
-                }
-
-                result.success(mapOf(
-                    "versionName" to packageInfo.versionName,
-                    "packageName" to packageInfo.packageName
-                ))
-            }
             else -> {
                 result.notImplemented()
             }

@@ -11,10 +11,10 @@ void main() {
   });
 
   group("setCookie/getCookies", () {
-    testWebView("get flutter.dev's cookies", (tester, context) async {
+    testWebView("get www.google.com's cookies", (tester, context) async {
       await tester.pumpWidget(
         WebView(
-          initialUrl: 'https://flutter.dev/',
+          initialUrl: 'https://www.google.com/',
           onWebViewCreated: context.onWebViewCreated,
           onPageFinished: context.onPageFinished,
         ),
