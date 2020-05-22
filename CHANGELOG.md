@@ -1,3 +1,9 @@
+## 0.21.0
+
+- [Fix FloatingAction design](https://github.com/hisaichi5518/native_webview/pull/65)
+- [Fix null pointer exception](https://github.com/hisaichi5518/native_webview/pull/65)
+- [Remove unnecessary code](https://github.com/hisaichi5518/native_webview/pull/65)
+
 ## 0.20.0
 
 - [Add WebViewManager](https://github.com/hisaichi5518/native_webview/pull/63)
