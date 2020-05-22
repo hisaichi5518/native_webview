@@ -112,7 +112,8 @@ class NativeWebView(context: Context, channel: MethodChannel, options: WebViewOp
             ?.viewTreeObserver
             ?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
-                    floatingActionView!!.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    val view = floatingActionView ?: return
+                    view.viewTreeObserver.removeOnGlobalLayoutListener(this)
                     onFloatingActionGlobalLayout(x, y)
                 }
             })
@@ -122,10 +123,11 @@ class NativeWebView(context: Context, channel: MethodChannel, options: WebViewOp
     }
 
     private fun onFloatingActionGlobalLayout(x: Int, y: Int) {
+        val view = floatingActionView ?: return
         val maxWidth: Int = width
         val maxHeight: Int = height
-        val width = floatingActionView!!.width
-        val height = floatingActionView!!.height
+        val width = view.width
+        val height = view.height
         var curx = x - width / 2
         if (curx < 0) {
             curx = 0
@@ -138,9 +140,9 @@ class NativeWebView(context: Context, channel: MethodChannel, options: WebViewOp
             cury = y - height - size
         }
         updateViewLayout(
-            floatingActionView,
+            view,
             LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, curx, cury.toInt() + scrollY)
         )
-        floatingActionView!!.alpha = 1f
+        view.alpha = 1f
     }
 }
