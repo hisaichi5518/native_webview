@@ -126,6 +126,8 @@ class WebView extends StatefulWidget {
   ///If you specify androidBackgroundColor, it won't happen.
   final Color androidBackgroundColor;
 
+  final String userAgent;
+
   const WebView({
     Key key,
     this.initialUrl,
@@ -145,6 +147,7 @@ class WebView extends StatefulWidget {
     this.androidBackgroundColor = Colors.white,
     this.gestureNavigationEnabled = false,
     this.debuggingEnabled = false,
+    this.userAgent,
   });
 
   @override
@@ -223,6 +226,7 @@ class _CreationParams {
           (widget.contentBlockers ?? []).map((v) => v.toMap()).toList(),
       "gestureNavigationEnabled": widget.gestureNavigationEnabled ?? false,
       "debuggingEnabled": widget.debuggingEnabled ?? false,
+      "userAgent": widget.userAgent,
     };
   }
 }

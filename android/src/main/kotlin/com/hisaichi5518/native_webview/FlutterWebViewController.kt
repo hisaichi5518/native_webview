@@ -45,6 +45,12 @@ class FlutterWebViewController(
 
         // refs https://github.com/hisaichi5518/native_webview/issues/31
         webview = NativeWebView(PresentationContext(context, Locator.activity!!), methodChannel, options)
+
+        val customUserAgent = params["userAgent"] as? String
+        if (customUserAgent != null) {
+            webview.settings.userAgentString = customUserAgent
+        }
+
         webview.load(initialData, initialFile, initialUrl, initialHeaders)
     }
 
