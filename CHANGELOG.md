@@ -1,3 +1,7 @@
+## 0.22.0
+
+- [Add userAgent option](https://github.com/hisaichi5518/native_webview/pull/67)
+
 ## 0.21.0
 
 - [Fix FloatingAction design](https://github.com/hisaichi5518/native_webview/pull/65)

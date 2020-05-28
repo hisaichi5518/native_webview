@@ -57,6 +57,10 @@ public class FlutterWebViewController: NSObject, FlutterPlatformView {
         let gestureNavigationEnabled = args["gestureNavigationEnabled"] as? Bool ?? false
         webview.allowsBackForwardNavigationGestures = gestureNavigationEnabled
 
+        if let customUserAgent = args["userAgent"] as? String {
+            webview.customUserAgent = customUserAgent
+        }
+
         // If I don't set the background color, the screen is displayed in black.
         webview.backgroundColor = UIColor.init(red: 0, green: 0, blue: 0, alpha: 0)
         webview.autoresizingMask = [.flexibleWidth, .flexibleHeight]

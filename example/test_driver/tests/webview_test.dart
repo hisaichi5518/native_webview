@@ -342,4 +342,42 @@ void main() {
       ]));
     });
   });
+
+  group("userAgent", () {
+    testWebView('is null', (tester, context) async {
+      await tester.pumpWidget(
+        WebView(
+          onWebViewCreated: context.onWebViewCreated,
+          onPageFinished: context.onPageFinished,
+          debuggingEnabled: true,
+        ),
+      );
+
+      await context.webviewController.future;
+      context.complete();
+    });
+
+    testWebView('is not null', (tester, context) async {
+      final customUserAgent = "custom-user-agent";
+      await tester.pumpWidget(
+        WebView(
+          onWebViewCreated: context.onWebViewCreated,
+          onPageFinished: context.onPageFinished,
+          debuggingEnabled: true,
+          userAgent: customUserAgent,
+        ),
+      );
+
+      final controller = await context.webviewController.future;
+
+      context.pageFinished.stream.listen(onData([
+        (event) async {
+          final userAgent =
+              await controller.evaluateJavascript("navigator.userAgent");
+          expect(userAgent, customUserAgent);
+          context.complete();
+        },
+      ]));
+    });
+  });
 }
