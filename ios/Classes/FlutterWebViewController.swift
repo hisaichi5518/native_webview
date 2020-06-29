@@ -47,7 +47,7 @@ public class FlutterWebViewController: NSObject, FlutterPlatformView {
 
         let javaScriptBridgeJSScript = WKUserScript(source: javaScriptBridgeJS, injectionTime: .atDocumentStart, forMainFrameOnly: false)
         configuration.userContentController.addUserScript(javaScriptBridgeJSScript)
-        configuration.userContentController.add(self, name: "callHandler")
+        configuration.userContentController.add(NativeWebViewContentController(channel: channel), name: "callHandler")
 
         let initialURL = args["initialUrl"] as? String ?? "about:blank"
         let initialFile = args["initialFile"] as? String
@@ -66,7 +66,13 @@ public class FlutterWebViewController: NSObject, FlutterPlatformView {
         webview.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         self.parent.addSubview(webview)
 
-        channel.setMethodCallHandler(handle)
+        // Passing the handle method to setMethodCallHandler will cause a memory leak
+        self.channel.setMethodCallHandler({ [weak self] (call, result) in
+            guard let strongSelf = self else {
+                return
+            }
+            strongSelf.handle(call, result: result)
+        })
 
         let contentBlockers = args["contentBlockers"] as? [[String: [String : Any]]]
         if let contentBlockers = contentBlockers, contentBlockers.count > 0 {
@@ -98,13 +104,16 @@ public class FlutterWebViewController: NSObject, FlutterPlatformView {
                 NSLog("\n\(error)")
             }
         }
-
         self.webview.configuration.userContentController.removeAllContentRuleLists()
 
         load(initialData, initialFile, initialURL, initialHeaders)
     }
 
     deinit {
+        webview.stopLoading()
+        webview.configuration.userContentController.removeAllUserScripts()
+        webview.configuration.userContentController.removeScriptMessageHandler(forName: "callHandler")
+        webview.removeFromSuperview()
         channel.setMethodCallHandler(nil)
     }
 
@@ -196,7 +205,13 @@ public class FlutterWebViewController: NSObject, FlutterPlatformView {
     }
 }
 
-extension FlutterWebViewController: WKScriptMessageHandler {
+class NativeWebViewContentController: NSObject, WKScriptMessageHandler {
+    var channel: FlutterMethodChannel
+
+    init(channel: FlutterMethodChannel) {
+        self.channel = channel
+    }
+
     public func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         guard let body = message.body as? [String: Any],
             let handlerName = body["handlerName"] as? String,
