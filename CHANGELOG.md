@@ -1,3 +1,8 @@
+## 0.24.0
+
+- [Use Android Studio 4.0](https://github.com/hisaichi5518/native_webview/pull/70)
+- [be able to use "callHandler", even if the readyState is interactive](https://github.com/hisaichi5518/native_webview/pull/71)
+
 ## 0.23.0
 
 - [Fix ios webview leak](https://github.com/hisaichi5518/native_webview/pull/68)
