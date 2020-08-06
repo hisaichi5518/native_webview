@@ -1,3 +1,7 @@
+## 0.23.0
+
+- [Fix ios webview leak](https://github.com/hisaichi5518/native_webview/pull/68)
+
 ## 0.22.0
 
 - [Add userAgent option](https://github.com/hisaichi5518/native_webview/pull/67)
