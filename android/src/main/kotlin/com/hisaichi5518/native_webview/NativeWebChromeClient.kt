@@ -14,8 +14,21 @@ import io.flutter.plugin.common.MethodChannel
 
 
 class NativeWebChromeClient(private val channel: MethodChannel) : WebChromeClient() {
+    companion object {
+        const val JAVASCRIPT_BRIDGE_NAME = "nativeWebView"
+        val JAVASCRIPT = """
+if (!window.${JAVASCRIPT_BRIDGE_NAME}.callHandler) {
+    window.${JAVASCRIPT_BRIDGE_NAME}.callHandler = function() {
+        window.${JAVASCRIPT_BRIDGE_NAME}._callHandler(arguments[0], JSON.stringify(Array.prototype.slice.call(arguments, 1)));
+    };
+}""".trimIndent()
+    }
+
     override fun onProgressChanged(view: WebView?, newProgress: Int) {
         super.onProgressChanged(view, newProgress)
+
+        view?.evaluateJavascript(JAVASCRIPT) {}
+
         channel.invokeMethod("onProgressChanged", mapOf(
             "progress" to newProgress
         ))

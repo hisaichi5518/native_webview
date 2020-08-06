@@ -114,6 +114,48 @@ void main() {
       ]));
     });
 
+    testWebView("readyState is interactive", (tester, context) async {
+      final List<List<dynamic>> argumentsReceived = [];
+
+      String beforeReadyState = "loading";
+      await tester.pumpWidget(
+        WebView(
+          initialUrl: 'https://flutter.dev/',
+          onWebViewCreated: (controller) {
+            controller.addJavascriptHandler("hoge", (arguments) async {
+              argumentsReceived.add(arguments);
+            });
+            context.onWebViewCreated(controller);
+          },
+          onProgressChanged: (controller, _) async {
+            final readyState = await controller
+                .evaluateJavascript("document.readyState") as String;
+
+            if (beforeReadyState == "loading" && readyState == "interactive") {
+              beforeReadyState = readyState;
+              await controller.evaluateJavascript("""
+          window.nativeWebView.callHandler("hoge", "value", 1, true);
+          """);
+              return;
+            }
+            beforeReadyState = readyState;
+          },
+          onPageFinished: context.onPageFinished,
+        ),
+      );
+
+      context.pageFinished.stream.listen(onData([
+        (event) async {
+          print(argumentsReceived);
+
+          expect(argumentsReceived, [
+            ["value", 1, true],
+          ]);
+          context.complete();
+        },
+      ]));
+    });
+
     testWebView("nothing handler", (tester, context) async {
       final List<List<dynamic>> argumentsReceived = [];
 

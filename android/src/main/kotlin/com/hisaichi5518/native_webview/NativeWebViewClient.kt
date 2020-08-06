@@ -1,8 +1,6 @@
 package com.hisaichi5518.native_webview
 
-import android.annotation.TargetApi
 import android.graphics.Bitmap
-import android.os.Build
 import android.view.KeyEvent
 import android.webkit.*
 import io.flutter.Log
@@ -10,19 +8,10 @@ import io.flutter.plugin.common.MethodChannel
 import java.util.*
 
 class NativeWebViewClient(private val channel: MethodChannel, private val options: WebViewOptions) : WebViewClient() {
-    companion object {
-        const val JAVASCRIPT_BRIDGE_NAME = "nativeWebView"
-    }
 
     private val contentBlockerHandler = ContentBlockerHandler(options.contentBlockers.map {
         ContentBlocker.fromMap(it)
     })
-
-    private val javascript = """
-        window.${JAVASCRIPT_BRIDGE_NAME}.callHandler = function() {
-            window.${JAVASCRIPT_BRIDGE_NAME}._callHandler(arguments[0], JSON.stringify(Array.prototype.slice.call(arguments, 1)));
-        };
-        """.trimIndent()
 
     override fun shouldInterceptRequest(view: WebView?, request: WebResourceRequest): WebResourceResponse? {
         if (contentBlockerHandler.ruleList.isNotEmpty() && view != null) {
@@ -52,8 +41,6 @@ class NativeWebViewClient(private val channel: MethodChannel, private val option
             clearFocus()
             requestFocus()
         }
-
-        view?.evaluateJavascript(javascript) {}
 
         channel.invokeMethod("onPageFinished", mapOf(
             "url" to url
