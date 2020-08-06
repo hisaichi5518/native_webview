@@ -292,6 +292,43 @@ extension NativeWebView: WKUIDelegate {
         onWebResourceError(error as NSError)
     }
 
+    public func webView(
+        _ webView: WKWebView,
+        didReceive challenge: URLAuthenticationChallenge,
+        completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
+    ) {
+        let host = challenge.protectionSpace.host
+        let realm = challenge.protectionSpace.realm
+        let arguments = ["host": host, "realm": realm]
+        channel?.invokeMethod("onReceivedHttpAuthRequest", arguments: arguments, result: { (result) -> Void in
+            if result is FlutterError, let result = result as? FlutterError {
+                NSLog("\n\(result.message ?? "message is nil")")
+                return
+            }
+
+
+            if let result = result, let response = result as? [String: Any] {
+                    let action = response["action"] as? Int
+                    switch action {
+                    case 0: // useCredential
+                        let username = response["username"] as! String
+                        let password = response["password"] as! String
+                        let credential = URLCredential(
+                            user: username,
+                            password: password,
+                            persistence: URLCredential.Persistence.forSession
+                        )
+                        completionHandler(.useCredential, credential)
+                    default: // Cancel
+                        // Use .performDefaultHandling to make it behave the same as Android
+                        completionHandler(.performDefaultHandling, nil)
+                    }
+                    return
+            }
+
+        })
+    }
+
     private func createPromptDialog(
         message: String,
         defaultText: String?,

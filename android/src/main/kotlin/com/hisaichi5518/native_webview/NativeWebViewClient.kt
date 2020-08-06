@@ -13,6 +13,41 @@ class NativeWebViewClient(private val channel: MethodChannel, private val option
         ContentBlocker.fromMap(it)
     })
 
+    override fun onReceivedHttpAuthRequest(view: WebView, handler: HttpAuthHandler, host: String, realm: String) {
+        channel.invokeMethod(
+            "onReceivedHttpAuthRequest",
+            mapOf("host" to host, "realm" to realm),
+            object : MethodChannel.Result {
+                override fun notImplemented() {
+                    Log.i("NativeWebChromeClient", "onReceivedHttpAuthRequest is notImplemented")
+                    handler.cancel()
+                }
+
+                override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
+                    Log.e("NativeWebChromeClient", "$errorCode $errorMessage $errorDetails")
+                    handler.cancel()
+                }
+
+                override fun success(response: Any?) {
+                    val responseMap = response as? Map<String, Any>
+                    if (responseMap != null) {
+                        when (responseMap["action"] as? Int ?: 1) {
+                            0 -> {
+                                val username = responseMap["username"] as String
+                                val password = responseMap["password"] as String
+                                handler.proceed(username, password)
+                            }
+                            1 -> handler.cancel()
+                            else -> handler.cancel()
+                        }
+                        return
+                    }
+
+                    handler.cancel()
+                }
+            })
+    }
+
     override fun shouldInterceptRequest(view: WebView?, request: WebResourceRequest): WebResourceResponse? {
         if (contentBlockerHandler.ruleList.isNotEmpty() && view != null) {
             try {

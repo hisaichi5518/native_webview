@@ -79,6 +79,57 @@ extension ShouldOverrideUrlLoadingActionExtension
   }
 }
 
+class ReceivedHttpAuthRequest {
+  final String host;
+  final String realm;
+
+  ReceivedHttpAuthRequest({this.host, this.realm});
+}
+
+enum ReceivedHttpAuthResponseAction {
+  useCredential,
+  cancel,
+}
+
+class ReceivedHttpAuthResponse {
+  final ReceivedHttpAuthResponseAction action;
+  final String username;
+  final String password;
+
+  factory ReceivedHttpAuthResponse.useCredential(
+    String username,
+    String password,
+  ) {
+    return ReceivedHttpAuthResponse._(
+      ReceivedHttpAuthResponseAction.useCredential,
+      username,
+      password,
+    );
+  }
+
+  factory ReceivedHttpAuthResponse.cancel() {
+    return ReceivedHttpAuthResponse._(
+      ReceivedHttpAuthResponseAction.cancel,
+      null,
+      null,
+    );
+  }
+
+  ReceivedHttpAuthResponse._(
+    this.action,
+    this.username,
+    this.password,
+  );
+
+  Map<String, dynamic> toMap() {
+    return {
+      "action": action?.index ?? ReceivedHttpAuthResponseAction.cancel.index,
+      "username": username,
+      "password": password,
+    };
+  }
+}
+
 class WebView extends StatefulWidget {
   final String initialUrl;
   final String initialFile;
@@ -99,6 +150,11 @@ class WebView extends StatefulWidget {
     WebViewController,
     ShouldOverrideUrlLoadingRequest,
   ) shouldOverrideUrlLoading;
+
+  final Future<ReceivedHttpAuthResponse> Function(
+    WebViewController,
+    ReceivedHttpAuthRequest,
+  ) onReceivedHttpAuthRequest;
 
   final List<ContentBlocker> contentBlockers;
 
@@ -139,6 +195,7 @@ class WebView extends StatefulWidget {
     this.onPageFinished,
     this.onWebResourceError,
     this.onProgressChanged,
+    this.onReceivedHttpAuthRequest,
     this.onJsConfirm,
     this.onJsAlert,
     this.onJsPrompt,
