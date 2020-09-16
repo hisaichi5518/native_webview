@@ -324,14 +324,19 @@ void main() {
           expect(challengeValues.length, 2);
 
           expect(
-              challengeValues.map((e) => {"host": e.host, "realm": e.realm}), [
-            {"host": "native-webview-basic-auth.herokuapp.com", "realm": null},
-            {
-              "host": "native-webview-basic-auth.herokuapp.com",
-              "realm": "Authorization Required"
-            },
-            {'host': 'native-webview-basic-auth.herokuapp.com', 'realm': null}
-          ]);
+              challengeValues
+                  .where((element) =>
+                      element.realm?.contains("Authorization Required") ??
+                      false)
+                  .length,
+              greaterThanOrEqualTo(1));
+
+          expect(
+              challengeValues
+                  .where((element) =>
+                      element.host == "native-webview-basic-auth.herokuapp.com")
+                  .length,
+              greaterThanOrEqualTo(2));
 
           expect(text.toString().contains("Hello world"), true);
           context.complete();
