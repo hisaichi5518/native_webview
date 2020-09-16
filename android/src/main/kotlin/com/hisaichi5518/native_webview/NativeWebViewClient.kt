@@ -19,12 +19,12 @@ class NativeWebViewClient(private val channel: MethodChannel, private val option
             mapOf("host" to host, "realm" to realm),
             object : MethodChannel.Result {
                 override fun notImplemented() {
-                    Log.i("NativeWebChromeClient", "onReceivedHttpAuthRequest is notImplemented")
+                    Log.i("NativeWebViewClient", "onReceivedHttpAuthRequest is notImplemented")
                     handler.cancel()
                 }
 
                 override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
-                    Log.e("NativeWebChromeClient", "$errorCode $errorMessage $errorDetails")
+                    Log.e("NativeWebViewClient", "$errorCode $errorMessage $errorDetails")
                     handler.cancel()
                 }
 
@@ -97,11 +97,11 @@ class NativeWebViewClient(private val channel: MethodChannel, private val option
             ),
             object : MethodChannel.Result {
                 override fun notImplemented() {
-                    Log.i("NativeWebChromeClient", "shouldOverrideUrlLoading is notImplemented")
+                    Log.i("NativeWebViewClient", "shouldOverrideUrlLoading is notImplemented")
                 }
 
                 override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
-                    Log.e("NativeWebChromeClient", "$errorCode $errorMessage $errorDetails")
+                    Log.e("NativeWebViewClient", "$errorCode $errorMessage $errorDetails")
                 }
 
                 override fun success(response: Any?) {
