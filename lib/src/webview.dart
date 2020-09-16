@@ -79,11 +79,11 @@ extension ShouldOverrideUrlLoadingActionExtension
   }
 }
 
-class ReceivedHttpAuthRequest {
+class HttpAuthChallenge {
   final String host;
   final String realm;
 
-  ReceivedHttpAuthRequest({this.host, this.realm});
+  HttpAuthChallenge({this.host, this.realm});
 }
 
 enum ReceivedHttpAuthResponseAction {
@@ -153,7 +153,7 @@ class WebView extends StatefulWidget {
 
   final Future<ReceivedHttpAuthResponse> Function(
     WebViewController,
-    ReceivedHttpAuthRequest,
+    HttpAuthChallenge,
   ) onReceivedHttpAuthRequest;
 
   final List<ContentBlocker> contentBlockers;

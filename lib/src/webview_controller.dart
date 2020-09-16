@@ -111,7 +111,7 @@ class WebViewController {
 
         final host = call.arguments['host'] as String;
         final realm = call.arguments['realm'] as String;
-        final request = ReceivedHttpAuthRequest(
+        final request = HttpAuthChallenge(
           host: host,
           realm: realm,
         );
