@@ -30,7 +30,7 @@ flutter_drive_android_task:
   env:
     EMULATOR_API_LEVEL: 29
     ANDROID_ABI: "default;x86"
-  fix_kvm_script: sudo chown cirrus:cirrus /dev/kvm
+  #fix_kvm_script: sudo chown cirrus:cirrus /dev/kvm
   update_emulator_script: sdkmanager --verbose --channel=0 "emulator"
   update_images_script: sdkmanager "system-images;android-$EMULATOR_API_LEVEL;$ANDROID_ABI"
   create_device_script: echo no | avdmanager create avd --force -n test -k "system-images;android-$EMULATOR_API_LEVEL;$ANDROID_ABI"
