@@ -295,6 +295,56 @@ void main() {
     });
   });
 
+  group("onReceivedHttpAuthRequest", () {
+    testWebView('wait for page finished', (tester, context) async {
+      List<HttpAuthChallenge> challengeValues = [];
+
+      await tester.pumpWidget(
+        WebView(
+          initialUrl: 'https://native-webview-basic-auth.herokuapp.com/',
+          onReceivedHttpAuthRequest: (controller, challenge) async {
+            challengeValues.add(challenge);
+
+            return ReceivedHttpAuthResponse.useCredential(
+              "username",
+              "password",
+            );
+          },
+          onWebViewCreated: context.onWebViewCreated,
+          onPageFinished: context.onPageFinished,
+        ),
+      );
+
+      final controller = await context.webviewController.future;
+      context.pageFinished.stream.listen(onData([
+        (event) async {
+          final text = await controller.evaluateJavascript(
+            "document.body.textContent",
+          );
+          expect(challengeValues.length, greaterThanOrEqualTo(1));
+
+          expect(
+              challengeValues
+                  .where((element) =>
+                      element.realm?.contains("Authorization Required") ??
+                      false)
+                  .length,
+              greaterThanOrEqualTo(1));
+
+          expect(
+              challengeValues
+                  .where((element) =>
+                      element.host == "native-webview-basic-auth.herokuapp.com")
+                  .length,
+              greaterThanOrEqualTo(1));
+
+          expect(text.toString().contains("Hello world"), true);
+          context.complete();
+        },
+      ]));
+    });
+  });
+
   group("gestureNavigationEnabled", () {
     testWebView('is true', (tester, context) async {
       List<int> progressValues = [];

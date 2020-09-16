@@ -104,6 +104,19 @@ class WebViewController {
           isForMainFrame: isForMainFrame,
         );
         return (await _widget.shouldOverrideUrlLoading(this, request))?.toMap();
+      case 'onReceivedHttpAuthRequest':
+        if (_widget.onReceivedHttpAuthRequest == null) {
+          return {};
+        }
+
+        final host = call.arguments['host'] as String;
+        final realm = call.arguments['realm'] as String;
+        final request = HttpAuthChallenge(
+          host: host,
+          realm: realm,
+        );
+        return (await _widget.onReceivedHttpAuthRequest(this, request))
+            ?.toMap();
     }
     throw MissingPluginException(
       '${call.method} was invoked but has no handler',
