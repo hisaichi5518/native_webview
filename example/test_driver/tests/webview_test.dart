@@ -321,7 +321,7 @@ void main() {
           final text = await controller.evaluateJavascript(
             "document.body.textContent",
           );
-          expect(challengeValues.length, 2);
+          expect(challengeValues.length, greaterThanOrEqualTo(1));
 
           expect(
               challengeValues
@@ -336,7 +336,7 @@ void main() {
                   .where((element) =>
                       element.host == "native-webview-basic-auth.herokuapp.com")
                   .length,
-              greaterThanOrEqualTo(2));
+              greaterThanOrEqualTo(1));
 
           expect(text.toString().contains("Hello world"), true);
           context.complete();
