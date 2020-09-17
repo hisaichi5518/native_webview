@@ -34,7 +34,7 @@ Opt-in to the embedded views preview by adding a boolean property to the app's I
 
 #### Android
 
-Change `android:windowSoftInputMode="adjustResize"` to `android:windowSoftInputMode="adjustPan"` in android/app/src/main/AndroidManifest.xml.
+Opt-in to the embedded views preview by adding a boolean property to the app's AndroidManifest.xml file with the key `io.flutter.embedded_views_preview` and the value `true`.
 
 ### Usage
 
@@ -58,8 +58,4 @@ If you want to see other examples, see [example](./example) or see DartDoc.
 
 ## Known issues
 
-- [Can't paste text copied from other apps on Android 10](https://github.com/hisaichi5518/native_webview/issues/49)
-- The following is an issue with Flutter's PlatformView.
-  - The app becomes inoperable when using window.prompt in the iOS simulator.
-  - Sometimes Dropdown doesn't work in the iOS simulator.
-  - [Keyboard support](https://github.com/flutter/flutter/labels/p%3A%20webview-keyboard)
+- [Bad hybrid composition performance on Android](https://github.com/flutter/flutter/issues/62303)

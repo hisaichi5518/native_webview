@@ -1,6 +1,9 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:native_webview/src/content_blocker.dart';
@@ -184,6 +187,8 @@ class WebView extends StatefulWidget {
 
   final String userAgent;
 
+  final bool androidUseHybridComposition;
+
   const WebView({
     Key key,
     this.initialUrl,
@@ -202,6 +207,7 @@ class WebView extends StatefulWidget {
     this.shouldOverrideUrlLoading,
     this.contentBlockers,
     this.androidBackgroundColor = Colors.white,
+    this.androidUseHybridComposition = true,
     this.gestureNavigationEnabled = false,
     this.debuggingEnabled = false,
     this.userAgent,
@@ -229,13 +235,7 @@ class _WebViewState extends State<WebView> {
     } else if (Platform.isAndroid) {
       return Stack(
         children: <Widget>[
-          AndroidView(
-            viewType: viewType,
-            onPlatformViewCreated: _onPlatformViewCreated,
-            gestureRecognizers: Set.from([]),
-            creationParams: _CreationParams.from(widget).toMap(),
-            creationParamsCodec: const StandardMessageCodec(),
-          ),
+          _buildAndroidView(),
           if (isFirstLoading)
             Container(
               color: this.widget.androidBackgroundColor,
@@ -244,6 +244,45 @@ class _WebViewState extends State<WebView> {
       );
     }
     throw UnsupportedError("${Platform.operatingSystem} is not supported.");
+  }
+
+  Widget _buildAndroidView() {
+    if (widget.androidUseHybridComposition) {
+      return PlatformViewLink(
+        viewType: viewType,
+        surfaceFactory: (
+          BuildContext context,
+          PlatformViewController controller,
+        ) {
+          return AndroidViewSurface(
+            controller: controller,
+            gestureRecognizers: Set.from([]),
+            hitTestBehavior: PlatformViewHitTestBehavior.opaque,
+          );
+        },
+        onCreatePlatformView: (PlatformViewCreationParams params) {
+          return PlatformViewsService.initSurfaceAndroidView(
+            id: params.id,
+            viewType: viewType,
+            layoutDirection: TextDirection.rtl,
+            creationParams: _CreationParams.from(widget).toMap(),
+            creationParamsCodec: const StandardMessageCodec(),
+          )
+            ..addOnPlatformViewCreatedListener(params.onPlatformViewCreated)
+            ..addOnPlatformViewCreatedListener(
+                (id) => _onPlatformViewCreated(id))
+            ..create();
+        },
+      );
+    }
+
+    return AndroidView(
+      viewType: viewType,
+      onPlatformViewCreated: _onPlatformViewCreated,
+      gestureRecognizers: Set.from([]),
+      creationParams: _CreationParams.from(widget).toMap(),
+      creationParamsCodec: const StandardMessageCodec(),
+    );
   }
 
   void _onPlatformViewCreated(int id) {

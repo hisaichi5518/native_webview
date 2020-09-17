@@ -1,3 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
   package="com.hisaichi5518.native_webview">
+    <application>
+        <meta-data
+            android:name="io.flutter.embedded_views_preview"
+            android:value="true" />
+    </application>
 </manifest>
