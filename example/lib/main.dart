@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:native_webview_example/screens/basic_auth_screen.dart';
 import 'package:native_webview_example/screens/initial_data_screen.dart';
 import 'package:native_webview_example/screens/initial_data_with_base_url_screen.dart';
 import 'package:native_webview_example/screens/initial_url_screen.dart';
@@ -25,6 +26,7 @@ class _MyAppState extends State<MyApp> {
     OpenDropdownScreen(),
     TargetBlankScreen(),
     MultipleWebViewsScreen(),
+    BasicAuthScreen(),
   ];
 
   @override
