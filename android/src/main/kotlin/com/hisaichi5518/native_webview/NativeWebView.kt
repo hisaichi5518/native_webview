@@ -19,6 +19,8 @@ class NativeWebView(context: Context, channel: MethodChannel, options: WebViewOp
         settings.javaScriptEnabled = true
         settings.domStorageEnabled = true
         settings.javaScriptCanOpenWindowsAutomatically = true
+        settings.useWideViewPort = true
+        settings.loadWithOverviewMode = true
         addJavascriptInterface(JavascriptHandler(channel), NativeWebChromeClient.JAVASCRIPT_BRIDGE_NAME)
     }
 
