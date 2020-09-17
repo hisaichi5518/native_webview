@@ -20,7 +20,7 @@ If you want to run native_webview on iOS, please test it on an actual device suc
 ## Requirements
 
 - Dart: >=2.6.0 <3.0.0
-- Flutter: >=1.12.13+hotfix.5 <2.0.0
+- Flutter: >=1.20.1 <2.0.0
 - Android: minSdkVersion 24, AndroidX, Kotlin, Chrome version >= 74.0.3729.185
 - iOS: iOS version >= 11.0, Xcode version >= 11, Swift
 
