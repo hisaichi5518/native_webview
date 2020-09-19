@@ -23,13 +23,13 @@ import "tests/${basename}" as ${name};
   }).join("");
 
   final body = """
-import 'package:e2e/e2e.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:integration_test/integration_test.dart';
 
 ${imports}
 
 void main() {
-  E2EWidgetsFlutterBinding.ensureInitialized();
+  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 ${tests}
 }
 """;

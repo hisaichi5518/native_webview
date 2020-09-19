@@ -29,7 +29,7 @@ flutter_drive_android_task:
     memory: 24G
   env:
     EMULATOR_API_LEVEL: 29
-    ANDROID_ABI: "default;x86"
+    ANDROID_ABI: "default;x86_64"
   fix_kvm_script: sudo chown $(whoami):$(whoami) /dev/kvm
   update_emulator_script: sdkmanager --verbose --channel=0 "emulator"
   update_images_script: sdkmanager "system-images;android-$EMULATOR_API_LEVEL;$ANDROID_ABI"
