@@ -24,6 +24,7 @@ class NativeWebView(context: Context, channel: MethodChannel, options: WebViewOp
         settings.javaScriptCanOpenWindowsAutomatically = true
         settings.useWideViewPort = true
         settings.loadWithOverviewMode = true
+        settings.loadsImagesAutomatically = true
         addJavascriptInterface(JavascriptHandler(channel), NativeWebChromeClient.JAVASCRIPT_BRIDGE_NAME)
 
         setDownloadListener { url, _, _, mimetype, _ ->
