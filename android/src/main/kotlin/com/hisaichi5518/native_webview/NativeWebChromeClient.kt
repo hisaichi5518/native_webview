@@ -1,7 +1,13 @@
 package com.hisaichi5518.native_webview
 
 import android.content.DialogInterface
+import android.content.pm.ActivityInfo
+import android.graphics.Color
 import android.util.Log
+import android.view.Gravity
+import android.view.View
+import android.view.ViewGroup
+import android.view.WindowManager
 import android.webkit.JsPromptResult
 import android.webkit.JsResult
 import android.webkit.WebChromeClient
@@ -14,7 +20,26 @@ import io.flutter.plugin.common.MethodChannel
 
 
 class NativeWebChromeClient(private val channel: MethodChannel) : WebChromeClient() {
+    private var videoView: View? = null
+    private var videoViewCallback: CustomViewCallback? = null
+    private var originalRequestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+    private var originalSystemUiVisibility = 0
+
     companion object {
+        const val FULLSCREEN_SYSTEM_UI_VISIBILITY = View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
+            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
+            View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+            View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
+            View.SYSTEM_UI_FLAG_FULLSCREEN or
+            View.SYSTEM_UI_FLAG_IMMERSIVE or
+            View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+
+        val FULLSCREEN_LAYOUT_PARAMS = FrameLayout.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            Gravity.CENTER
+        )
+
         const val JAVASCRIPT_BRIDGE_NAME = "nativeWebView"
         val JAVASCRIPT = """
 if (!window.${JAVASCRIPT_BRIDGE_NAME}.callHandler) {
@@ -22,6 +47,52 @@ if (!window.${JAVASCRIPT_BRIDGE_NAME}.callHandler) {
         window.${JAVASCRIPT_BRIDGE_NAME}._callHandler(arguments[0], JSON.stringify(Array.prototype.slice.call(arguments, 1)));
     };
 }""".trimIndent()
+    }
+
+    override fun onShowCustomView(view: View?, callback: CustomViewCallback?) {
+        if (videoView != null) {
+            onHideCustomView()
+            return
+        }
+        val activity = Locator.activity ?: return
+        val decorView = activity.findViewById(android.R.id.content) as ViewGroup? ?: return
+
+        videoView = view
+        videoViewCallback = callback
+
+        originalSystemUiVisibility = decorView.systemUiVisibility
+        originalRequestedOrientation = activity.requestedOrientation
+
+        decorView.systemUiVisibility = FULLSCREEN_SYSTEM_UI_VISIBILITY
+        activity.window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
+
+        videoView?.setBackgroundColor(Color.BLACK)
+        (decorView as FrameLayout).addView(videoView, FULLSCREEN_LAYOUT_PARAMS)
+
+        super.onShowCustomView(view, callback)
+    }
+
+    override fun onHideCustomView() {
+        if (videoView == null) {
+            return
+        }
+        videoView?.visibility = View.GONE
+
+        val activity = Locator.activity ?: return
+        val decorView = activity.findViewById(android.R.id.content) as ViewGroup? ?: return
+
+        decorView.systemUiVisibility = originalSystemUiVisibility
+        decorView.removeView(videoView)
+
+        activity.window.clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
+        activity.requestedOrientation = originalRequestedOrientation
+
+        videoViewCallback?.onCustomViewHidden()
+
+        videoView = null
+        videoViewCallback = null
+
+        super.onHideCustomView()
     }
 
     override fun onProgressChanged(view: WebView?, newProgress: Int) {
