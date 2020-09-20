@@ -67,7 +67,7 @@ if (!window.${JAVASCRIPT_BRIDGE_NAME}.callHandler) {
         activity.window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
 
         videoView?.setBackgroundColor(Color.BLACK)
-        (decorView as FrameLayout).addView(videoView, FULLSCREEN_LAYOUT_PARAMS)
+        decorView.addView(videoView, FULLSCREEN_LAYOUT_PARAMS)
 
         super.onShowCustomView(view, callback)
     }
