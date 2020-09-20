@@ -6,6 +6,7 @@ import 'package:native_webview_example/screens/initial_url_screen.dart';
 import 'package:native_webview_example/screens/multiple_webviews_screen.dart';
 import 'package:native_webview_example/screens/on_js_prompt_screen.dart';
 import 'package:native_webview_example/screens/open_dropdown_screen.dart';
+import 'package:native_webview_example/screens/pdf_screen.dart';
 import 'package:native_webview_example/screens/target_blank_screen.dart';
 
 void main() {
@@ -27,6 +28,7 @@ class _MyAppState extends State<MyApp> {
     TargetBlankScreen(),
     MultipleWebViewsScreen(),
     BasicAuthScreen(),
+    PdfScreen(),
   ];
 
   @override
