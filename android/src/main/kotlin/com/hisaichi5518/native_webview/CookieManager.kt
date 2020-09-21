@@ -60,7 +60,7 @@ class MyCookieManager(messenger: BinaryMessenger?) : MethodCallHandler {
         for (cookie in cookies) {
             val nameValue = cookie.split(Regex("="), 2)
             val name = nameValue[0].trim()
-            val value = nameValue[1].trim()
+            val value = if (nameValue.size > 1) nameValue[1].trim() else ""
 
             cookieMapList.add(mapOf(
                 "name" to name,
