@@ -1,3 +1,9 @@
+## 0.26.0
+
+- [Fix crash](https://github.com/hisaichi5518/native_webview/pull/84)
+- [Support video fullscreen](https://github.com/hisaichi5518/native_webview/pull/83)
+- [set DownloadListener](https://github.com/hisaichi5518/native_webview/pull/82)
+
 ## 0.25.0
 
 - [Add onReceivedHttpAuthRequest](https://github.com/hisaichi5518/native_webview/pull/72)
