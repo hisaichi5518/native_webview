@@ -4,7 +4,6 @@ import android.content.Context
 import android.hardware.display.DisplayManager
 import android.view.View
 import android.webkit.WebView
-import androidx.webkit.WebViewCompat
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
@@ -78,10 +77,8 @@ class FlutterWebViewController(
         when (call.method) {
             "evaluateJavascript" -> {
                 val javaScriptString = call.arguments as String
-                webview.post {
-                    webview.evaluateJavascript(javaScriptString) {
-                        result.success(it)
-                    }
+                webview.evaluateJavascript(javaScriptString) {
+                    result.success(it)
                 }
             }
             "currentUrl" -> {
