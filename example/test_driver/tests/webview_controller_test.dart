@@ -85,7 +85,7 @@ void main() {
 
   group("JavascriptHandler", () {
     testWebView("messages received", (tester, context) async {
-      final List<List<dynamic>> argumentsReceived = [];
+      final argumentsReceived = <List<dynamic>>[];
 
       await tester.pumpWidget(
         WebView(
@@ -115,9 +115,9 @@ void main() {
     });
 
     testWebView("readyState is interactive", (tester, context) async {
-      final List<List<dynamic>> argumentsReceived = [];
+      final argumentsReceived = <List<dynamic>>[];
 
-      String beforeReadyState = "loading";
+      var beforeReadyState = "loading";
       await tester.pumpWidget(
         WebView(
           initialUrl: 'https://flutter.dev/',
@@ -157,7 +157,7 @@ void main() {
     });
 
     testWebView("nothing handler", (tester, context) async {
-      final List<List<dynamic>> argumentsReceived = [];
+      final argumentsReceived = <List<dynamic>>[];
 
       await tester.pumpWidget(
         WebView(

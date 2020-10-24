@@ -2,7 +2,7 @@ import 'dart:io';
 
 Future<void> main() async {
   final dir = Directory('test_driver/tests');
-  final List<File> files = [];
+  final files = <File>[];
   await for (final file in dir.list(recursive: true)) {
     files.add(file);
   }
