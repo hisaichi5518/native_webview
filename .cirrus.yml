@@ -15,7 +15,7 @@ flutter_test_task:
 
 flutter_drive_ios_task:
   osx_instance:
-    image: catalina-xcode-11.6-flutter
+    image: catalina-xcode-12.1-flutter
   open_simulator_script:
     - xcrun simctl list
     - xcrun simctl create Flutter-iPhone com.apple.CoreSimulator.SimDeviceType.iPhone-X com.apple.CoreSimulator.SimRuntime.iOS-13-6 | xargs xcrun simctl boot
