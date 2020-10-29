@@ -42,8 +42,7 @@ class FlutterWebViewController(
 
         methodChannel.setMethodCallHandler(this)
 
-        // refs https://github.com/hisaichi5518/native_webview/issues/31
-        webview = NativeWebView(PresentationContext(context, Locator.activity!!), methodChannel, options)
+        webview = NativeWebView(context, methodChannel, options)
 
         val customUserAgent = params["userAgent"] as? String
         if (customUserAgent != null) {
