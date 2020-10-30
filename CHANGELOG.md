@@ -1,3 +1,7 @@
+## 0.27.0
+
+- [Use PlatformViewLink](https://github.com/hisaichi5518/native_webview/pull/79)
+
 ## 0.26.0
 
 - [Fix crash](https://github.com/hisaichi5518/native_webview/pull/84)
