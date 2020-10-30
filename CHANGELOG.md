@@ -1,3 +1,17 @@
+## 0.26.0
+
+- [Fix crash](https://github.com/hisaichi5518/native_webview/pull/84)
+- [Support video fullscreen](https://github.com/hisaichi5518/native_webview/pull/83)
+- [set DownloadListener](https://github.com/hisaichi5518/native_webview/pull/82)
+
+## 0.25.0
+
+- [Add onReceivedHttpAuthRequest](https://github.com/hisaichi5518/native_webview/pull/72)
+- [Update flutter](https://github.com/hisaichi5518/native_webview/pull/76)
+- [set useWideViewPort and loadWithOverviewMode](https://github.com/hisaichi5518/native_webview/pull/77)
+- [Add BasicAuthScreen to example](https://github.com/hisaichi5518/native_webview/pull/78)
+- [Use integration_test](https://github.com/hisaichi5518/native_webview/pull/80)
+
 ## 0.24.0
 
 - [Use Android Studio 4.0](https://github.com/hisaichi5518/native_webview/pull/70)
