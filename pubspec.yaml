@@ -1,11 +1,11 @@
 name: native_webview
 description: A Flutter plugin that provides a WebView widget on Android and iOS.
-version: 0.26.0
+version: 0.27.0
 homepage: https://github.com/hisaichi5518/native_webview
 
 environment:
-  sdk: ">=2.6.0 <3.0.0"
-  flutter: ">=1.20.1 <2.0.0"
+  sdk: ">=2.10.0 <3.0.0"
+  flutter: ">=1.22.0 <2.0.0"
 
 dependencies:
   flutter:

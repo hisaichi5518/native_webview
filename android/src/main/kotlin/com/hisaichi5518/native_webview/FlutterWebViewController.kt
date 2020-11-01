@@ -4,7 +4,6 @@ import android.content.Context
 import android.hardware.display.DisplayManager
 import android.view.View
 import android.webkit.WebView
-import androidx.webkit.WebViewCompat
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
@@ -43,8 +42,7 @@ class FlutterWebViewController(
 
         methodChannel.setMethodCallHandler(this)
 
-        // refs https://github.com/hisaichi5518/native_webview/issues/31
-        webview = NativeWebView(PresentationContext(context, Locator.activity!!), methodChannel, options)
+        webview = NativeWebView(context, methodChannel, options)
 
         val customUserAgent = params["userAgent"] as? String
         if (customUserAgent != null) {
@@ -78,10 +76,8 @@ class FlutterWebViewController(
         when (call.method) {
             "evaluateJavascript" -> {
                 val javaScriptString = call.arguments as String
-                webview.post {
-                    webview.evaluateJavascript(javaScriptString) {
-                        result.success(it)
-                    }
+                webview.evaluateJavascript(javaScriptString) {
+                    result.success(it)
                 }
             }
             "currentUrl" -> {

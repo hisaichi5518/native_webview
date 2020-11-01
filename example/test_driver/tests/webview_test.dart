@@ -272,7 +272,7 @@ void main() {
 
   group("onProgressChanged", () {
     testWebView('wait for page finished', (tester, context) async {
-      List<int> progressValues = [];
+      var progressValues = <int>[];
       await tester.pumpWidget(
         WebView(
           initialUrl: 'https://flutter.dev/',
@@ -297,7 +297,7 @@ void main() {
 
   group("onReceivedHttpAuthRequest", () {
     testWebView('wait for page finished', (tester, context) async {
-      List<HttpAuthChallenge> challengeValues = [];
+      var challengeValues = <HttpAuthChallenge>[];
 
       await tester.pumpWidget(
         WebView(
@@ -347,7 +347,7 @@ void main() {
 
   group("gestureNavigationEnabled", () {
     testWebView('is true', (tester, context) async {
-      List<int> progressValues = [];
+      var progressValues = <int>[];
       await tester.pumpWidget(
         WebView(
           initialData: WebViewData("""
