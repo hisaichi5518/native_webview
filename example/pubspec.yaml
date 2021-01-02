@@ -19,7 +19,7 @@ dev_dependencies:
   flutter_driver:
     sdk: flutter
   test: ^1.9.4
-  integration_test: ^0.9.0
+  integration_test: ^1.0.1
   native_webview:
     path: ../
 
