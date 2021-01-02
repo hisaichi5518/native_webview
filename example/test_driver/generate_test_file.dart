@@ -1,7 +1,7 @@
 import 'dart:io';
 
 Future<void> main() async {
-  final dir = Directory('test_driver/tests');
+  final dir = Directory('integration_test/tests');
   final files = <File>[];
   await for (final file in dir.list(recursive: true)) {
     files.add(file);
@@ -18,7 +18,10 @@ import "tests/${basename}" as ${name};
   final tests = files.map((file) {
     final name = file.path?.split("/")?.last?.replaceAll(".dart", "");
     return """
-  group("${name}", ${name}.main);
+  group(
+    "${name}",
+    ${name}.main,
+  );
 """;
   }).join("");
 
@@ -34,6 +37,6 @@ ${tests}
 }
 """;
 
-  final testFile = File("test_driver/native_webview_e2e.dart");
+  final testFile = File("integration_test/webview_test.dart");
   await testFile.writeAsString(body);
 }
