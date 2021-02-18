@@ -1,5 +1,3 @@
-import 'package:flutter/widgets.dart';
-
 // Originally written by pichillilorenzo
 // https://github.com/pichillilorenzo/flutter_inappwebview/
 
@@ -94,16 +92,16 @@ class ContentBlockerTrigger {
   }
 
   Map<String, dynamic> toMap() {
-    List<String> resourceTypeStringList = [];
+    final resourceTypeStringList = <String>[];
     resourceType.forEach((type) {
       resourceTypeStringList.add(type!.toValue());
     });
-    List<String> loadTypeStringList = [];
+    final loadTypeStringList = <String>[];
     loadType.forEach((type) {
       loadTypeStringList.add(type!.toValue());
     });
 
-    Map<String, dynamic> map = {
+    final map = <String, dynamic>{
       "url-filter": urlFilter,
       "url-filter-is-case-sensitive": urlFilterIsCaseSensitive,
       "if-domain": ifDomain,
@@ -125,16 +123,16 @@ class ContentBlockerTrigger {
   }
 
   static ContentBlockerTrigger fromMap(Map<String, dynamic> map) {
-    List<ContentBlockerTriggerResourceType?> resourceType = [];
-    List<ContentBlockerTriggerLoadType?> loadType = [];
+    final resourceType = <ContentBlockerTriggerResourceType?>[];
+    final loadType = <ContentBlockerTriggerLoadType?>[];
 
-    List<String> resourceTypeStringList =
+    final resourceTypeStringList =
         List<String>.from(map["resource-type"] ?? []);
     resourceTypeStringList.forEach((type) {
       resourceType.add(ContentBlockerTriggerResourceType.fromValue(type));
     });
 
-    List<String> loadTypeStringList = List<String>.from(map["load-type"] ?? []);
+    final loadTypeStringList = List<String>.from(map["load-type"] ?? []);
     loadTypeStringList.forEach((type) {
       loadType.add(ContentBlockerTriggerLoadType.fromValue(type));
     });
@@ -166,17 +164,16 @@ class ContentBlockerAction {
   String? selector;
 
   ContentBlockerAction.block() {
-    this.type = ContentBlockerActionType.block;
+    type = ContentBlockerActionType.block;
   }
 
-  ContentBlockerAction.cssDisplayNone(String this.selector)
-      : assert(selector != null) {
-    this.type = ContentBlockerActionType.cssDisplayNone;
-    this.selector = this.selector;
+  ContentBlockerAction.cssDisplayNone(String this.selector) {
+    type = ContentBlockerActionType.cssDisplayNone;
+    selector = selector;
   }
 
   ContentBlockerAction.makeHttps() {
-    this.type = ContentBlockerActionType.makeHttps;
+    type = ContentBlockerActionType.makeHttps;
   }
 
   ContentBlockerAction._({
@@ -192,7 +189,10 @@ class ContentBlockerAction {
   }
 
   Map<String, dynamic> toMap() {
-    Map<String, dynamic> map = {"type": type!.toValue(), "selector": selector};
+    final map = <String, dynamic>{
+      "type": type!.toValue(),
+      "selector": selector
+    };
 
     map.keys
         .where((key) =>
@@ -250,6 +250,7 @@ class ContentBlockerTriggerResourceType {
   ///Any untyped load
   static const raw = ContentBlockerTriggerResourceType._('raw');
 
+  @override
   bool operator ==(value) => value == _value;
 
   @override
@@ -276,6 +277,7 @@ class ContentBlockerTriggerLoadType {
   ///thirdParty is triggered if the resource is not from the same domain as the main page resource.
   static const thirdParty = ContentBlockerTriggerLoadType._('third-party');
 
+  @override
   bool operator ==(value) => value == _value;
 
   @override
@@ -311,6 +313,7 @@ class ContentBlockerActionType {
   ///**NOTE**: makeHttps is not supported on Android
   static const makeHttps = ContentBlockerActionType._('make-https');
 
+  @override
   bool operator ==(value) => value == _value;
 
   @override

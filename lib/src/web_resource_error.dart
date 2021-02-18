@@ -1,4 +1,3 @@
-import 'package:flutter/widgets.dart';
 import 'package:native_webview/src/stringify.dart';
 
 // Copied from https://github.com/flutter/plugins/blob/a0b692d8e4040ac42c754a75b11e2acb4bc2617f/packages/webview_flutter/lib/platform_interface.dart#L37
@@ -77,8 +76,7 @@ class WebResourceError {
     required this.description,
     this.domain,
     this.errorType,
-  })  : assert(errorCode != null),
-        assert(description != null);
+  });
 
   /// Raw code of the error from the respective platform.
   ///
@@ -113,6 +111,6 @@ class WebResourceError {
   @override
   String toString() => mapPropsToString(
         runtimeType,
-        [this.errorCode, this.description, this.domain, this.errorType],
+        [errorCode, description, domain, errorType],
       );
 }

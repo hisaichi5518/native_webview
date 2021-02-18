@@ -1,4 +1,5 @@
-import 'package:flutter/foundation.dart';
+import 'dart:async';
+
 import 'package:flutter/services.dart';
 
 class Cookie {
@@ -35,12 +36,12 @@ class CookieManager {
     Duration? maxAge,
     bool? isSecure,
   }) async {
-    assert(url != null && url.isNotEmpty);
-    assert(name != null && name.isNotEmpty);
-    assert(value != null && value.isNotEmpty);
-    assert(path != null && path.isNotEmpty);
+    assert(url.isNotEmpty);
+    assert(name.isNotEmpty);
+    assert(value.isNotEmpty);
+    assert(path.isNotEmpty);
 
-    Map<String, dynamic> args = <String, dynamic>{
+    final args = <String, dynamic>{
       "url": url,
       "name": name,
       "value": value,
@@ -58,15 +59,15 @@ class CookieManager {
     required String url,
     String? name,
   }) async {
-    assert(url != null && url.isNotEmpty);
+    assert(url.isNotEmpty);
 
-    final Map<String, dynamic> args = <String, dynamic>{
+    final args = <String, dynamic>{
       "url": url,
     };
-    List<dynamic> cookieListMap = await (_channel.invokeMethod(
-        'getCookies', args) as FutureOr<List<dynamic>>);
+    var cookieListMap = await (_channel.invokeMethod('getCookies', args)
+        as FutureOr<List<dynamic>>);
     cookieListMap = cookieListMap.cast<Map<dynamic, dynamic>>();
-    List<Cookie> cookies = [];
+    final cookies = <Cookie>[];
 
     for (final cookie in cookieListMap) {
       if (name != null && name.isNotEmpty) {
@@ -82,7 +83,7 @@ class CookieManager {
   }
 
   Future<void> deleteAllCookies() async {
-    final Map<String, dynamic> args = <String, dynamic>{};
+    final args = <String, dynamic>{};
     await _channel.invokeMethod('deleteAllCookies', args);
   }
 }
