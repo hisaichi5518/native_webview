@@ -1,6 +1,6 @@
 flutter_analyze_task:
   container:
-    image: cirrusci/flutter:stable
+    image: cirrusci/flutter:beta
   pub_cache:
     folder: ~/.pub-cache
   pub_get_script: flutter pub get
@@ -8,22 +8,25 @@ flutter_analyze_task:
 
 flutter_test_task:
   container:
-    image: cirrusci/flutter:stable
+    image: cirrusci/flutter:beta
   pub_cache:
     folder: ~/.pub-cache
   test_script: flutter test
 
 flutter_drive_ios_task:
   osx_instance:
-    image: catalina-xcode-12.1-flutter
+    image: big-sur-xcode-12.4
+  flutter_script:
+    - flutter channel beta
+    - flutter upgrade
   open_simulator_script:
     - xcrun simctl list
-    - xcrun simctl create Flutter-iPhone com.apple.CoreSimulator.SimDeviceType.iPhone-X com.apple.CoreSimulator.SimRuntime.iOS-14-2 | xargs xcrun simctl boot
+    - xcrun simctl create Flutter-iPhone com.apple.CoreSimulator.SimDeviceType.iPhone-X com.apple.CoreSimulator.SimRuntime.iOS-14-1 | xargs xcrun simctl boot
   test_script: make test
 
 flutter_drive_android_task:
   container:
-    image: cirrusci/flutter:stable
+    image: cirrusci/flutter:beta
     kvm: true
     cpu: 4
     memory: 24G
