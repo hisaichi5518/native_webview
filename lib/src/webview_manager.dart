@@ -39,10 +39,16 @@ class WebViewManager {
       return null;
     }
 
-    final mapping = await (_channel.invokeMethod<Map<dynamic, dynamic>>(
+    final mapping = await _channel.invokeMethod<Map<dynamic, dynamic>>(
       'getAndroidWebViewInfo',
       <String, dynamic>{},
-    ) as FutureOr<Map<dynamic, dynamic>>);
+    );
+    if (mapping == null) {
+      return AndroidWebViewInfo.fromMap({
+        "packageName": "unknown",
+        "versionName": "unknown",
+      });
+    }
     return AndroidWebViewInfo.fromMap(mapping);
   }
 }

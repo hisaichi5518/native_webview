@@ -66,9 +66,11 @@ class CookieManager {
     final args = <String, dynamic>{
       "url": url,
     };
-    var cookieListMap = await (_channel.invokeMethod('getCookies', args)
-        as FutureOr<List<dynamic>>);
-    cookieListMap = cookieListMap.cast<Map<dynamic, dynamic>>();
+    // [{name: myCookie, value: myValue}]
+    final cookieListMap =
+        (await _channel.invokeMethod<List<dynamic>>('getCookies', args))
+                ?.cast<Map<dynamic, dynamic>>() ??
+            [];
     final cookies = <Cookie>[];
 
     for (final cookie in cookieListMap) {
