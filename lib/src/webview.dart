@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -223,7 +224,7 @@ class _WebViewState extends State<WebView> {
       return UiKitView(
         viewType: viewType,
         onPlatformViewCreated: _onPlatformViewCreated,
-        gestureRecognizers: Set.from([]),
+        gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>{},
         creationParams: _CreationParams.from(widget).toMap(),
         creationParamsCodec: const StandardMessageCodec(),
       );
@@ -251,7 +252,7 @@ class _WebViewState extends State<WebView> {
         ) {
           return AndroidViewSurface(
             controller: controller as AndroidViewController,
-            gestureRecognizers: Set.from([]),
+            gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>{},
             hitTestBehavior: PlatformViewHitTestBehavior.opaque,
           );
         },
@@ -274,7 +275,7 @@ class _WebViewState extends State<WebView> {
     return AndroidView(
       viewType: viewType,
       onPlatformViewCreated: _onPlatformViewCreated,
-      gestureRecognizers: Set.from([]),
+      gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>{},
       creationParams: _CreationParams.from(widget).toMap(),
       creationParamsCodec: const StandardMessageCodec(),
     );
