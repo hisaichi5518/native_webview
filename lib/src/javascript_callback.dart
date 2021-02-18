@@ -2,15 +2,15 @@ import 'package:native_webview/src/webview_controller.dart';
 
 typedef JsConfirmCallback = JsConfirmResponse Function(
   WebViewController,
-  String,
+  String?,
 );
 
-typedef JsAlertCallback = JsAlertResponse Function(WebViewController, String);
+typedef JsAlertCallback = JsAlertResponse Function(WebViewController, String?);
 
 typedef JsPromptCallback = JsPromptResponse Function(
   WebViewController,
-  String,
-  String,
+  String?,
+  String?,
 );
 
 ///JsConfirmResponseAction class used by [JsConfirmResponse] class.
@@ -22,19 +22,19 @@ enum JsConfirmResponseAction {
 ///JsConfirmResponse class represents the response used by the [onJsConfirm] event to control a JavaScript confirm dialog.
 class JsConfirmResponse {
   ///Message to be displayed in the window.
-  final String message;
+  final String? message;
 
   ///Title of the confirm button.
-  final String okLabel;
+  final String? okLabel;
 
   ///Title of the cancel button.
-  final String cancelLabel;
+  final String? cancelLabel;
 
   ///Whether the client will handle the confirm dialog.
   final bool handledByClient;
 
   ///Action used to confirm that the user hit confirm or cancel button.
-  final JsConfirmResponseAction action;
+  final JsConfirmResponseAction? action;
 
   JsConfirmResponse._(
     this.message,
@@ -76,10 +76,10 @@ class JsConfirmResponse {
 ///JsAlertResponse class represents the response used by the [onJsAlert] event to control a JavaScript confirm dialog.
 class JsAlertResponse {
   ///Message to be displayed in the window.
-  final String message;
+  final String? message;
 
   ///Title of the alert button.
-  final String okLabel;
+  final String? okLabel;
 
   ///Whether the client will handle the alert dialog.
   final bool handledByClient;
@@ -118,25 +118,25 @@ enum JsPromptResponseAction {
 ///JsPromptResponse class represents the response used by the [onJsPrompt] event to control a JavaScript prompt dialog.
 class JsPromptResponse {
   ///Message to be displayed in the window.
-  final String message;
+  final String? message;
 
   ///The default value displayed in the prompt dialog.
-  final String defaultValue;
+  final String? defaultValue;
 
   ///Title of the confirm button.
-  final String okLabel;
+  final String? okLabel;
 
   ///Title of the cancel button.
-  final String cancelLabel;
+  final String? cancelLabel;
 
   ///Whether the client will handle the prompt dialog.
   final bool handledByClient;
 
   ///Action used to confirm that the user hit confirm or cancel button.
-  final JsPromptResponseAction action;
+  final JsPromptResponseAction? action;
 
   ///Value of the prompt dialog.
-  final String value;
+  final String? value;
 
   factory JsPromptResponse.handled(
     JsPromptResponseAction action,

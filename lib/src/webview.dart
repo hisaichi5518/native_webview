@@ -51,13 +51,13 @@ class WebViewData {
 }
 
 class ShouldOverrideUrlLoadingRequest {
-  final String url;
+  final String? url;
 
-  final String method;
+  final String? method;
 
-  final Map<String, String> headers;
+  final Map<String, String>? headers;
 
-  final bool isForMainFrame;
+  final bool? isForMainFrame;
 
   ShouldOverrideUrlLoadingRequest({
     this.url,
@@ -82,8 +82,8 @@ extension ShouldOverrideUrlLoadingActionExtension
 }
 
 class HttpAuthChallenge {
-  final String host;
-  final String realm;
+  final String? host;
+  final String? realm;
 
   HttpAuthChallenge({this.host, this.realm});
 }
@@ -95,8 +95,8 @@ enum ReceivedHttpAuthResponseAction {
 
 class ReceivedHttpAuthResponse {
   final ReceivedHttpAuthResponseAction action;
-  final String username;
-  final String password;
+  final String? username;
+  final String? password;
 
   factory ReceivedHttpAuthResponse.useCredential(
     String username,
@@ -133,32 +133,32 @@ class ReceivedHttpAuthResponse {
 }
 
 class WebView extends StatefulWidget {
-  final String initialUrl;
-  final String initialFile;
-  final Map<String, String> initialHeaders;
-  final WebViewData initialData;
+  final String? initialUrl;
+  final String? initialFile;
+  final Map<String, String>? initialHeaders;
+  final WebViewData? initialData;
 
-  final void Function(WebViewController) onWebViewCreated;
-  final void Function(WebViewController, String) onPageStarted;
-  final void Function(WebViewController, String) onPageFinished;
-  final void Function(WebResourceError error) onWebResourceError;
-  final void Function(WebViewController, int) onProgressChanged;
+  final void Function(WebViewController)? onWebViewCreated;
+  final void Function(WebViewController, String?)? onPageStarted;
+  final void Function(WebViewController, String?)? onPageFinished;
+  final void Function(WebResourceError error)? onWebResourceError;
+  final void Function(WebViewController, int?)? onProgressChanged;
 
-  final JsConfirmCallback onJsConfirm;
-  final JsAlertCallback onJsAlert;
-  final JsPromptCallback onJsPrompt;
+  final JsConfirmCallback? onJsConfirm;
+  final JsAlertCallback? onJsAlert;
+  final JsPromptCallback? onJsPrompt;
 
   final Future<ShouldOverrideUrlLoadingAction> Function(
     WebViewController,
     ShouldOverrideUrlLoadingRequest,
-  ) shouldOverrideUrlLoading;
+  )? shouldOverrideUrlLoading;
 
   final Future<ReceivedHttpAuthResponse> Function(
     WebViewController,
     HttpAuthChallenge,
-  ) onReceivedHttpAuthRequest;
+  )? onReceivedHttpAuthRequest;
 
-  final List<ContentBlocker> contentBlockers;
+  final List<ContentBlocker>? contentBlockers;
 
   /// Controls whether WebView debugging is enabled.
   ///
@@ -184,12 +184,12 @@ class WebView extends StatefulWidget {
   ///If you specify androidBackgroundColor, it won't happen.
   final Color androidBackgroundColor;
 
-  final String userAgent;
+  final String? userAgent;
 
   final bool androidUseHybridComposition;
 
   const WebView({
-    Key key,
+    Key? key,
     this.initialUrl,
     this.initialFile,
     this.initialHeaders,
@@ -254,7 +254,7 @@ class _WebViewState extends State<WebView> {
           PlatformViewController controller,
         ) {
           return AndroidViewSurface(
-            controller: controller,
+            controller: controller as AndroidViewController,
             gestureRecognizers: Set.from([]),
             hitTestBehavior: PlatformViewHitTestBehavior.opaque,
           );
@@ -297,7 +297,7 @@ class _WebViewState extends State<WebView> {
     if (widget.onWebViewCreated == null) {
       return;
     }
-    widget.onWebViewCreated(controller);
+    widget.onWebViewCreated!(controller);
   }
 }
 

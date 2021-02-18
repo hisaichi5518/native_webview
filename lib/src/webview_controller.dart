@@ -5,7 +5,7 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:native_webview/native_webview.dart';
 
-typedef Future<void> JavascriptHandlerCallback(List<dynamic> arguments);
+typedef Future<void> JavascriptHandlerCallback(List<dynamic>? arguments);
 
 class WebViewController {
   final WebView _widget;
@@ -25,7 +25,7 @@ class WebViewController {
           this.updateFirstLoading();
         }
         if (_widget.onPageStarted != null) {
-          _widget.onPageStarted(this, call.arguments['url'] as String);
+          _widget.onPageStarted!(this, call.arguments['url'] as String?);
         }
         return true;
       case 'onPageFinished':
@@ -33,14 +33,14 @@ class WebViewController {
           this.updateFirstLoading();
         }
         if (_widget.onPageFinished != null) {
-          _widget.onPageFinished(this, call.arguments['url'] as String);
+          _widget.onPageFinished!(this, call.arguments['url'] as String?);
         }
         return true;
       case 'onWebResourceError':
         if (_widget.onWebResourceError == null) {
           return true;
         }
-        _widget.onWebResourceError(
+        _widget.onWebResourceError!(
           WebResourceError(
             errorCode: call.arguments['errorCode'],
             description: call.arguments['description'],
@@ -58,64 +58,64 @@ class WebViewController {
         return true;
       case 'onProgressChanged':
         if (_widget.onProgressChanged != null) {
-          _widget.onProgressChanged(this, call.arguments['progress'] as int);
+          _widget.onProgressChanged!(this, call.arguments['progress'] as int?);
         }
         return true;
       case 'onJavascriptHandler':
-        final name = call.arguments['handlerName'] as String;
-        final args = call.arguments['args'] as String;
+        final name = call.arguments['handlerName'] as String?;
+        final args = call.arguments['args'] as String?;
 
         if (_javascriptChannelMap.containsKey(name)) {
-          await _javascriptChannelMap[name](jsonDecode(args));
+          await _javascriptChannelMap[name!]!(jsonDecode(args!));
         }
         return true;
       case 'onJsConfirm':
-        final message = call.arguments['message'] as String;
+        final message = call.arguments['message'] as String?;
         if (_widget.onJsConfirm == null) {
           return {};
         }
-        return _widget.onJsConfirm(this, message)?.toMap();
+        return _widget.onJsConfirm!(this, message)?.toMap();
       case 'onJsAlert':
-        final message = call.arguments['message'] as String;
+        final message = call.arguments['message'] as String?;
         if (_widget.onJsAlert == null) {
           return {};
         }
-        return _widget.onJsAlert(this, message)?.toMap();
+        return _widget.onJsAlert!(this, message)?.toMap();
       case 'onJsPrompt':
-        final message = call.arguments['message'] as String;
-        final defaultText = call.arguments['defaultText'] as String;
+        final message = call.arguments['message'] as String?;
+        final defaultText = call.arguments['defaultText'] as String?;
         if (_widget.onJsPrompt == null) {
           return {};
         }
-        return _widget.onJsPrompt(this, message, defaultText)?.toMap();
+        return _widget.onJsPrompt!(this, message, defaultText)?.toMap();
       case 'shouldOverrideUrlLoading':
         if (_widget.shouldOverrideUrlLoading == null) {
           return {};
         }
 
-        final url = call.arguments['url'] as String;
-        final method = call.arguments['method'] as String;
+        final url = call.arguments['url'] as String?;
+        final method = call.arguments['method'] as String?;
         final headers = call.arguments['headers']?.cast<String, String>();
-        final isForMainFrame = call.arguments['isForMainFrame'] as bool;
+        final isForMainFrame = call.arguments['isForMainFrame'] as bool?;
         final request = ShouldOverrideUrlLoadingRequest(
           url: url,
           method: method,
           headers: headers,
           isForMainFrame: isForMainFrame,
         );
-        return (await _widget.shouldOverrideUrlLoading(this, request))?.toMap();
+        return (await _widget.shouldOverrideUrlLoading!(this, request))?.toMap();
       case 'onReceivedHttpAuthRequest':
         if (_widget.onReceivedHttpAuthRequest == null) {
           return {};
         }
 
-        final host = call.arguments['host'] as String;
-        final realm = call.arguments['realm'] as String;
+        final host = call.arguments['host'] as String?;
+        final realm = call.arguments['realm'] as String?;
         final request = HttpAuthChallenge(
           host: host,
           realm: realm,
         );
-        return (await _widget.onReceivedHttpAuthRequest(this, request))
+        return (await _widget.onReceivedHttpAuthRequest!(this, request))
             ?.toMap();
     }
     throw MissingPluginException(
@@ -134,13 +134,13 @@ class WebViewController {
     return data;
   }
 
-  Future<String> currentUrl() async {
+  Future<String?> currentUrl() async {
     return _channel.invokeMethod<String>(
       'currentUrl',
     );
   }
 
-  Future<void> loadUrl(String url, {Map<String, String> headers}) async {
+  Future<void> loadUrl(String url, {Map<String, String>? headers}) async {
     return _channel.invokeMethod<void>(
       'loadUrl',
       <String, dynamic>{
@@ -150,7 +150,7 @@ class WebViewController {
     );
   }
 
-  Future<bool> canGoBack() async {
+  Future<bool?> canGoBack() async {
     return _channel.invokeMethod<bool>(
       'canGoBack',
       <String, dynamic>{},
@@ -164,7 +164,7 @@ class WebViewController {
     );
   }
 
-  Future<bool> canGoForward() async {
+  Future<bool?> canGoForward() async {
     return _channel.invokeMethod<bool>(
       'canGoForward',
       <String, dynamic>{},
@@ -183,7 +183,7 @@ class WebViewController {
     _javascriptChannelMap[name] = callback;
   }
 
-  JavascriptHandlerCallback removeJavascriptHandler(String name) {
+  JavascriptHandlerCallback? removeJavascriptHandler(String name) {
     return _javascriptChannelMap.remove(name);
   }
 }
