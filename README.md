@@ -1,4 +1,4 @@
-# native_webview
+# native_webview [![Pub Version](https://img.shields.io/pub/v/native_webview)](https://pub.dev/packages/native_webview)
 
 A Flutter plugin that allows you to add an inline WebView.
 
