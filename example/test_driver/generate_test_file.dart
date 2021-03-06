@@ -11,7 +11,7 @@ Future<void> main() async {
     final basename = file.path?.split("/")?.last;
     final name = basename?.replaceAll(".dart", "");
     return """
-import "tests/${basename}" as ${name};
+import "tests/$basename" as $name;
 """;
   }).join("");
 
@@ -19,8 +19,8 @@ import "tests/${basename}" as ${name};
     final name = file.path?.split("/")?.last?.replaceAll(".dart", "");
     return """
   group(
-    "${name}",
-    ${name}.main,
+    "$name",
+    $name.main,
   );
 """;
   }).join("");
@@ -29,11 +29,11 @@ import "tests/${basename}" as ${name};
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 
-${imports}
+$imports
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
-${tests}
+$tests
 }
 """;
 
