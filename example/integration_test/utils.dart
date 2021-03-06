@@ -96,8 +96,11 @@ class WebViewTester {
 
   Future<void> pumpFrames(
     Widget widget, [
-    Duration duration = const Duration(seconds: 3),
+    Duration duration,
   ]) async {
+    final isCI = String.fromEnvironment("CI") == "true";
+    duration ?? (isCI ? Duration(seconds: 15) : Duration(seconds: 3));
+
     return tester.pumpFrames(
       Directionality(
         textDirection: TextDirection.ltr,
@@ -109,8 +112,10 @@ class WebViewTester {
 }
 
 test.Future<void> sleep([
-  Duration duration = const Duration(seconds: 3),
+  Duration duration,
 ]) async {
+  final isCI = String.fromEnvironment("CI") == "true";
+  duration ?? (isCI ? Duration(seconds: 15) : Duration(seconds: 3));
   await test.Future.delayed(duration);
 }
 
@@ -123,7 +128,7 @@ void testWebView(
   String description,
   WidgetTesterCallback callback, {
   bool skip = false,
-  Duration timeout = const Duration(seconds: 60),
+  Duration timeout = const Duration(seconds: 120),
 }) async {
   test.testWidgets(
     description,
