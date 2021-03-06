@@ -28,12 +28,14 @@ void main() {
       );
 
       expect(context.pageStartedEvents, [
-        WebViewEvent.pageStarted(
-          "about:blank",
-          "about:blank",
-          false,
-          false,
-        ),
+        if (Platform.isAndroid ||
+            (Platform.isIOS && String.fromEnvironment("CIRRUS_OS") == ""))
+          WebViewEvent.pageStarted(
+            "about:blank",
+            "about:blank",
+            false,
+            false,
+          ),
       ]);
 
       expect(context.pageFinishedEvents, [
