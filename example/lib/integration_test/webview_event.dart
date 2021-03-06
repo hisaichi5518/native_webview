@@ -3,6 +3,7 @@ import 'package:native_webview/native_webview.dart';
 
 part 'webview_event.freezed.dart';
 
+/// for integration tests
 @freezed
 abstract class WebViewEvent with _$WebViewEvent {
   const factory WebViewEvent.shouldOverrideUrlLoading(
