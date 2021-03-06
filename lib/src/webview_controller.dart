@@ -1,6 +1,6 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:async';
 
 import 'package:flutter/services.dart';
 import 'package:native_webview/native_webview.dart';
@@ -25,7 +25,7 @@ class WebViewController {
           this.updateFirstLoading();
         }
         if (_widget.onPageStarted != null) {
-          _widget.onPageStarted(this, call.arguments['url'] as String);
+          await _widget.onPageStarted(this, call.arguments['url'] as String);
         }
         return true;
       case 'onPageFinished':
@@ -33,14 +33,14 @@ class WebViewController {
           this.updateFirstLoading();
         }
         if (_widget.onPageFinished != null) {
-          _widget.onPageFinished(this, call.arguments['url'] as String);
+          await _widget.onPageFinished(this, call.arguments['url'] as String);
         }
         return true;
       case 'onWebResourceError':
         if (_widget.onWebResourceError == null) {
           return true;
         }
-        _widget.onWebResourceError(
+        await _widget.onWebResourceError(
           WebResourceError(
             errorCode: call.arguments['errorCode'],
             description: call.arguments['description'],
@@ -58,7 +58,8 @@ class WebViewController {
         return true;
       case 'onProgressChanged':
         if (_widget.onProgressChanged != null) {
-          _widget.onProgressChanged(this, call.arguments['progress'] as int);
+          await _widget.onProgressChanged(
+              this, call.arguments['progress'] as int);
         }
         return true;
       case 'onJavascriptHandler':
@@ -74,20 +75,20 @@ class WebViewController {
         if (_widget.onJsConfirm == null) {
           return {};
         }
-        return _widget.onJsConfirm(this, message)?.toMap();
+        return (await _widget.onJsConfirm(this, message))?.toMap();
       case 'onJsAlert':
         final message = call.arguments['message'] as String;
         if (_widget.onJsAlert == null) {
           return {};
         }
-        return _widget.onJsAlert(this, message)?.toMap();
+        return (await _widget.onJsAlert(this, message))?.toMap();
       case 'onJsPrompt':
         final message = call.arguments['message'] as String;
         final defaultText = call.arguments['defaultText'] as String;
         if (_widget.onJsPrompt == null) {
           return {};
         }
-        return _widget.onJsPrompt(this, message, defaultText)?.toMap();
+        return (await _widget.onJsPrompt(this, message, defaultText))?.toMap();
       case 'shouldOverrideUrlLoading':
         if (_widget.shouldOverrideUrlLoading == null) {
           return {};
