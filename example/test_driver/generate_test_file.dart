@@ -7,6 +7,8 @@ Future<void> main() async {
     files.add(file);
   }
 
+  files.sort((a, b) => a.path.compareTo(b.path));
+
   final imports = files.map((file) {
     final basename = file.path?.split("/")?.last;
     final name = basename?.replaceAll(".dart", "");
