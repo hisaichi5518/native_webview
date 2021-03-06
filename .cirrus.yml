@@ -26,8 +26,9 @@ flutter_drive_ios_task:
 flutter_drive_android_task:
   container:
     image: cirrusci/flutter:stable
+    use_in_memory_disk: true
     kvm: true
-    cpu: 4
+    cpu: 16
     memory: 24G
   env:
     EMULATOR_API_LEVEL: 29
