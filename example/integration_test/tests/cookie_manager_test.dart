@@ -12,23 +12,23 @@ void main() {
 
   group("setCookie/getCookies", () {
     testWebView("get www.google.com's cookies", (tester, context) async {
-      await tester.pumpWidget(
+      await tester.pumpFrames(
         WebView(
           initialUrl: 'https://www.google.com/',
           onWebViewCreated: context.onWebViewCreated,
+          shouldOverrideUrlLoading: context.shouldOverrideUrlLoading,
+          onPageStarted: context.onPageStarted,
+          onWebResourceError: context.onWebResourceError,
+          onProgressChanged: context.onProgressChanged,
           onPageFinished: context.onPageFinished,
         ),
       );
-      await context.webviewController.future;
-      final cookieManager = CookieManager.instance();
 
-      context.pageFinished.stream.listen(onData([
-        (event) async {
-          final cookies = await cookieManager.getCookies(url: event);
-          expect(cookies.length, greaterThanOrEqualTo(1));
-          context.complete();
-        },
-      ]));
+      final cookieManager = CookieManager.instance();
+      final cookies = await cookieManager.getCookies(
+        url: "https://www.google.com/",
+      );
+      expect(cookies.length, greaterThanOrEqualTo(1));
     });
 
     test("get flutter.dev's myCookie", () async {
@@ -179,13 +179,19 @@ void main() {
 
         await Future.delayed(const Duration(seconds: 2));
 
-        // TODO: It doesn't work on iOS, so I'll temporarily skip it.
         if (Platform.isAndroid) {
           final cookies2 = await cookieManager.getCookies(
             url: currentUrl,
             name: "myCookie",
           );
           expect(cookies2.length, 0);
+        } else {
+          // It doesn't work on iOS, so I'll temporarily skip it.
+          final cookies2 = await cookieManager.getCookies(
+            url: currentUrl,
+            name: "myCookie",
+          );
+          expect(cookies2.length, 1);
         }
       });
 
