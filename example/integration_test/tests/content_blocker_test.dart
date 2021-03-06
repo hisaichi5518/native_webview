@@ -29,7 +29,7 @@ void main() {
 
       expect(context.pageStartedEvents, [
         if (Platform.isAndroid ||
-            (Platform.isIOS && String.fromEnvironment("CIRRUS_OS") == ""))
+            (Platform.isIOS && String.fromEnvironment("CI") == ""))
           WebViewEvent.pageStarted(
             "about:blank",
             "about:blank",

@@ -99,7 +99,7 @@ class WebViewTester {
     Duration duration,
   ]) async {
     final isCI = String.fromEnvironment("CI") == "true";
-    duration ?? (isCI ? Duration(seconds: 15) : Duration(seconds: 3));
+    duration = duration ?? (isCI ? Duration(seconds: 15) : Duration(seconds: 3));
 
     return tester.pumpFrames(
       Directionality(
@@ -115,7 +115,7 @@ test.Future<void> sleep([
   Duration duration,
 ]) async {
   final isCI = String.fromEnvironment("CI") == "true";
-  duration ?? (isCI ? Duration(seconds: 15) : Duration(seconds: 3));
+  duration = duration ?? (isCI ? Duration(seconds: 15) : Duration(seconds: 3));
   await test.Future.delayed(duration);
 }
 
