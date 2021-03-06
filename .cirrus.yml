@@ -19,7 +19,9 @@ flutter_drive_ios_task:
   flutter_upgrade_script:
     - flutter upgrade
   open_simulator_script:
-    - open -a Simulator
+    - xcrun simctl list
+    - xcrun simctl create Flutter-iPhone com.apple.CoreSimulator.SimDeviceType.iPhone-X com.apple.CoreSimulator.SimRuntime.iOS-14-1 | xargs xcrun simctl boot
+
   test_script: make test
 
 flutter_drive_android_task:
