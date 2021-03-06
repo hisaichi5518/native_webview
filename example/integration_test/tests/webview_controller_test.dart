@@ -37,7 +37,7 @@ void main() {
         WebViewEvent.pageStarted(
           "https://www.google.com/",
           "https://www.google.com/",
-          false,
+          Platform.isAndroid ? true : false,
           false,
         ),
       ]);
@@ -55,6 +55,13 @@ void main() {
           true,
           false,
         ),
+        if (Platform.isAndroid)
+          WebViewEvent.pageFinished(
+            "https://www.google.com/",
+            "https://www.google.com/",
+            true,
+            false,
+          ),
       ]);
     });
 

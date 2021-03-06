@@ -92,10 +92,21 @@ void main() {
       } else {
         // Android's shouldInterceptRequest does not target the URL of the MainFrame,
         // so onPageFinished will be executed.
-        expect(context.pageFinishedEvents, []);
+        expect(context.pageFinishedEvents, [
+          WebViewEvent.pageFinished(
+            "https://www.google.com/",
+            "https://www.google.com/",
+            false,
+            false,
+          ),
+        ]);
         expect(
-          context.webResourceErrorEvents.map((e) => e.error.errorCode),
-          [104],
+          context.webResourceErrorEvents.map((e) => e.error.errorType),
+          [WebResourceErrorType.unknown],
+        );
+        expect(
+          context.webResourceErrorEvents.map((e) => e.error.description),
+          [contains("There was a network error.")],
         );
       }
     });
