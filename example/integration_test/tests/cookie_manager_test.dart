@@ -219,8 +219,6 @@ void main() {
         expect(cookies1.length, 1);
         expect(cookies1.first.value, "myValue");
 
-        sleep(Duration(seconds: 2));
-
         final cookies2 = await cookieManager.getCookies(
           url: currentUrl,
           name: "myCookie",
