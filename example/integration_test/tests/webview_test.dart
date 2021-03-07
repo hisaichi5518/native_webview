@@ -1,11 +1,14 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:integration_test/integration_test.dart';
 import 'package:native_webview/native_webview.dart';
 
 import '../utils.dart';
 
 void main() {
+  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+
   group("initalUrl", () {
     testWebView('https://flutter.dev/', (tester, context) async {
       await tester.pumpFrames(

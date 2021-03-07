@@ -1,25 +1,16 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:integration_test/integration_test.dart';
 import 'package:native_webview/native_webview.dart';
 import 'package:native_webview_example/integration_test/webview_event.dart';
 
 import '../utils.dart';
 
 void main() {
-  if (!Platform.isIOS) {
-    return;
-  }
+  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   testWebView('Return allow', (tester, context) async {
-    // Which: at location [1] is
-    // _$PageFinishedEvent:<WebViewEvent.pageFinished(url:
-    // https://www.google.com/, currentUrl: https://www.google.com/,
-    // canGoBack: false, canGoForward: false)>
-    // _$PageFinishedEvent:<WebViewEvent.pageFinished(url:
-    // https://www.google.com/, currentUrl: https://www.google.com/,
-    // canGoBack: true, canGoForward: false)>
-
     await tester.pumpFrames(
       WebView(
         initialUrl: 'about:blank',
@@ -55,24 +46,50 @@ void main() {
       WebViewEvent.pageStarted(
         "https://www.google.com/",
         "https://www.google.com/",
-        false,
-        false,
-      ),
-    ]);
-    expect(context.pageFinishedEvents, [
-      WebViewEvent.pageFinished(
-        "about:blank",
-        "about:blank",
-        false,
-        false,
-      ),
-      WebViewEvent.pageFinished(
-        "https://www.google.com/",
-        "https://www.google.com/",
-        false, // false!
+        Platform.isAndroid ? true : false,
         false,
       ),
     ]);
+
+    expect(
+        context.pageFinishedEvents,
+        anyOneOfList(
+          [
+            WebViewEvent.pageFinished(
+              "about:blank",
+              "about:blank",
+              false,
+              false,
+            ),
+            WebViewEvent.pageFinished(
+              "https://www.google.com/",
+              "https://www.google.com/",
+              Platform.isAndroid ? true : false,
+              false,
+            ),
+          ],
+          [
+            // PageFinished of www.google.com may come twice on Android.
+            WebViewEvent.pageFinished(
+              "about:blank",
+              "about:blank",
+              false,
+              false,
+            ),
+            WebViewEvent.pageFinished(
+              "https://www.google.com/",
+              "https://www.google.com/",
+              Platform.isAndroid ? true : false,
+              false,
+            ),
+            WebViewEvent.pageFinished(
+              "https://www.google.com/",
+              "https://www.google.com/",
+              Platform.isAndroid ? true : false,
+              false,
+            ),
+          ],
+        ));
   });
 
   testWebView('Return cancel', (tester, context) async {
@@ -145,7 +162,7 @@ void main() {
     await sleep();
 
     expect(context.loadingRequestEvents.map((e) => e.request.url), [
-      "https://www.google.com/",
+      if (Platform.isIOS) "https://www.google.com/",
     ]);
 
     expect(context.webResourceErrorEvents.length, 0);
