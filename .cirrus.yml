@@ -3,7 +3,6 @@ flutter_analyze_task:
     image: cirrusci/flutter:stable
   pub_cache:
     folder: ~/.pub-cache
-  upgrade_script: flutter upgrade
   pub_get_script: flutter pub get
   lint_script: flutter analyze
   test_script: flutter test
