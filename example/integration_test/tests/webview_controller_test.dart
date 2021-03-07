@@ -43,21 +43,42 @@ void main() {
       ]);
 
       expect(context.pageFinishedEvents.length, greaterThanOrEqualTo(2));
-      // Android で www.google.com の pageFinished が2回くることがある
-      // expect(context.pageFinishedEvents, [
-      //   WebViewEvent.pageFinished(
-      //     "about:blank",
-      //     "about:blank",
-      //     false,
-      //     false,
-      //   ),
-      //   WebViewEvent.pageFinished(
-      //     "https://www.google.com/",
-      //     "https://www.google.com/",
-      //     true,
-      //     false,
-      //   ),
-      // ]);
+      expect(
+          context.pageFinishedEvents,
+          whichOneList([
+            WebViewEvent.pageFinished(
+              "about:blank",
+              "about:blank",
+              false,
+              false,
+            ),
+            WebViewEvent.pageFinished(
+              "https://www.google.com/",
+              "https://www.google.com/",
+              true,
+              false,
+            ),
+          ], [
+            // PageFinished of www.google.com may come twice on Android.
+            WebViewEvent.pageFinished(
+              "about:blank",
+              "about:blank",
+              false,
+              false,
+            ),
+            WebViewEvent.pageFinished(
+              "https://www.google.com/",
+              "https://www.google.com/",
+              true,
+              false,
+            ),
+            WebViewEvent.pageFinished(
+              "https://www.google.com/",
+              "https://www.google.com/",
+              true,
+              false,
+            ),
+          ]));
     });
 
     testWebView('with headers', (tester, context) async {

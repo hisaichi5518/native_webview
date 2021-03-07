@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart' as test;
 import 'package:native_webview/native_webview.dart';
@@ -119,6 +120,9 @@ typedef WidgetTesterCallback = Future<void> Function(
   WebViewTestContext context,
 );
 
+test.Matcher whichOneList(List<dynamic> value1, List<dynamic> value2) =>
+    _WhichOneList(value1, value2);
+
 void testWebView(
   String description,
   WidgetTesterCallback callback, {
@@ -137,3 +141,26 @@ void testWebView(
 }
 
 void unawaited(Future close) {}
+
+class _WhichOneList extends test.Matcher {
+  final List<dynamic> value1;
+  final List<dynamic> value2;
+  _WhichOneList(this.value1, this.value2);
+
+  @override
+  test.Description describe(test.Description description) {
+    return description
+        .add("which one ")
+        .addDescriptionOf(value1)
+        .add(", ")
+        .addDescriptionOf(value2);
+  }
+
+  @override
+  bool matches(item, Map matchState) {
+    if (listEquals(item, value1) || listEquals(item, value2)) {
+      return true;
+    }
+    return false;
+  }
+}
