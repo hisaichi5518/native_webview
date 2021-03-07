@@ -1,8 +1,10 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart' as test;
 import 'package:native_webview/native_webview.dart';
+import 'package:native_webview_example/integration_test/webview_event.dart';
 
 T Function(A) onData<T, A>(List<T Function(A)> events) {
   var index = 0;
@@ -12,55 +14,80 @@ T Function(A) onData<T, A>(List<T Function(A)> events) {
 }
 
 class WebViewTestContext {
-  final List<ShouldOverrideUrlLoadingRequest> loadingRequestEvents = [];
-  final List<String> pageStartedEvents = [];
-  final List<String> pageFinishedEvents = [];
-  final List<WebResourceError> webResourceErrorEvents = [];
-
-  final loadingRequests = StreamController<ShouldOverrideUrlLoadingRequest>();
-  final pageStarted = StreamController<String>();
-  final webResourceError = StreamController<WebResourceError>();
-  final pageFinished = StreamController<String>();
+  final List<ShouldOverrideUrlLoadingEvent> loadingRequestEvents = [];
+  final List<ProgressChangedEvent> progressChangedEvents = [];
+  final List<PageStartedEvent> pageStartedEvents = [];
+  final List<PageFinishedEvent> pageFinishedEvents = [];
+  final List<WebResourceErrorEvent> webResourceErrorEvents = [];
 
   final webviewController = Completer<WebViewController>();
-  final completed = Completer<void>();
 
   void onWebViewCreated(WebViewController controller) {
     webviewController.complete(controller);
   }
 
-  void shouldOverrideUrlLoading(ShouldOverrideUrlLoadingRequest request) {
-    loadingRequestEvents.add(request);
-    loadingRequests.add(request);
+  Future<ShouldOverrideUrlLoadingAction> shouldOverrideUrlLoading(
+    WebViewController controller,
+    ShouldOverrideUrlLoadingRequest request,
+  ) async {
+    final event = WebViewEvent.shouldOverrideUrlLoading(request);
+    print(event);
+    loadingRequestEvents.add(event);
+
+    return ShouldOverrideUrlLoadingAction.allow;
   }
 
-  void onPageStarted(WebViewController controller, String url) {
-    pageStartedEvents.add(url);
-    pageStarted.add(url);
+  void onPageStarted(WebViewController controller, String url) async {
+    final event = WebViewEvent.pageStarted(
+      url,
+      await controller.currentUrl(),
+      await controller.canGoBack(),
+      await controller.canGoForward(),
+    );
+    print(event);
+    pageStartedEvents.add(event);
   }
 
-  void onPageFinished(WebViewController controller, String url) {
-    pageFinishedEvents.add(url);
-    pageFinished.add(url);
+  void onPageFinished(WebViewController controller, String url) async {
+    final event = WebViewEvent.pageFinished(
+      url,
+      await controller.currentUrl(),
+      await controller.canGoBack(),
+      await controller.canGoForward(),
+    );
+    print(event);
+    pageFinishedEvents.add(event);
   }
 
   void onWebResourceError(WebResourceError error) {
-    webResourceErrorEvents.add(error);
-    webResourceError.add(error);
+    final event = WebViewEvent.webResourceError(error);
+    print(event);
+    webResourceErrorEvents.add(event);
   }
 
-  void complete() {
-    completed.complete();
+  void onProgressChanged(WebViewController controller, int progress) {
+    final event = WebViewEvent.progressChanged(progress);
+    print(event);
+    progressChangedEvents.add(event);
   }
 
   void dispose() {
     loadingRequestEvents.clear();
     pageStartedEvents.clear();
     pageFinishedEvents.clear();
+    progressChangedEvents.clear();
+    webResourceErrorEvents.clear();
+  }
 
-    loadingRequests.close();
-    pageStarted.close();
-    pageFinished.close();
+  @override
+  String toString() {
+    return """
+loadingRequestEvents: $loadingRequestEvents,
+pageStartedEvents: $pageStartedEvents,
+pageFinishedEvents: $pageFinishedEvents,
+progressChangedEvents: $progressChangedEvents,
+webResourceErrorEvents: $webResourceErrorEvents,
+""";
   }
 }
 
@@ -68,20 +95,24 @@ class WebViewTester {
   test.WidgetTester tester;
   WebViewTester(this.tester);
 
-  Future<void> pumpWidget(
+  Future<void> pumpFrames(
     Widget widget, [
-    Duration duration,
-    test.EnginePhase phase = test.EnginePhase.sendSemanticsUpdate,
+    Duration duration = const Duration(seconds: 5),
   ]) async {
-    return tester.pumpWidget(
+    return tester.pumpFrames(
       Directionality(
         textDirection: TextDirection.ltr,
         child: widget,
       ),
       duration,
-      phase,
     );
   }
+}
+
+test.Future<void> sleep([
+  Duration duration = const Duration(seconds: 5),
+]) async {
+  await test.Future.delayed(duration);
 }
 
 typedef WidgetTesterCallback = Future<void> Function(
@@ -89,20 +120,20 @@ typedef WidgetTesterCallback = Future<void> Function(
   WebViewTestContext context,
 );
 
+test.Matcher whichOneList(List<dynamic> value1, List<dynamic> value2) =>
+    _WhichOneList(value1, value2);
+
 void testWebView(
   String description,
   WidgetTesterCallback callback, {
   bool skip = false,
-  Duration timeout = const Duration(seconds: 120),
-}) {
+  Duration timeout = const Duration(minutes: 2),
+}) async {
   test.testWidgets(
     description,
     (tester) async {
       final context = WebViewTestContext();
       await callback(WebViewTester(tester), context);
-
-      await context.completed.future;
-      context.dispose();
     },
     skip: skip,
     timeout: test.Timeout(timeout),
@@ -110,3 +141,26 @@ void testWebView(
 }
 
 void unawaited(Future close) {}
+
+class _WhichOneList extends test.Matcher {
+  final List<dynamic> value1;
+  final List<dynamic> value2;
+  _WhichOneList(this.value1, this.value2);
+
+  @override
+  test.Description describe(test.Description description) {
+    return description
+        .add("which one ")
+        .addDescriptionOf(value1)
+        .add(", ")
+        .addDescriptionOf(value2);
+  }
+
+  @override
+  bool matches(item, Map matchState) {
+    if (listEquals(item, value1) || listEquals(item, value2)) {
+      return true;
+    }
+    return false;
+  }
+}

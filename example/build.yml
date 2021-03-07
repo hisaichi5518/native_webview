@@ -1,0 +1,7 @@
+targets:
+  $default:
+    builders:
+      freezed:
+        generate_for:
+          include:
+            - integration_test/*.dart

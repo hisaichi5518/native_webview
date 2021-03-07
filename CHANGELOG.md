@@ -1,3 +1,7 @@
+## 0.28.0
+
+- The webview event callback returns FutureOr type.
+
 ## 0.27.0
 
 - [Use PlatformViewLink](https://github.com/hisaichi5518/native_webview/pull/79)
