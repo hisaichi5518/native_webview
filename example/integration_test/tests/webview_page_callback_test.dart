@@ -74,16 +74,16 @@ void main() {
       ]);
       expect(
         context.pageFinishedEvents,
-        anyOneOfList(
-          [
+        anyOf(
+          equals([
             WebViewEvent.pageFinished(
               "https://www.google.com/",
               "https://www.google.com/",
               false,
               false,
             ),
-          ],
-          [
+          ]),
+          equals([
             // PageFinished of www.google.com may come twice on Android.
             WebViewEvent.pageFinished(
               "https://www.google.com/",
@@ -97,7 +97,7 @@ void main() {
               false,
               false,
             ),
-          ],
+          ]),
         ),
       );
     });
@@ -122,8 +122,8 @@ void main() {
 
       expect(
         context.pageStartedEvents,
-        anyOneOfList(
-          [
+        anyOf(
+          equals([
             // iOS?
             WebViewEvent.pageStarted(
               "https://google.com/",
@@ -131,8 +131,8 @@ void main() {
               false,
               false,
             ),
-          ],
-          [
+          ]),
+          equals([
             // Android
             WebViewEvent.pageStarted(
               "https://www.google.com/",
@@ -140,22 +140,22 @@ void main() {
               false,
               false,
             ),
-          ],
+          ]),
         ),
       );
 
       expect(
         context.pageFinishedEvents,
-        anyOneOfList(
-          [
+        anyOf(
+          equals([
             WebViewEvent.pageFinished(
               "https://www.google.com/",
               "https://www.google.com/",
               false,
               false,
             ),
-          ],
-          [
+          ]),
+          equals([
             // PageFinished of www.google.com may come twice on Android.
             WebViewEvent.pageFinished(
               "https://www.google.com/",
@@ -169,8 +169,8 @@ void main() {
               false,
               false,
             ),
-          ],
-          [
+          ]),
+          equals([
             // for Android
             WebViewEvent.pageFinished(
               "https://www.google.com/",
@@ -190,7 +190,7 @@ void main() {
               false,
               false,
             ),
-          ],
+          ]),
         ),
       );
     });
@@ -418,8 +418,8 @@ void main() {
     ]);
     expect(
       context.pageFinishedEvents,
-      anyOneOfList(
-        [
+      anyOf(
+        equals([
           WebViewEvent.pageFinished(
             "about:blank",
             "about:blank",
@@ -432,8 +432,8 @@ void main() {
             true,
             false,
           ),
-        ],
-        [
+        ]),
+        equals([
           // PageFinished of www.google.com may come twice on Android.
           WebViewEvent.pageFinished(
             "about:blank",
@@ -453,7 +453,7 @@ void main() {
             true,
             false,
           ),
-        ],
+        ]),
       ),
     );
   });
@@ -501,8 +501,8 @@ void main() {
     ]);
     expect(
       context.pageFinishedEvents,
-      anyOneOfList(
-        [
+      anyOf(
+        equals([
           WebViewEvent.pageFinished(
             "about:blank",
             "about:blank",
@@ -515,8 +515,8 @@ void main() {
             true,
             false,
           ),
-        ],
-        [
+        ]),
+        equals([
           // PageFinished of www.google.com may come twice on Android.
           WebViewEvent.pageFinished(
             "about:blank",
@@ -536,8 +536,8 @@ void main() {
             true,
             false,
           ),
-        ],
-        [
+        ]),
+        equals([
           // PageFinished of www.google.com may come twice on Android.
           WebViewEvent.pageFinished(
             "about:blank",
@@ -563,7 +563,7 @@ void main() {
             true,
             false,
           ),
-        ],
+        ]),
       ),
     );
   });
@@ -610,39 +610,42 @@ void main() {
     ]);
     expect(
       context.pageFinishedEvents,
-      anyOneOfList([
-        WebViewEvent.pageFinished(
-          "about:blank",
-          "about:blank",
-          false,
-          false,
-        ),
-        WebViewEvent.pageFinished(
-          "https://www.google.com/",
-          "https://www.google.com/",
-          Platform.isAndroid ? true : false,
-          false,
-        ),
-      ], [
-        WebViewEvent.pageFinished(
-          "about:blank",
-          "about:blank",
-          false,
-          false,
-        ),
-        WebViewEvent.pageFinished(
-          "https://www.google.com/",
-          "https://www.google.com/",
-          true,
-          false,
-        ),
-        WebViewEvent.pageFinished(
-          "https://www.google.com/",
-          "https://www.google.com/",
-          true,
-          false,
-        ),
-      ]),
+      anyOf(
+        equals([
+          WebViewEvent.pageFinished(
+            "about:blank",
+            "about:blank",
+            false,
+            false,
+          ),
+          WebViewEvent.pageFinished(
+            "https://www.google.com/",
+            "https://www.google.com/",
+            Platform.isAndroid ? true : false,
+            false,
+          ),
+        ]),
+        equals([
+          WebViewEvent.pageFinished(
+            "about:blank",
+            "about:blank",
+            false,
+            false,
+          ),
+          WebViewEvent.pageFinished(
+            "https://www.google.com/",
+            "https://www.google.com/",
+            true,
+            false,
+          ),
+          WebViewEvent.pageFinished(
+            "https://www.google.com/",
+            "https://www.google.com/",
+            true,
+            false,
+          ),
+        ]),
+      ),
     );
   });
 
@@ -686,39 +689,42 @@ void main() {
     ]);
     expect(
       context.pageFinishedEvents,
-      anyOneOfList([
-        WebViewEvent.pageFinished(
-          "about:blank",
-          "about:blank",
-          false,
-          false,
-        ),
-        WebViewEvent.pageFinished(
-          "https://www.google.com/",
-          "https://www.google.com/",
-          true,
-          false,
-        ),
-      ], [
-        WebViewEvent.pageFinished(
-          "about:blank",
-          "about:blank",
-          false,
-          false,
-        ),
-        WebViewEvent.pageFinished(
-          "https://www.google.com/",
-          "https://www.google.com/",
-          true,
-          false,
-        ),
-        WebViewEvent.pageFinished(
-          "https://www.google.com/",
-          "https://www.google.com/",
-          true,
-          false,
-        ),
-      ]),
+      anyOf(
+        equals([
+          WebViewEvent.pageFinished(
+            "about:blank",
+            "about:blank",
+            false,
+            false,
+          ),
+          WebViewEvent.pageFinished(
+            "https://www.google.com/",
+            "https://www.google.com/",
+            true,
+            false,
+          ),
+        ]),
+        equals([
+          WebViewEvent.pageFinished(
+            "about:blank",
+            "about:blank",
+            false,
+            false,
+          ),
+          WebViewEvent.pageFinished(
+            "https://www.google.com/",
+            "https://www.google.com/",
+            true,
+            false,
+          ),
+          WebViewEvent.pageFinished(
+            "https://www.google.com/",
+            "https://www.google.com/",
+            true,
+            false,
+          ),
+        ]),
+      ),
     );
   });
 }

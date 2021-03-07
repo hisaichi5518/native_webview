@@ -53,8 +53,8 @@ void main() {
 
     expect(
         context.pageFinishedEvents,
-        anyOneOfList(
-          [
+        anyOf(
+          equals([
             WebViewEvent.pageFinished(
               "about:blank",
               "about:blank",
@@ -67,8 +67,8 @@ void main() {
               Platform.isAndroid ? true : false,
               false,
             ),
-          ],
-          [
+          ]),
+          equals([
             // PageFinished of www.google.com may come twice on Android.
             WebViewEvent.pageFinished(
               "about:blank",
@@ -88,7 +88,7 @@ void main() {
               Platform.isAndroid ? true : false,
               false,
             ),
-          ],
+          ]),
         ));
   });
 
