@@ -1,25 +1,16 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:integration_test/integration_test.dart';
 import 'package:native_webview/native_webview.dart';
 import 'package:native_webview_example/integration_test/webview_event.dart';
 
 import '../utils.dart';
 
 void main() {
-  if (!Platform.isIOS) {
-    return;
-  }
+  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   testWebView('Return allow', (tester, context) async {
-    // Which: at location [1] is
-    // _$PageFinishedEvent:<WebViewEvent.pageFinished(url:
-    // https://www.google.com/, currentUrl: https://www.google.com/,
-    // canGoBack: false, canGoForward: false)>
-    // _$PageFinishedEvent:<WebViewEvent.pageFinished(url:
-    // https://www.google.com/, currentUrl: https://www.google.com/,
-    // canGoBack: true, canGoForward: false)>
-
     await tester.pumpFrames(
       WebView(
         initialUrl: 'about:blank',

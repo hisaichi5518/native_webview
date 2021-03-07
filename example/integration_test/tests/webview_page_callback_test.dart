@@ -1,15 +1,14 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:integration_test/integration_test.dart';
 import 'package:native_webview/native_webview.dart';
 import 'package:native_webview_example/integration_test/webview_event.dart';
 
 import '../utils.dart';
 
 void main() {
-  if (!Platform.isIOS) {
-    return;
-  }
+  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   group("The URL loaded by initialUrl", () {
     testWebView('initialUrl is about:blank', (tester, context) async {

@@ -1,9 +1,12 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:integration_test/integration_test.dart';
 import 'package:native_webview/native_webview.dart';
 
 void main() {
+  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+
   group("androidWebViewInfo", () {
     test("on Android", () async {
       final info = await WebViewManager.instance().androidWebViewInfo;
