@@ -1,13 +1,18 @@
+import 'dart:async';
+
 import 'package:native_webview/src/webview_controller.dart';
 
-typedef JsConfirmCallback = JsConfirmResponse Function(
+typedef JsConfirmCallback = FutureOr<JsConfirmResponse> Function(
   WebViewController,
   String,
 );
 
-typedef JsAlertCallback = JsAlertResponse Function(WebViewController, String);
+typedef JsAlertCallback = FutureOr<JsAlertResponse> Function(
+  WebViewController,
+  String,
+);
 
-typedef JsPromptCallback = JsPromptResponse Function(
+typedef JsPromptCallback = FutureOr<JsPromptResponse> Function(
   WebViewController,
   String,
   String,

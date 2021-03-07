@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -139,21 +140,21 @@ class WebView extends StatefulWidget {
   final WebViewData initialData;
 
   final void Function(WebViewController) onWebViewCreated;
-  final void Function(WebViewController, String) onPageStarted;
-  final void Function(WebViewController, String) onPageFinished;
-  final void Function(WebResourceError error) onWebResourceError;
-  final void Function(WebViewController, int) onProgressChanged;
+  final FutureOr<void> Function(WebViewController, String) onPageStarted;
+  final FutureOr<void> Function(WebViewController, String) onPageFinished;
+  final FutureOr<void> Function(WebResourceError error) onWebResourceError;
+  final FutureOr<void> Function(WebViewController, int) onProgressChanged;
 
   final JsConfirmCallback onJsConfirm;
   final JsAlertCallback onJsAlert;
   final JsPromptCallback onJsPrompt;
 
-  final Future<ShouldOverrideUrlLoadingAction> Function(
+  final FutureOr<ShouldOverrideUrlLoadingAction> Function(
     WebViewController,
     ShouldOverrideUrlLoadingRequest,
   ) shouldOverrideUrlLoading;
 
-  final Future<ReceivedHttpAuthResponse> Function(
+  final FutureOr<ReceivedHttpAuthResponse> Function(
     WebViewController,
     HttpAuthChallenge,
   ) onReceivedHttpAuthRequest;
