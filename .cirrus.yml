@@ -40,4 +40,18 @@ flutter_drive_android_task:
     folder: ~/.pub-cache
   android_cache:
     folder: ~/.android/build-cache/
-  test_script: make test
+  matrix:
+    - name: content_blocker_test
+      test_script: make testci TARGET=integration_test/tests/content_blocker_test.dart
+    - name: cookie_manager_test
+      test_script: make testci TARGET=integration_test/tests/cookie_manager_test.dart
+    - name: webview_controller_test
+      test_script: make testci TARGET=integration_test/tests/webview_controller_test.dart
+    - name: webview_manager_test
+      test_script: make testci TARGET=integration_test/tests/webview_manager_test.dart
+    - name: webview_page_callback_test
+      test_script: make testci TARGET=integration_test/tests/webview_page_callback_test.dart
+    - name: webview_should_override_url_loading_test
+      test_script: make testci TARGET=integration_test/tests/webview_should_override_url_loading_test.dart
+    - name: webview_test
+      test_script: make testci TARGET=integration_test/tests/webview_test.dart
