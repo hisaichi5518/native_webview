@@ -7,18 +7,17 @@ flutter_analyze_task:
   lint_script: flutter analyze
   test_script: flutter test
 
-# The execution results are different when run on the hisaichi5518's machine and when run on the CirrusCI. So, I have stopped running it on the CirrusCI.
-#flutter_drive_ios_task:
-#  osx_instance:
-#    image: big-sur-xcode-12-4
-#  flutter_upgrade_script:
-#    - flutter upgrade
-#  open_simulator_script:
-#    - xcrun --version
-#    - xcrun simctl list
-#    - xcrun simctl create Flutter-iPhone com.apple.CoreSimulator.SimDeviceType.iPhone-12-Pro-Max com.apple.CoreSimulator.SimRuntime.iOS-14-4 | xargs xcrun simctl boot
-#
-#  test_script: make test
+flutter_drive_ios_task:
+  osx_instance:
+    image: big-sur-xcode-12-4
+  flutter_upgrade_script:
+    - flutter upgrade
+  open_simulator_script:
+    - xcrun --version
+    - xcrun simctl list
+    - xcrun simctl create Flutter-iPhone com.apple.CoreSimulator.SimDeviceType.iPhone-12-Pro-Max com.apple.CoreSimulator.SimRuntime.iOS-14-4 | xargs xcrun simctl boot
+
+  test_script: make test
 
 flutter_drive_android_task:
   container:
