@@ -15,10 +15,11 @@ flutter_test_task:
 
 flutter_drive_ios_task:
   osx_instance:
-    image: big-sur-xcode-12.4
+    image: big-sur-xcode
   flutter_upgrade_script:
     - flutter upgrade
   open_simulator_script:
+    - xcrun --version
     - xcrun simctl list
     - xcrun simctl create Flutter-iPhone com.apple.CoreSimulator.SimDeviceType.iPhone-12-Pro-Max com.apple.CoreSimulator.SimRuntime.iOS-14-4 | xargs xcrun simctl boot
 
