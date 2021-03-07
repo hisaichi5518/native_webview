@@ -97,7 +97,7 @@ class WebViewTester {
 
   Future<void> pumpFrames(
     Widget widget, [
-    Duration duration = const Duration(seconds: 5),
+    Duration duration = const Duration(seconds: 10),
   ]) async {
     return tester.pumpFrames(
       Directionality(
@@ -110,7 +110,7 @@ class WebViewTester {
 }
 
 test.Future<void> sleep([
-  Duration duration = const Duration(seconds: 5),
+  Duration duration = const Duration(seconds: 10),
 ]) async {
   await test.Future.delayed(duration);
 }
