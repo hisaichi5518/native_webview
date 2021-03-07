@@ -109,11 +109,8 @@ class WebViewTester {
 }
 
 test.Future<void> sleep([
-  Duration duration,
+  Duration duration = const Duration(seconds: 10),
 ]) async {
-  final isCI = String.fromEnvironment("CI") == "true";
-  print("isCI: $isCI");
-  duration = duration ?? (isCI ? Duration(seconds: 30) : Duration(seconds: 15));
   await test.Future.delayed(duration);
 }
 
