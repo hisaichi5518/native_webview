@@ -2,22 +2,22 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:native_webview/native_webview.dart';
+import 'package:native_webview_example/integration_test/webview_event.dart';
 
 import '../utils.dart';
 
 void main() {
   group("ContentBlockerAction.block()", () {
-    testWebView('https://flutter.dev/', (tester, context) async {
-      await tester.pumpWidget(
+    testWebView('about:blank', (tester, context) async {
+      await tester.pumpFrames(
         WebView(
-          initialUrl: 'https://flutter.dev/',
+          initialUrl: 'about:blank',
           onWebViewCreated: context.onWebViewCreated,
-          shouldOverrideUrlLoading: (_, request) async {
-            context.shouldOverrideUrlLoading(request);
-            return ShouldOverrideUrlLoadingAction.allow;
-          },
+          shouldOverrideUrlLoading: context.shouldOverrideUrlLoading,
           onPageStarted: context.onPageStarted,
           onPageFinished: context.onPageFinished,
+          onWebResourceError: context.onWebResourceError,
+          onProgressChanged: context.onProgressChanged,
           contentBlockers: [
             ContentBlocker(
               action: ContentBlockerAction.block(),
@@ -26,24 +26,89 @@ void main() {
           ],
         ),
       );
-      context.pageStarted.stream.listen(onData([
-        (event) async {
-          expect(event, "https://flutter.dev/");
 
-          await Future.delayed(Duration(seconds: 10), () {
-            expect(context.loadingRequestEvents.length, 0);
-            expect(context.pageStartedEvents.length, 1);
-            if (Platform.isAndroid) {
-              // Android's shouldInterceptRequest does not target the URL of the MainFrame, so onPageFinished will be executed.
-              expect(context.pageFinishedEvents.length, 1);
-            } else {
-              // On iOS, onPageFinished is not executed because it is the target of the URL ContentBlocker in the MainFrame.
-              expect(context.pageFinishedEvents.length, 0);
-            }
-            context.complete();
-          });
-        },
-      ]));
+      expect(context.pageStartedEvents, [
+        WebViewEvent.pageStarted(
+          "about:blank",
+          "about:blank",
+          false,
+          false,
+        ),
+      ]);
+
+      expect(context.pageFinishedEvents, [
+        WebViewEvent.pageFinished(
+          "about:blank",
+          "about:blank",
+          false,
+          false,
+        ),
+      ]);
+
+      // about:blank will not be blocked
+      expect(context.webResourceErrorEvents, []);
+    });
+
+    testWebView('https://www.google.com/', (tester, context) async {
+      await tester.pumpFrames(
+        WebView(
+          initialUrl: 'https://www.google.com/',
+          onWebViewCreated: context.onWebViewCreated,
+          shouldOverrideUrlLoading: context.shouldOverrideUrlLoading,
+          onPageStarted: context.onPageStarted,
+          onPageFinished: context.onPageFinished,
+          onWebResourceError: context.onWebResourceError,
+          onProgressChanged: context.onProgressChanged,
+          contentBlockers: [
+            ContentBlocker(
+              action: ContentBlockerAction.block(),
+              trigger: ContentBlockerTrigger(urlFilter: ".*"),
+            )
+          ],
+        ),
+      );
+
+      expect(context.pageStartedEvents, [
+        WebViewEvent.pageStarted(
+          "https://www.google.com/",
+          "https://www.google.com/",
+          false,
+          false,
+        ),
+      ]);
+
+      if (Platform.isIOS) {
+        // On iOS, onPageFinished is not executed
+        // because it is the target of the URL ContentBlocker in the MainFrame.
+        expect(context.pageFinishedEvents, []);
+        expect(
+          context.webResourceErrorEvents.map((e) => e.error.errorCode),
+          [104],
+        );
+        expect(
+          context.webResourceErrorEvents.map((e) => e.error.description),
+          [contains("The URL was blocked by a content blocker")],
+        );
+      } else {
+        // Android's shouldInterceptRequest does not target the URL of the MainFrame,
+        // so onPageFinished will be executed.
+        expect(context.pageFinishedEvents, [
+          WebViewEvent.pageFinished(
+            "https://www.google.com/",
+            "https://www.google.com/",
+            false,
+            false,
+          ),
+        ]);
+        expect(
+          context.webResourceErrorEvents.map((e) => e.error.errorType),
+          [WebResourceErrorType.unknown],
+        );
+        expect(
+          context.webResourceErrorEvents.map((e) => e.error.description),
+          [contains("There was a network error.")],
+        );
+      }
     });
   });
 }

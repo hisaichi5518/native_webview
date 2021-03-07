@@ -3,83 +3,92 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:native_webview/native_webview.dart';
+import 'package:native_webview_example/integration_test/webview_event.dart';
 
 import '../utils.dart';
 
 void main() {
   group("loadUrl", () {
-    testWebView('loadUrl', (tester, context) async {
-      await tester.pumpWidget(
+    testWebView('loadUrl(www.google.com)', (tester, context) async {
+      await tester.pumpFrames(
         WebView(
-          initialUrl: 'https://flutter.dev/',
+          initialUrl: 'about:blank',
           onWebViewCreated: context.onWebViewCreated,
+          shouldOverrideUrlLoading: context.shouldOverrideUrlLoading,
           onPageStarted: context.onPageStarted,
+          onWebResourceError: context.onWebResourceError,
+          onProgressChanged: context.onProgressChanged,
           onPageFinished: context.onPageFinished,
         ),
       );
+
       final controller = await context.webviewController.future;
-      context.pageStarted.stream.listen(onData([
-        (event) async {
-          expect(event, "https://flutter.dev/");
-          final currentUrl = await controller.currentUrl();
-          expect(currentUrl, 'https://flutter.dev/');
-        },
-        (event) async {
-          expect(event, "https://www.google.com/");
-          final currentUrl = await controller.currentUrl();
-          expect(currentUrl, 'https://www.google.com/');
-        },
-      ]));
+      await controller.loadUrl("https://www.google.com/");
 
-      context.pageFinished.stream.listen(onData([
-        (event) async {
-          expect(event, "https://flutter.dev/");
-          final currentUrl = await controller.currentUrl();
-          expect(currentUrl, 'https://flutter.dev/');
+      await sleep();
 
-          await controller.loadUrl('https://www.google.com/');
-        },
-        (event) async {
-          expect(event, "https://www.google.com/");
-          final currentUrl = await controller.currentUrl();
-          expect(currentUrl, 'https://www.google.com/');
+      expect(context.pageStartedEvents, [
+        WebViewEvent.pageStarted(
+          "about:blank",
+          "about:blank",
+          false,
+          false,
+        ),
+        WebViewEvent.pageStarted(
+          "https://www.google.com/",
+          "https://www.google.com/",
+          Platform.isAndroid ? true : false,
+          false,
+        ),
+      ]);
 
-          context.complete();
-        },
-      ]));
+      expect(context.pageFinishedEvents, [
+        WebViewEvent.pageFinished(
+          "about:blank",
+          "about:blank",
+          false,
+          false,
+        ),
+        WebViewEvent.pageFinished(
+          "https://www.google.com/",
+          "https://www.google.com/",
+          true,
+          false,
+        ),
+        if (Platform.isAndroid)
+          WebViewEvent.pageFinished(
+            "https://www.google.com/",
+            "https://www.google.com/",
+            true,
+            false,
+          ),
+      ]);
     });
 
     testWebView('with headers', (tester, context) async {
-      await tester.pumpWidget(
+      await tester.pumpFrames(
         WebView(
-          initialUrl: 'https://flutter.dev/',
+          initialUrl: 'about:blank',
           onWebViewCreated: context.onWebViewCreated,
+          shouldOverrideUrlLoading: context.shouldOverrideUrlLoading,
+          onPageStarted: context.onPageStarted,
+          onWebResourceError: context.onWebResourceError,
+          onProgressChanged: context.onProgressChanged,
           onPageFinished: context.onPageFinished,
         ),
       );
       final controller = await context.webviewController.future;
+      final headers = <String, String>{'test_header': 'flutter_test_header'};
+      await controller.loadUrl(
+        'https://flutter-header-echo.herokuapp.com/',
+        headers: headers,
+      );
+      await sleep();
 
-      context.pageFinished.stream.listen(onData([
-        (event) async {
-          expect(event, "https://flutter.dev/");
-
-          final headers = <String, String>{
-            'test_header': 'flutter_test_header'
-          };
-          await controller.loadUrl(
-            'https://flutter-header-echo.herokuapp.com/',
-            headers: headers,
-          );
-        },
-        (event) async {
-          expect(event, "https://flutter-header-echo.herokuapp.com/");
-          final content = await controller.evaluateJavascript(
-            '(() => document.documentElement.innerText)()',
-          );
-          expect(content.contains('flutter_test_header'), isTrue);
-          context.complete();
-        },
-      ]));
+      final content = await controller.evaluateJavascript(
+        '(() => document.documentElement.innerText)()',
+      );
+      expect(content.contains('flutter_test_header'), isTrue);
     });
   });
 
@@ -87,38 +96,36 @@ void main() {
     testWebView("messages received", (tester, context) async {
       final argumentsReceived = <List<dynamic>>[];
 
-      await tester.pumpWidget(
+      await tester.pumpFrames(
         WebView(
-          initialUrl: 'https://flutter.dev/',
+          initialUrl: 'about:blank',
           onWebViewCreated: (controller) {
             controller.addJavascriptHandler("hoge", (arguments) async {
               argumentsReceived.add(arguments);
             });
             context.onWebViewCreated(controller);
           },
+          shouldOverrideUrlLoading: context.shouldOverrideUrlLoading,
+          onPageStarted: context.onPageStarted,
+          onWebResourceError: context.onWebResourceError,
+          onProgressChanged: context.onProgressChanged,
           onPageFinished: context.onPageFinished,
         ),
       );
       final controller = await context.webviewController.future;
-
-      context.pageFinished.stream.listen(onData([
-        (event) async {
-          await controller.evaluateJavascript("""
+      await controller.evaluateJavascript("""
           window.nativeWebView.callHandler("hoge", "value", 1, true);
           """);
-          expect(argumentsReceived, [
-            ["value", 1, true],
-          ]);
-          context.complete();
-        },
-      ]));
+      expect(argumentsReceived, [
+        ["value", 1, true],
+      ]);
     });
 
     testWebView("readyState is interactive", (tester, context) async {
       final argumentsReceived = <List<dynamic>>[];
 
       var beforeReadyState = "loading";
-      await tester.pumpWidget(
+      await tester.pumpFrames(
         WebView(
           initialUrl: 'https://flutter.dev/',
           onWebViewCreated: (controller) {
@@ -127,9 +134,14 @@ void main() {
             });
             context.onWebViewCreated(controller);
           },
-          onProgressChanged: (controller, _) async {
-            final readyState = await controller
-                .evaluateJavascript("document.readyState") as String;
+          shouldOverrideUrlLoading: context.shouldOverrideUrlLoading,
+          onPageStarted: context.onPageStarted,
+          onWebResourceError: context.onWebResourceError,
+          onProgressChanged: (controller, progress) async {
+            final readyState = await controller.evaluateJavascript(
+              "document.readyState",
+            ) as String;
+            print(readyState);
 
             if (beforeReadyState == "loading" && readyState == "interactive") {
               beforeReadyState = readyState;
@@ -139,80 +151,71 @@ void main() {
               return;
             }
             beforeReadyState = readyState;
+            context.onProgressChanged(controller, progress);
           },
           onPageFinished: context.onPageFinished,
         ),
       );
 
-      context.pageFinished.stream.listen(onData([
-        (event) async {
-          print(argumentsReceived);
-
-          expect(argumentsReceived, [
-            ["value", 1, true],
-          ]);
-          context.complete();
-        },
-      ]));
+      expect(argumentsReceived, [
+        ["value", 1, true],
+      ]);
     });
 
     testWebView("nothing handler", (tester, context) async {
-      final argumentsReceived = <List<dynamic>>[];
-
-      await tester.pumpWidget(
+      await tester.pumpFrames(
         WebView(
-          initialUrl: 'https://flutter.dev/',
+          initialUrl: 'about:blank',
           onWebViewCreated: context.onWebViewCreated,
+          shouldOverrideUrlLoading: context.shouldOverrideUrlLoading,
+          onPageStarted: context.onPageStarted,
+          onWebResourceError: context.onWebResourceError,
+          onProgressChanged: context.onProgressChanged,
           onPageFinished: context.onPageFinished,
         ),
       );
       final controller = await context.webviewController.future;
-      context.pageFinished.stream.listen(onData([
-        (event) async {
-          // no error
-          await controller.evaluateJavascript("""
-          window.nativeWebView.callHandler("hoge", "value", 1, true);
-          """);
-          expect(argumentsReceived, []);
-          context.complete();
-        },
-      ]));
+      // no error
+      await controller.evaluateJavascript("""
+      window.nativeWebView.callHandler("hoge", "value", 1, true);
+      """);
     });
   });
 
   group("evaluateJavascript", () {
     testWebView('success', (tester, context) async {
-      await tester.pumpWidget(
+      await tester.pumpFrames(
         WebView(
           initialUrl: 'about:blank',
           onWebViewCreated: context.onWebViewCreated,
+          shouldOverrideUrlLoading: context.shouldOverrideUrlLoading,
+          onPageStarted: context.onPageStarted,
+          onWebResourceError: context.onWebResourceError,
+          onProgressChanged: context.onProgressChanged,
           onPageFinished: context.onPageFinished,
         ),
       );
       final controller = await context.webviewController.future;
+      expect(
+        await controller.evaluateJavascript('(() => "りんご")()'),
+        "りんご",
+      );
+      expect(
+        await controller.evaluateJavascript('(() => 1000)()'),
+        1000,
+      );
+      expect(
+        await controller.evaluateJavascript('(() => ["りんご"])()'),
+        ["りんご"],
+      );
+      expect(
+        await controller
+            .evaluateJavascript('(function() { return {"りんご": "Apple"} })()'),
+        {"りんご": "Apple"},
+      );
 
-      context.pageFinished.stream.listen(onData([
-        (event) async {
-          expect(
-            await controller.evaluateJavascript('(() => "りんご")()'),
-            "りんご",
-          );
-          expect(
-            await controller.evaluateJavascript('(() => 1000)()'),
-            1000,
-          );
-          expect(
-            await controller.evaluateJavascript('(() => ["りんご"])()'),
-            ["りんご"],
-          );
-          expect(
-            await controller.evaluateJavascript(
-                '(function() { return {"りんご": "Apple"} })()'),
-            {"りんご": "Apple"},
-          );
-
-          expect(
-            await controller.evaluateJavascript("""
+      expect(
+        await controller.evaluateJavascript("""
 class Rectangle {
   constructor(height, width) {
     this.height = height;
@@ -221,144 +224,90 @@ class Rectangle {
 }
 (() => new Rectangle(100, 200))()
             """),
-            {'height': 100, 'width': 200},
-          );
-
-          context.complete();
-        },
-      ]));
+        {'height': 100, 'width': 200},
+      );
     });
 
     testWebView('invalid javascript', (tester, context) async {
-      await tester.pumpWidget(
+      await tester.pumpFrames(
         WebView(
           initialUrl: 'about:blank',
           onWebViewCreated: context.onWebViewCreated,
+          shouldOverrideUrlLoading: context.shouldOverrideUrlLoading,
+          onPageStarted: context.onPageStarted,
+          onWebResourceError: context.onWebResourceError,
+          onProgressChanged: context.onProgressChanged,
           onPageFinished: context.onPageFinished,
         ),
       );
       final controller = await context.webviewController.future;
 
-      context.pageFinished.stream.listen(onData([
-        (event) async {
-          try {
-            await controller.evaluateJavascript('() => ');
-            fail("syntax error did not occur.");
-          } catch (error) {
-            // For Android, it's not an error.
-            expect(error, isA<PlatformException>());
-            expect(error.toString(),
-                contains("SyntaxError: Unexpected end of script"));
-          } finally {
-            context.complete();
-          }
-        },
-      ]));
+      try {
+        await controller.evaluateJavascript('() => ');
+        fail("syntax error did not occur.");
+      } catch (error) {
+        // For Android, it's not an error.
+        expect(error, isA<PlatformException>());
+        expect(error.toString(),
+            contains("SyntaxError: Unexpected end of script"));
+      }
     }, skip: Platform.isAndroid);
 
     testWebView('unsupported type', (tester, context) async {
-      await tester.pumpWidget(
+      await tester.pumpFrames(
         WebView(
           initialUrl: 'about:blank',
           onWebViewCreated: context.onWebViewCreated,
+          shouldOverrideUrlLoading: context.shouldOverrideUrlLoading,
+          onPageStarted: context.onPageStarted,
+          onWebResourceError: context.onWebResourceError,
+          onProgressChanged: context.onProgressChanged,
           onPageFinished: context.onPageFinished,
         ),
       );
       final controller = await context.webviewController.future;
 
-      context.pageFinished.stream.listen(onData([
-        (event) async {
-          try {
-            await controller.evaluateJavascript('(() => function test() {})()');
-          } catch (error) {
-            // For Android, it's not an error.
-            expect(error, isA<PlatformException>());
-            expect(
-                error.toString(),
-                contains(
-                    "JavaScript execution returned a result of an unsupported type"));
-
-            context.complete();
-          }
-        },
-      ]));
+      try {
+        await controller.evaluateJavascript('(() => function test() {})()');
+        fail("syntax error did not occur.");
+      } catch (error) {
+        // For Android, it's not an error.
+        expect(error, isA<PlatformException>());
+        expect(error.toString(), contains("unsupported type"));
+      }
     }, skip: Platform.isAndroid);
   });
 
   group("goBack/goForward", () {
-    testWebView("can go back/forward(iOS)", (tester, context) async {
-      await tester.pumpWidget(
+    testWebView("can go back/forward", (tester, context) async {
+      await tester.pumpFrames(
         WebView(
           initialUrl: 'about:blank',
           onWebViewCreated: context.onWebViewCreated,
+          shouldOverrideUrlLoading: context.shouldOverrideUrlLoading,
           onPageStarted: context.onPageStarted,
+          onWebResourceError: context.onWebResourceError,
+          onProgressChanged: context.onProgressChanged,
           onPageFinished: context.onPageFinished,
         ),
       );
       final controller = await context.webviewController.future;
 
-      context.pageFinished.stream.listen(onData([
-        (event) async {
-          expect(await controller.canGoBack(), false);
-          expect(await controller.canGoForward(), false);
-          await controller.loadUrl("https://www.google.com/");
-        },
-        (event) async {
-          expect(await controller.canGoBack(), true);
-          expect(await controller.canGoForward(), false);
-          await controller.goBack();
-        },
-        (event) async {
-          expect(await controller.canGoBack(), false);
-          expect(await controller.canGoForward(), true);
-          await controller.goForward();
-          context.complete();
-        },
-        // Commented out because CI doesn't do the following
-//        (event) async {
-//          expect(await controller.canGoBack(), true);
-//          expect(await controller.canGoForward(), false);
-//          context.complete();
-//        },
-      ]));
-    }, skip: !Platform.isIOS, timeout: Duration(seconds: 300));
+      expect(await controller.canGoBack(), false);
+      expect(await controller.canGoForward(), false);
+      await controller.loadUrl("https://www.google.com/");
 
-    testWebView("can go back/forward(Android)", (tester, context) async {
-      await tester.pumpWidget(
-        WebView(
-          initialUrl: 'about:blank',
-          onWebViewCreated: context.onWebViewCreated,
-          onPageFinished: context.onPageFinished,
-        ),
-      );
-      final controller = await context.webviewController.future;
+      await sleep();
 
-      context.pageFinished.stream.listen(onData([
-        (event) async {
-          expect(await controller.canGoBack(), false);
-          expect(await controller.canGoForward(), false);
-          await controller.loadUrl("https://www.google.com/");
-        },
-        (event) async {
-          expect(await controller.canGoBack(), true);
-          expect(await controller.canGoForward(), false);
-          expect(event, "https://www.google.com/");
-          await controller.goBack();
-        },
-        (event) async {
-          expect(await controller.canGoBack(), false);
-          expect(await controller.canGoForward(), true);
-          await controller.goForward();
-        },
-        (event) async {
-          // skip
-          // Android WebView sometimes returns false.
-//          expect(await controller.canGoBack(), true);
-          // Android WebView sometimes returns true.
-//          expect(await controller.canGoForward(), false);
-          context.complete();
-        },
-      ]));
-    }, skip: !Platform.isAndroid);
+      expect(await controller.canGoBack(), true);
+      expect(await controller.canGoForward(), false);
+      await controller.goBack();
+
+      await sleep();
+
+      expect(await controller.canGoBack(), false);
+      expect(await controller.canGoForward(), true);
+      await controller.goForward();
+    }, timeout: Duration(seconds: 300));
   });
 }

@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:native_webview/native_webview.dart';
 
@@ -9,34 +8,35 @@ import '../utils.dart';
 void main() {
   group("initalUrl", () {
     testWebView('https://flutter.dev/', (tester, context) async {
-      await tester.pumpWidget(
+      await tester.pumpFrames(
         WebView(
           initialUrl: 'https://flutter.dev/',
           onWebViewCreated: context.onWebViewCreated,
         ),
+        const Duration(seconds: 1),
       );
       final controller = await context.webviewController.future;
       final currentUrl = await controller.currentUrl();
       expect(currentUrl, 'https://flutter.dev/');
-      context.complete();
     });
 
     testWebView('about:blank', (tester, context) async {
-      await tester.pumpWidget(
+      await tester.pumpFrames(
         WebView(
           initialUrl: 'about:blank',
           onWebViewCreated: context.onWebViewCreated,
         ),
+        const Duration(seconds: 1),
       );
       final controller = await context.webviewController.future;
       final currentUrl = await controller.currentUrl();
       expect(currentUrl, 'about:blank');
-      context.complete();
     });
 
-    testWebView('with headers', (tester, context) async {
+    testWebView('with initialHeaders', (tester, context) async {
       final headers = <String, String>{'test_header': 'flutter_test_header'};
-      await tester.pumpWidget(
+
+      await tester.pumpFrames(
         WebView(
           initialUrl: 'https://flutter-header-echo.herokuapp.com/',
           initialHeaders: headers,
@@ -45,205 +45,173 @@ void main() {
         ),
       );
       final controller = await context.webviewController.future;
-      final currentUrl = await controller.currentUrl();
-      expect(currentUrl, 'https://flutter-header-echo.herokuapp.com/');
-
-      context.pageFinished.stream.listen(onData([
-        (event) async {
-          final content = await controller.evaluateJavascript(
-            '(() => document.documentElement.innerText)()',
-          );
-          expect(content.contains('flutter_test_header'), isTrue);
-          context.complete();
-        },
-      ]));
+      final content = await controller.evaluateJavascript(
+        '(() => document.documentElement.innerText)()',
+      );
+      expect(content.contains('flutter_test_header'), isTrue);
     });
   });
 
   group("initalData", () {
     testWebView('with baseUrl', (tester, context) async {
       final baseUrl = "https://flutter.dev/";
-
-      await tester.pumpWidget(
+      await tester.pumpFrames(
         WebView(
           initialData: WebViewData(
             '<html><body>yoshitaka-yuriko</body></html>',
             baseUrl: baseUrl,
           ),
           onWebViewCreated: context.onWebViewCreated,
+          shouldOverrideUrlLoading: context.shouldOverrideUrlLoading,
+          onPageStarted: context.onPageStarted,
+          onWebResourceError: context.onWebResourceError,
+          onProgressChanged: context.onProgressChanged,
           onPageFinished: context.onPageFinished,
         ),
       );
+
       final controller = await context.webviewController.future;
-
-      context.pageFinished.stream.listen(onData([
-        (event) async {
-          expect(event, baseUrl);
-
-          final content = await controller.evaluateJavascript(
-            '(() => document.documentElement.innerText)()',
-          );
-          expect(content, "yoshitaka-yuriko");
-
-          final currentUrl = await controller.currentUrl();
-          if (Platform.isIOS) {
-            expect(currentUrl, baseUrl);
-          } else if (Platform.isAndroid) {
-            expect(currentUrl, "about:blank");
-          }
-          context.complete();
-        }
-      ]));
+      final content = await controller.evaluateJavascript(
+        '(() => document.documentElement.innerText)()',
+      );
+      expect(content, "yoshitaka-yuriko");
     });
 
     testWebView('without baseUrl', (tester, context) async {
-      await tester.pumpWidget(
+      await tester.pumpFrames(
         WebView(
           initialData: WebViewData(
             '<html><body>yoshitaka-yuriko</body></html>',
           ),
           onWebViewCreated: context.onWebViewCreated,
+          shouldOverrideUrlLoading: context.shouldOverrideUrlLoading,
+          onPageStarted: context.onPageStarted,
+          onWebResourceError: context.onWebResourceError,
+          onProgressChanged: context.onProgressChanged,
           onPageFinished: context.onPageFinished,
         ),
       );
+
       final controller = await context.webviewController.future;
-
-      context.pageFinished.stream.listen(onData([
-        (event) async {
-          final content = await controller.evaluateJavascript(
-            '(() => document.documentElement.innerText)()',
-          );
-          expect(content, "yoshitaka-yuriko");
-          final currentUrl = await controller.currentUrl();
-          expect(currentUrl, "about:blank");
-
-          context.complete();
-        },
-      ]));
+      final content = await controller.evaluateJavascript(
+        '(() => document.documentElement.innerText)()',
+      );
+      expect(content, "yoshitaka-yuriko");
     });
   });
 
   group("initalFile", () {
     testWebView('from assets', (tester, context) async {
-      await tester.pumpWidget(
+      await tester.pumpFrames(
         WebView(
           initialFile: "test_assets/initial_file.html",
           onWebViewCreated: context.onWebViewCreated,
+          shouldOverrideUrlLoading: context.shouldOverrideUrlLoading,
+          onPageStarted: context.onPageStarted,
+          onWebResourceError: context.onWebResourceError,
+          onProgressChanged: context.onProgressChanged,
           onPageFinished: context.onPageFinished,
         ),
       );
       final controller = await context.webviewController.future;
-
-      context.pageFinished.stream.listen(onData([
-        (event) async {
-          final currentUrl = await controller.currentUrl();
-          expect(event, currentUrl);
-
-          final content = await controller.evaluateJavascript(
-            '(() => document.documentElement.innerText)()',
-          );
-          expect(content, "yoshitaka-yuriko");
-
-          context.complete();
-        },
-      ]));
+      final content = await controller.evaluateJavascript(
+        '(() => document.documentElement.innerText)()',
+      );
+      expect(content, "yoshitaka-yuriko");
     });
   });
 
   testWebView('onWebResourceError', (tester, context) async {
-    await tester.pumpWidget(
+    await tester.pumpFrames(
       WebView(
-        key: GlobalKey(),
         initialUrl: 'https://www.notawebsite..com',
-        onWebResourceError: context.onWebResourceError,
-        shouldOverrideUrlLoading: (_, request) async {
-          context.shouldOverrideUrlLoading(request);
-          return ShouldOverrideUrlLoadingAction.allow;
-        },
+        onWebViewCreated: context.onWebViewCreated,
+        shouldOverrideUrlLoading: context.shouldOverrideUrlLoading,
         onPageStarted: context.onPageStarted,
+        onWebResourceError: context.onWebResourceError,
+        onProgressChanged: context.onProgressChanged,
         onPageFinished: context.onPageFinished,
       ),
     );
 
-    context.webResourceError.stream.listen(onData([
-      (event) {
-        expect(event, isNotNull);
-        expect(event.description, isNotNull);
-        expect(event.errorCode, isNotNull);
+    expect(context.webResourceErrorEvents.map((e) => e.error.errorCode), [
+      isNotNull,
+    ]);
+    expect(context.webResourceErrorEvents.map((e) => e.error.description), [
+      isNotNull,
+    ]);
 
-        if (Platform.isAndroid) {
-          expect(event.domain, isNull);
-          expect(event.errorType, WebResourceErrorType.hostLookup);
-        } else {
-          expect(event.domain, "NSURLErrorDomain");
-          expect(event.errorType, isNull);
-        }
-
-        context.complete();
-      },
-    ]));
+    if (Platform.isAndroid) {
+      expect(context.webResourceErrorEvents.map((e) => e.error.errorType), [
+        WebResourceErrorType.hostLookup,
+      ]);
+      expect(context.webResourceErrorEvents.map((e) => e.error.domain), [
+        isNull,
+      ]);
+    } else {
+      expect(context.webResourceErrorEvents.map((e) => e.error.errorType), [
+        isNull,
+      ]);
+      expect(context.webResourceErrorEvents.map((e) => e.error.domain), [
+        "NSURLErrorDomain",
+      ]);
+    }
   });
 
   group("onJsConfirm", () {
     testWebView("handled", (tester, context) async {
       var count = 0;
-      await tester.pumpWidget(
+
+      await tester.pumpFrames(
         WebView(
           initialData: WebViewData(
             '<html><body><script>window.confirm("confirm")</script></body></html>',
           ),
+          onWebViewCreated: context.onWebViewCreated,
+          shouldOverrideUrlLoading: context.shouldOverrideUrlLoading,
+          onPageStarted: context.onPageStarted,
+          onWebResourceError: context.onWebResourceError,
+          onProgressChanged: context.onProgressChanged,
+          onPageFinished: context.onPageFinished,
           onJsConfirm: (controller, message) {
             count++;
             return JsConfirmResponse.handled(JsConfirmResponseAction.cancel);
           },
-          onWebViewCreated: context.onWebViewCreated,
-          onPageFinished: context.onPageFinished,
         ),
       );
-      context.pageFinished.stream.listen(onData([
-        (event) async {
-          Future.delayed(Duration(seconds: 5), () {
-            expect(count, 1);
-            context.complete();
-          });
-        },
-      ]));
+
+      expect(count, 1);
     });
   });
 
   group("onJsAlert", () {
     testWebView("handled", (tester, context) async {
       var count = 0;
-
-      await tester.pumpWidget(
+      await tester.pumpFrames(
         WebView(
           initialData: WebViewData(
             '<html><body><script>window.alert("alert")</script></body></html>',
           ),
+          onWebViewCreated: context.onWebViewCreated,
+          shouldOverrideUrlLoading: context.shouldOverrideUrlLoading,
+          onPageStarted: context.onPageStarted,
+          onWebResourceError: context.onWebResourceError,
+          onProgressChanged: context.onProgressChanged,
+          onPageFinished: context.onPageFinished,
           onJsAlert: (controller, message) {
             count++;
             return JsAlertResponse.handled();
           },
-          onWebViewCreated: context.onWebViewCreated,
-          onPageFinished: context.onPageFinished,
         ),
       );
-      context.pageFinished.stream.listen(onData([
-        (event) async {
-          Future.delayed(Duration(seconds: 5), () {
-            expect(count, 1);
-            context.complete();
-          });
-        },
-      ]));
+      expect(count, 1);
     });
   });
 
   group("onJsPrompt", () {
     testWebView("handled", (tester, context) async {
       var count = 0;
-
-      await tester.pumpWidget(
+      await tester.pumpFrames(
         WebView(
           initialData: WebViewData(
             '<html><body><script>window.prompt("prompt", "text")</script></body></html>',
@@ -256,42 +224,40 @@ void main() {
             );
           },
           onWebViewCreated: context.onWebViewCreated,
+          shouldOverrideUrlLoading: context.shouldOverrideUrlLoading,
+          onPageStarted: context.onPageStarted,
+          onWebResourceError: context.onWebResourceError,
+          onProgressChanged: context.onProgressChanged,
           onPageFinished: context.onPageFinished,
         ),
       );
-      context.pageFinished.stream.listen(onData([
-        (event) async {
-          Future.delayed(Duration(seconds: 5), () {
-            expect(count, 1);
-            context.complete();
-          });
-        },
-      ]));
+      expect(count, 1);
     });
   });
 
   group("onProgressChanged", () {
     testWebView('wait for page finished', (tester, context) async {
       var progressValues = <int>[];
-      await tester.pumpWidget(
+      await tester.pumpFrames(
         WebView(
-          initialUrl: 'https://flutter.dev/',
+          initialUrl: 'about:blank',
+          onWebViewCreated: context.onWebViewCreated,
+          shouldOverrideUrlLoading: context.shouldOverrideUrlLoading,
+          onPageStarted: context.onPageStarted,
+          onWebResourceError: context.onWebResourceError,
           onProgressChanged: (controller, progress) {
+            context.onProgressChanged(controller, progress);
             progressValues.add(progress);
           },
-          onWebViewCreated: context.onWebViewCreated,
           onPageFinished: context.onPageFinished,
         ),
       );
 
-      context.pageFinished.stream.listen(onData([
-        (event) async {
-          Future.delayed(Duration(seconds: 5), () {
-            expect(progressValues.last, 100);
-            context.complete();
-          });
-        },
-      ]));
+      expect(progressValues.last, 100);
+      expect(
+        progressValues.length,
+        greaterThanOrEqualTo(1),
+      );
     });
   });
 
@@ -299,7 +265,7 @@ void main() {
     testWebView('wait for page finished', (tester, context) async {
       var challengeValues = <HttpAuthChallenge>[];
 
-      await tester.pumpWidget(
+      await tester.pumpFrames(
         WebView(
           initialUrl: 'https://native-webview-basic-auth.herokuapp.com/',
           onReceivedHttpAuthRequest: (controller, challenge) async {
@@ -311,123 +277,125 @@ void main() {
             );
           },
           onWebViewCreated: context.onWebViewCreated,
+          shouldOverrideUrlLoading: context.shouldOverrideUrlLoading,
+          onPageStarted: context.onPageStarted,
+          onWebResourceError: context.onWebResourceError,
+          onProgressChanged: context.onProgressChanged,
           onPageFinished: context.onPageFinished,
         ),
+        const Duration(seconds: 15),
       );
 
       final controller = await context.webviewController.future;
-      context.pageFinished.stream.listen(onData([
-        (event) async {
-          final text = await controller.evaluateJavascript(
-            "document.body.textContent",
-          );
-          expect(challengeValues.length, greaterThanOrEqualTo(1));
+      final text = await controller.evaluateJavascript(
+        "document.body.textContent",
+      );
+      expect(challengeValues.length, greaterThanOrEqualTo(1));
 
-          expect(
-              challengeValues
-                  .where((element) =>
-                      element.realm?.contains("Authorization Required") ??
-                      false)
-                  .length,
-              greaterThanOrEqualTo(1));
+      expect(
+          challengeValues
+              .where((element) =>
+                  element.realm?.contains("Authorization Required") ?? false)
+              .length,
+          greaterThanOrEqualTo(1));
 
-          expect(
-              challengeValues
-                  .where((element) =>
-                      element.host == "native-webview-basic-auth.herokuapp.com")
-                  .length,
-              greaterThanOrEqualTo(1));
+      expect(
+          challengeValues
+              .where((element) =>
+                  element.host == "native-webview-basic-auth.herokuapp.com")
+              .length,
+          greaterThanOrEqualTo(1));
 
-          expect(text.toString().contains("Hello world"), true);
-          context.complete();
-        },
-      ]));
+      expect(text.toString().contains("Hello world"), true);
     });
   });
 
   group("gestureNavigationEnabled", () {
     testWebView('is true', (tester, context) async {
-      var progressValues = <int>[];
-      await tester.pumpWidget(
+      await tester.pumpFrames(
         WebView(
           initialData: WebViewData("""
 <!doctype html><html lang="en"><head></head><body>native_webview</body></html>
         """),
-          onProgressChanged: (controller, progress) {
-            progressValues.add(progress);
-          },
           onWebViewCreated: context.onWebViewCreated,
+          shouldOverrideUrlLoading: context.shouldOverrideUrlLoading,
+          onPageStarted: context.onPageStarted,
+          onWebResourceError: context.onWebResourceError,
+          onProgressChanged: context.onProgressChanged,
           onPageFinished: context.onPageFinished,
           gestureNavigationEnabled: true,
         ),
       );
 
-      context.pageFinished.stream.listen(onData([
-        (event) async {
-          expect(event, "about:blank");
-          context.complete();
-        },
-      ]));
+      expect(context.pageFinishedEvents.length, 1);
     });
   });
 
   group("debuggingEnabled", () {
     testWebView('is true', (tester, context) async {
-      await tester.pumpWidget(
+      await tester.pumpFrames(
         WebView(
           initialData: WebViewData("""
 <!doctype html><html lang="en"><head></head><body>native_webview</body></html>
         """),
           onWebViewCreated: context.onWebViewCreated,
+          shouldOverrideUrlLoading: context.shouldOverrideUrlLoading,
+          onPageStarted: context.onPageStarted,
+          onWebResourceError: context.onWebResourceError,
+          onProgressChanged: context.onProgressChanged,
           onPageFinished: context.onPageFinished,
           debuggingEnabled: true,
         ),
       );
 
-      context.pageFinished.stream.listen(onData([
-        (event) async {
-          expect(event, "about:blank");
-          context.complete();
-        },
-      ]));
+      expect(context.pageFinishedEvents.length, 1);
     });
   });
 
   group("userAgent", () {
     testWebView('is null', (tester, context) async {
-      await tester.pumpWidget(
+      await tester.pumpFrames(
         WebView(
+          initialData: WebViewData("""
+<!doctype html><html lang="en"><head></head><body>native_webview</body></html>
+        """),
           onWebViewCreated: context.onWebViewCreated,
+          shouldOverrideUrlLoading: context.shouldOverrideUrlLoading,
+          onPageStarted: context.onPageStarted,
+          onWebResourceError: context.onWebResourceError,
+          onProgressChanged: context.onProgressChanged,
           onPageFinished: context.onPageFinished,
           debuggingEnabled: true,
         ),
       );
+      final controller = await context.webviewController.future;
 
-      await context.webviewController.future;
-      context.complete();
+      final userAgent = await controller.evaluateJavascript(
+        "navigator.userAgent",
+      );
+      expect(userAgent, isNotNull);
     });
 
     testWebView('is not null', (tester, context) async {
       final customUserAgent = "custom-user-agent";
-      await tester.pumpWidget(
+      await tester.pumpFrames(
         WebView(
+          initialUrl: "about:blank",
           onWebViewCreated: context.onWebViewCreated,
+          shouldOverrideUrlLoading: context.shouldOverrideUrlLoading,
+          onPageStarted: context.onPageStarted,
+          onWebResourceError: context.onWebResourceError,
+          onProgressChanged: context.onProgressChanged,
           onPageFinished: context.onPageFinished,
-          debuggingEnabled: true,
           userAgent: customUserAgent,
         ),
       );
 
       final controller = await context.webviewController.future;
-
-      context.pageFinished.stream.listen(onData([
-        (event) async {
-          final userAgent =
-              await controller.evaluateJavascript("navigator.userAgent");
-          expect(userAgent, customUserAgent);
-          context.complete();
-        },
-      ]));
+      final userAgent = await controller.evaluateJavascript(
+        "navigator.userAgent",
+      );
+      expect(userAgent, customUserAgent);
     });
   });
 }
