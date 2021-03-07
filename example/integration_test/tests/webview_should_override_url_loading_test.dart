@@ -46,24 +46,50 @@ void main() {
       WebViewEvent.pageStarted(
         "https://www.google.com/",
         "https://www.google.com/",
-        false,
-        false,
-      ),
-    ]);
-    expect(context.pageFinishedEvents, [
-      WebViewEvent.pageFinished(
-        "about:blank",
-        "about:blank",
-        false,
-        false,
-      ),
-      WebViewEvent.pageFinished(
-        "https://www.google.com/",
-        "https://www.google.com/",
-        false, // false!
+        Platform.isAndroid ? true : false,
         false,
       ),
     ]);
+
+    expect(
+        context.pageFinishedEvents,
+        whichOneList(
+          [
+            WebViewEvent.pageFinished(
+              "about:blank",
+              "about:blank",
+              false,
+              false,
+            ),
+            WebViewEvent.pageFinished(
+              "https://www.google.com/",
+              "https://www.google.com/",
+              Platform.isAndroid ? true : false,
+              false,
+            ),
+          ],
+          [
+            // PageFinished of www.google.com may come twice on Android.
+            WebViewEvent.pageFinished(
+              "about:blank",
+              "about:blank",
+              false,
+              false,
+            ),
+            WebViewEvent.pageFinished(
+              "https://www.google.com/",
+              "https://www.google.com/",
+              Platform.isAndroid ? true : false,
+              false,
+            ),
+            WebViewEvent.pageFinished(
+              "https://www.google.com/",
+              "https://www.google.com/",
+              Platform.isAndroid ? true : false,
+              false,
+            ),
+          ],
+        ));
   });
 
   testWebView('Return cancel', (tester, context) async {
@@ -136,7 +162,7 @@ void main() {
     await sleep();
 
     expect(context.loadingRequestEvents.map((e) => e.request.url), [
-      "https://www.google.com/",
+      if (Platform.isIOS) "https://www.google.com/",
     ]);
 
     expect(context.webResourceErrorEvents.length, 0);
