@@ -120,8 +120,12 @@ typedef WidgetTesterCallback = Future<void> Function(
   WebViewTestContext context,
 );
 
-test.Matcher whichOneList(List<dynamic> value1, List<dynamic> value2) =>
-    _WhichOneList(value1, value2);
+test.Matcher anyOneOfList(
+  List<dynamic> value1,
+  List<dynamic> value2, [
+  List<dynamic> value3,
+]) =>
+    _AnyOneOfList(value1, value2, value3);
 
 void testWebView(
   String description,
@@ -142,18 +146,25 @@ void testWebView(
 
 void unawaited(Future close) {}
 
-class _WhichOneList extends test.Matcher {
+class _AnyOneOfList extends test.Matcher {
   final List<dynamic> value1;
   final List<dynamic> value2;
-  _WhichOneList(this.value1, this.value2);
+  final List<dynamic> value3;
+  _AnyOneOfList(this.value1, this.value2, this.value3);
 
   @override
   test.Description describe(test.Description description) {
-    return description
-        .add("which one ")
+    description
+        .add("any one of")
         .addDescriptionOf(value1)
         .add(", ")
         .addDescriptionOf(value2);
+
+    if (value3 != null) {
+      description.add(", ").addDescriptionOf(value3);
+    }
+
+    return description;
   }
 
   @override
@@ -161,6 +172,10 @@ class _WhichOneList extends test.Matcher {
     if (listEquals(item, value1) || listEquals(item, value2)) {
       return true;
     }
+    if (value3 != null) {
+      return listEquals(item, value3);
+    }
+
     return false;
   }
 }

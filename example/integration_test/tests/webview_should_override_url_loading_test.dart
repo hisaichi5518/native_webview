@@ -53,7 +53,7 @@ void main() {
 
     expect(
         context.pageFinishedEvents,
-        whichOneList(
+        anyOneOfList(
           [
             WebViewEvent.pageFinished(
               "about:blank",

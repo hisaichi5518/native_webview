@@ -49,7 +49,7 @@ void main() {
         (tester, context) async {
       await tester.pumpFrames(
         WebView(
-          initialUrl: 'https://flutter.dev/',
+          initialUrl: 'https://www.google.com/',
           onWebViewCreated: context.onWebViewCreated,
           shouldOverrideUrlLoading: context.shouldOverrideUrlLoading,
           onPageStarted: context.onPageStarted,
@@ -59,24 +59,47 @@ void main() {
         ),
       );
 
-      expect(context.loadingRequestEvents.length, greaterThanOrEqualTo(1));
+      expect(
+        context.loadingRequestEvents.length,
+        greaterThanOrEqualTo(Platform.isAndroid ? 0 : 1),
+      );
 
       expect(context.pageStartedEvents, [
         WebViewEvent.pageStarted(
-          "https://flutter.dev/",
-          "https://flutter.dev/",
+          "https://www.google.com/",
+          "https://www.google.com/",
           false,
           false,
         ),
       ]);
-      expect(context.pageFinishedEvents, [
-        WebViewEvent.pageFinished(
-          "https://flutter.dev/",
-          "https://flutter.dev/",
-          false,
-          false,
+      expect(
+        context.pageFinishedEvents,
+        anyOneOfList(
+          [
+            WebViewEvent.pageFinished(
+              "https://www.google.com/",
+              "https://www.google.com/",
+              false,
+              false,
+            ),
+          ],
+          [
+            // PageFinished of www.google.com may come twice on Android.
+            WebViewEvent.pageFinished(
+              "https://www.google.com/",
+              "https://www.google.com/",
+              false,
+              false,
+            ),
+            WebViewEvent.pageFinished(
+              "https://www.google.com/",
+              "https://www.google.com/",
+              false,
+              false,
+            ),
+          ],
         ),
-      ]);
+      );
     });
 
     testWebView('initialUrl is https://google.com (with redirect)',
@@ -97,25 +120,79 @@ void main() {
         'https://www.google.com/',
       ]);
 
-      if (Platform.isAndroid) {
-        // For iOS, currentUrl returns https://www.google.com/ only when running in CI, so don't run it.
-        expect(context.pageStartedEvents, [
-          WebViewEvent.pageStarted(
-            "https://google.com/",
-            "https://google.com/",
-            false,
-            false,
-          ),
-        ]);
-      }
-      expect(context.pageFinishedEvents, [
-        WebViewEvent.pageFinished(
-          "https://www.google.com/",
-          "https://www.google.com/",
-          false,
-          false,
+      expect(
+        context.pageStartedEvents,
+        anyOneOfList(
+          [
+            // iOS?
+            WebViewEvent.pageStarted(
+              "https://google.com/",
+              "https://google.com/",
+              false,
+              false,
+            ),
+          ],
+          [
+            // Android
+            WebViewEvent.pageStarted(
+              "https://www.google.com/",
+              "https://www.google.com/",
+              false,
+              false,
+            ),
+          ],
         ),
-      ]);
+      );
+
+      expect(
+        context.pageFinishedEvents,
+        anyOneOfList(
+          [
+            WebViewEvent.pageFinished(
+              "https://www.google.com/",
+              "https://www.google.com/",
+              false,
+              false,
+            ),
+          ],
+          [
+            // PageFinished of www.google.com may come twice on Android.
+            WebViewEvent.pageFinished(
+              "https://www.google.com/",
+              "https://www.google.com/",
+              false,
+              false,
+            ),
+            WebViewEvent.pageFinished(
+              "https://www.google.com/",
+              "https://www.google.com/",
+              false,
+              false,
+            ),
+          ],
+          [
+            // for Android
+            WebViewEvent.pageFinished(
+              "https://www.google.com/",
+              "https://www.google.com/",
+              false,
+              false,
+            ),
+            WebViewEvent.pageFinished(
+              "https://www.google.com/",
+              "https://www.google.com/",
+              false,
+              false,
+            ),
+            WebViewEvent.pageFinished(
+              "https://www.google.com/",
+              "https://www.google.com/",
+              false,
+              false,
+            ),
+          ],
+        ),
+      );
     });
 
     testWebView('ShouldOverrideLoadingUrl is not used.',
@@ -211,20 +288,34 @@ void main() {
       expect(context.loadingRequestEvents.map((e) => e.request.url), []);
 
       expect(context.pageStartedEvents, [
-        WebViewEvent.pageStarted(
-          "https://example.com/",
-          "https://example.com/",
-          false,
-          false,
-        ),
+        Platform.isAndroid
+            ? WebViewEvent.pageStarted(
+                "https://example.com/",
+                "about:blank",
+                false,
+                false,
+              )
+            : WebViewEvent.pageStarted(
+                "https://example.com/",
+                "https://example.com/",
+                false,
+                false,
+              ),
       ]);
       expect(context.pageFinishedEvents, [
-        WebViewEvent.pageFinished(
-          "https://example.com/",
-          "https://example.com/",
-          false,
-          false,
-        ),
+        Platform.isAndroid
+            ? WebViewEvent.pageFinished(
+                "https://example.com/",
+                "about:blank",
+                false,
+                false,
+              )
+            : WebViewEvent.pageFinished(
+                "https://example.com/",
+                "https://example.com/",
+                false,
+                false,
+              ),
       ]);
     });
   });
@@ -307,7 +398,7 @@ void main() {
     await sleep();
 
     expect(context.loadingRequestEvents.map((e) => e.request.url), [
-      "https://www.google.com/",
+      if (Platform.isIOS) "https://www.google.com/",
     ]);
 
     expect(context.webResourceErrorEvents.length, 0);
@@ -321,24 +412,50 @@ void main() {
       WebViewEvent.pageStarted(
         "https://www.google.com/",
         "https://www.google.com/",
-        false,
-        false,
-      ),
-    ]);
-    expect(context.pageFinishedEvents, [
-      WebViewEvent.pageFinished(
-        "about:blank",
-        "about:blank",
-        false,
-        false,
-      ),
-      WebViewEvent.pageFinished(
-        "https://www.google.com/",
-        "https://www.google.com/",
-        true,
+        Platform.isAndroid ? true : false,
         false,
       ),
     ]);
+    expect(
+      context.pageFinishedEvents,
+      anyOneOfList(
+        [
+          WebViewEvent.pageFinished(
+            "about:blank",
+            "about:blank",
+            false,
+            false,
+          ),
+          WebViewEvent.pageFinished(
+            "https://www.google.com/",
+            "https://www.google.com/",
+            true,
+            false,
+          ),
+        ],
+        [
+          // PageFinished of www.google.com may come twice on Android.
+          WebViewEvent.pageFinished(
+            "about:blank",
+            "about:blank",
+            false,
+            false,
+          ),
+          WebViewEvent.pageFinished(
+            "https://www.google.com/",
+            "https://www.google.com/",
+            true,
+            false,
+          ),
+          WebViewEvent.pageFinished(
+            "https://www.google.com/",
+            "https://www.google.com/",
+            true,
+            false,
+          ),
+        ],
+      ),
+    );
   });
 
   testWebView('Loading URLs with loadUrl in succession',
@@ -361,7 +478,10 @@ void main() {
 
     await sleep();
 
-    expect(context.loadingRequestEvents.length, greaterThanOrEqualTo(1));
+    expect(
+      context.loadingRequestEvents.length,
+      greaterThanOrEqualTo(Platform.isAndroid ? 0 : 1),
+    );
 
     expect(context.webResourceErrorEvents.length, 0);
 
@@ -375,24 +495,77 @@ void main() {
       WebViewEvent.pageStarted(
         "https://www.google.com/",
         "https://www.google.com/",
-        false,
-        false,
-      ),
-    ]);
-    expect(context.pageFinishedEvents, [
-      WebViewEvent.pageFinished(
-        "about:blank",
-        "about:blank",
-        false,
-        false,
-      ),
-      WebViewEvent.pageFinished(
-        "https://www.google.com/",
-        "https://www.google.com/",
-        true,
+        Platform.isAndroid ? true : false,
         false,
       ),
     ]);
+    expect(
+      context.pageFinishedEvents,
+      anyOneOfList(
+        [
+          WebViewEvent.pageFinished(
+            "about:blank",
+            "about:blank",
+            false,
+            false,
+          ),
+          WebViewEvent.pageFinished(
+            "https://www.google.com/",
+            "https://www.google.com/",
+            true,
+            false,
+          ),
+        ],
+        [
+          // PageFinished of www.google.com may come twice on Android.
+          WebViewEvent.pageFinished(
+            "about:blank",
+            "about:blank",
+            false,
+            false,
+          ),
+          WebViewEvent.pageFinished(
+            "https://www.google.com/",
+            "https://www.google.com/",
+            true,
+            false,
+          ),
+          WebViewEvent.pageFinished(
+            "https://www.google.com/",
+            "https://www.google.com/",
+            true,
+            false,
+          ),
+        ],
+        [
+          // PageFinished of www.google.com may come twice on Android.
+          WebViewEvent.pageFinished(
+            "about:blank",
+            "about:blank",
+            false,
+            false,
+          ),
+          WebViewEvent.pageFinished(
+            "https://www.google.com/",
+            "https://www.google.com/",
+            false,
+            false,
+          ),
+          WebViewEvent.pageFinished(
+            "https://www.google.com/",
+            "https://www.google.com/",
+            true,
+            false,
+          ),
+          WebViewEvent.pageFinished(
+            "https://www.google.com/",
+            "https://www.google.com/",
+            true,
+            false,
+          ),
+        ],
+      ),
+    );
   });
 
   testWebView('Use location.href to transition', (tester, context) async {
@@ -431,24 +604,46 @@ void main() {
       WebViewEvent.pageStarted(
         "https://www.google.com/",
         "https://www.google.com/",
-        false,
-        false,
-      ),
-    ]);
-    expect(context.pageFinishedEvents, [
-      WebViewEvent.pageFinished(
-        "about:blank",
-        "about:blank",
-        false,
-        false,
-      ),
-      WebViewEvent.pageFinished(
-        "https://www.google.com/",
-        "https://www.google.com/",
-        false, // false!
+        Platform.isAndroid ? true : false,
         false,
       ),
     ]);
+    expect(
+      context.pageFinishedEvents,
+      anyOneOfList([
+        WebViewEvent.pageFinished(
+          "about:blank",
+          "about:blank",
+          false,
+          false,
+        ),
+        WebViewEvent.pageFinished(
+          "https://www.google.com/",
+          "https://www.google.com/",
+          Platform.isAndroid ? true : false,
+          false,
+        ),
+      ], [
+        WebViewEvent.pageFinished(
+          "about:blank",
+          "about:blank",
+          false,
+          false,
+        ),
+        WebViewEvent.pageFinished(
+          "https://www.google.com/",
+          "https://www.google.com/",
+          true,
+          false,
+        ),
+        WebViewEvent.pageFinished(
+          "https://www.google.com/",
+          "https://www.google.com/",
+          true,
+          false,
+        ),
+      ]),
+    );
   });
 
   testWebView('Use window.open()', (tester, context) async {
@@ -485,23 +680,45 @@ void main() {
       WebViewEvent.pageStarted(
         "https://www.google.com/",
         "https://www.google.com/",
-        false,
-        false,
-      ),
-    ]);
-    expect(context.pageFinishedEvents, [
-      WebViewEvent.pageFinished(
-        "about:blank",
-        "about:blank",
-        false,
-        false,
-      ),
-      WebViewEvent.pageFinished(
-        "https://www.google.com/",
-        "https://www.google.com/",
-        true,
+        Platform.isAndroid ? true : false,
         false,
       ),
     ]);
+    expect(
+      context.pageFinishedEvents,
+      anyOneOfList([
+        WebViewEvent.pageFinished(
+          "about:blank",
+          "about:blank",
+          false,
+          false,
+        ),
+        WebViewEvent.pageFinished(
+          "https://www.google.com/",
+          "https://www.google.com/",
+          true,
+          false,
+        ),
+      ], [
+        WebViewEvent.pageFinished(
+          "about:blank",
+          "about:blank",
+          false,
+          false,
+        ),
+        WebViewEvent.pageFinished(
+          "https://www.google.com/",
+          "https://www.google.com/",
+          true,
+          false,
+        ),
+        WebViewEvent.pageFinished(
+          "https://www.google.com/",
+          "https://www.google.com/",
+          true,
+          false,
+        ),
+      ]),
+    );
   });
 }

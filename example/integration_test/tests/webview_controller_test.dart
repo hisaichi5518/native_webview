@@ -48,7 +48,7 @@ void main() {
       expect(context.pageFinishedEvents.length, greaterThanOrEqualTo(2));
       expect(
           context.pageFinishedEvents,
-          whichOneList([
+          anyOneOfList([
             WebViewEvent.pageFinished(
               "about:blank",
               "about:blank",
