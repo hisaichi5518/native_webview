@@ -99,7 +99,9 @@ class WebViewTester {
     Duration duration,
   ]) async {
     final isCI = String.fromEnvironment("CI") == "true";
-    duration = duration ?? (isCI ? Duration(seconds: 15) : Duration(seconds: 3));
+    print("isCI: $isCI");
+    duration =
+        duration ?? (isCI ? Duration(seconds: 30) : Duration(seconds: 15));
 
     return tester.pumpFrames(
       Directionality(
@@ -115,7 +117,8 @@ test.Future<void> sleep([
   Duration duration,
 ]) async {
   final isCI = String.fromEnvironment("CI") == "true";
-  duration = duration ?? (isCI ? Duration(seconds: 15) : Duration(seconds: 3));
+  print("isCI: $isCI");
+  duration = duration ?? (isCI ? Duration(seconds: 30) : Duration(seconds: 15));
   await test.Future.delayed(duration);
 }
 
@@ -128,7 +131,7 @@ void testWebView(
   String description,
   WidgetTesterCallback callback, {
   bool skip = false,
-  Duration timeout = const Duration(seconds: 120),
+  Duration timeout = const Duration(minutes: 3),
 }) async {
   test.testWidgets(
     description,
