@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart' as test;
 import 'package:native_webview/native_webview.dart';
@@ -120,13 +119,6 @@ typedef WidgetTesterCallback = Future<void> Function(
   WebViewTestContext context,
 );
 
-test.Matcher anyOneOfList(
-  List<dynamic> value1,
-  List<dynamic> value2, [
-  List<dynamic> value3,
-]) =>
-    _AnyOneOfList(value1, value2, value3);
-
 void testWebView(
   String description,
   WidgetTesterCallback callback, {
@@ -145,37 +137,3 @@ void testWebView(
 }
 
 void unawaited(Future close) {}
-
-class _AnyOneOfList extends test.Matcher {
-  final List<dynamic> value1;
-  final List<dynamic> value2;
-  final List<dynamic> value3;
-  _AnyOneOfList(this.value1, this.value2, this.value3);
-
-  @override
-  test.Description describe(test.Description description) {
-    description
-        .add("any one of")
-        .addDescriptionOf(value1)
-        .add(", ")
-        .addDescriptionOf(value2);
-
-    if (value3 != null) {
-      description.add(", ").addDescriptionOf(value3);
-    }
-
-    return description;
-  }
-
-  @override
-  bool matches(item, Map matchState) {
-    if (listEquals(item, value1) || listEquals(item, value2)) {
-      return true;
-    }
-    if (value3 != null) {
-      return listEquals(item, value3);
-    }
-
-    return false;
-  }
-}
