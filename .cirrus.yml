@@ -9,7 +9,7 @@ flutter_analyze_task:
 
 flutter_drive_ios_task:
   osx_instance:
-    image: big-sur-xcode-12-4
+    image: big-sur-xcode-12.4
   flutter_upgrade_script:
     - flutter upgrade
   open_simulator_script:
