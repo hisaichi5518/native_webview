@@ -61,7 +61,12 @@ void main() {
 
       expect(
         context.loadingRequestEvents.length,
-        greaterThanOrEqualTo(Platform.isAndroid ? 0 : 1),
+        Platform.isAndroid
+            ? 0
+            : anyOf(
+                greaterThanOrEqualTo(0),
+                greaterThanOrEqualTo(1),
+              ),
       );
 
       expect(context.pageStartedEvents, [
@@ -128,6 +133,15 @@ void main() {
             WebViewEvent.pageStarted(
               "https://google.com/",
               "https://google.com/",
+              false,
+              false,
+            ),
+          ]),
+          equals([
+            // on CI(iOS)
+            WebViewEvent.pageStarted(
+              "https://google.com/",
+              "https://www.google.com/",
               false,
               false,
             ),
