@@ -1,12 +1,13 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:native_webview/platform_interface.dart';
+import 'package:native_webview/src/android_webview.dart';
 import 'package:native_webview/src/content_blocker.dart';
+import 'package:native_webview/src/cupertino_webview.dart';
 import 'package:native_webview/src/javascript_callback.dart';
 import 'package:native_webview/src/web_resource_error.dart';
 import 'package:native_webview/src/webview_controller.dart';
@@ -133,7 +134,33 @@ class ReceivedHttpAuthResponse {
   }
 }
 
-class WebView extends StatefulWidget {
+class WebView extends StatelessWidget {
+  static const String viewType = "com.hisaichi5518/native_webview";
+
+  static PlatformWebView _platform;
+
+  static set platform(PlatformWebView platform) {
+    _platform = platform;
+  }
+
+  static PlatformWebView get platform {
+    if (_platform == null) {
+      switch (defaultTargetPlatform) {
+        case TargetPlatform.android:
+          _platform = AndroidWebView();
+          break;
+        case TargetPlatform.iOS:
+          _platform = CupertinoWebView();
+          break;
+        default:
+          throw UnsupportedError(
+            "Trying to use the default webview implementation for $defaultTargetPlatform but there isn't a default one",
+          );
+      }
+    }
+    return _platform;
+  }
+
   final String initialUrl;
   final String initialFile;
   final Map<String, String> initialHeaders;
@@ -214,101 +241,33 @@ class WebView extends StatefulWidget {
   });
 
   @override
-  State<StatefulWidget> createState() => _WebViewState();
-}
-
-class _WebViewState extends State<WebView> {
-  static const String viewType = "com.hisaichi5518/native_webview";
-
-  var isFirstLoading = true;
-
-  @override
   Widget build(BuildContext context) {
-    if (Platform.isIOS) {
-      return UiKitView(
-        viewType: viewType,
-        onPlatformViewCreated: _onPlatformViewCreated,
-        gestureRecognizers: Set.from([]),
-        creationParams: _CreationParams.from(widget).toMap(),
-        creationParamsCodec: const StandardMessageCodec(),
-      );
-    } else if (Platform.isAndroid) {
-      return Stack(
-        children: <Widget>[
-          _buildAndroidView(),
-          if (isFirstLoading)
-            Container(
-              color: this.widget.androidBackgroundColor,
-            )
-        ],
-      );
-    }
-    throw UnsupportedError("${Platform.operatingSystem} is not supported.");
-  }
-
-  Widget _buildAndroidView() {
-    if (widget.androidUseHybridComposition) {
-      return PlatformViewLink(
-        viewType: viewType,
-        surfaceFactory: (
-          BuildContext context,
-          PlatformViewController controller,
-        ) {
-          return AndroidViewSurface(
-            controller: controller,
-            gestureRecognizers: Set.from([]),
-            hitTestBehavior: PlatformViewHitTestBehavior.opaque,
-          );
-        },
-        onCreatePlatformView: (PlatformViewCreationParams params) {
-          return PlatformViewsService.initSurfaceAndroidView(
-            id: params.id,
-            viewType: viewType,
-            layoutDirection: TextDirection.rtl,
-            creationParams: _CreationParams.from(widget).toMap(),
-            creationParamsCodec: const StandardMessageCodec(),
-          )
-            ..addOnPlatformViewCreatedListener(params.onPlatformViewCreated)
-            ..addOnPlatformViewCreatedListener(
-                (id) => _onPlatformViewCreated(id))
-            ..create();
-        },
-      );
-    }
-
-    return AndroidView(
+    return platform.build(
+      context: context,
+      creationParams: CreationParams.from(this),
       viewType: viewType,
       onPlatformViewCreated: _onPlatformViewCreated,
       gestureRecognizers: Set.from([]),
-      creationParams: _CreationParams.from(widget).toMap(),
-      creationParamsCodec: const StandardMessageCodec(),
+      useHybridComposition: androidUseHybridComposition,
     );
   }
 
   void _onPlatformViewCreated(int id) {
-    final controller = WebViewController(widget, id, () {
-      // https://github.com/hisaichi5518/native_webview/issues/22
-      if (!isFirstLoading) {
-        return;
-      }
-      setState(() {
-        isFirstLoading = false;
-      });
-    });
-    if (widget.onWebViewCreated == null) {
+    final controller = WebViewController(this, id, () {});
+    if (onWebViewCreated == null) {
       return;
     }
-    widget.onWebViewCreated(controller);
+    onWebViewCreated(controller);
   }
 }
 
-class _CreationParams {
+class CreationParams {
   final WebView widget;
 
-  _CreationParams._(this.widget);
+  CreationParams._(this.widget);
 
-  static _CreationParams from(WebView widget) {
-    return _CreationParams._(widget);
+  static CreationParams from(WebView widget) {
+    return CreationParams._(widget);
   }
 
   Map<String, dynamic> toMap() {
