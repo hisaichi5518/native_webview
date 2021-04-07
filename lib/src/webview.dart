@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:native_webview/platform_interface.dart';
 import 'package:native_webview/src/android_webview.dart';
@@ -208,10 +207,6 @@ class WebView extends StatelessWidget {
   /// By default `gestureNavigationEnabled` is false.
   final bool gestureNavigationEnabled;
 
-  ///On Android, if you use multiple WebViews, the WebView may turn black the page is loaded.
-  ///If you specify androidBackgroundColor, it won't happen.
-  final Color androidBackgroundColor;
-
   final String userAgent;
 
   final bool androidUseHybridComposition;
@@ -233,7 +228,6 @@ class WebView extends StatelessWidget {
     this.onJsPrompt,
     this.shouldOverrideUrlLoading,
     this.contentBlockers,
-    this.androidBackgroundColor = Colors.white,
     this.androidUseHybridComposition = true,
     this.gestureNavigationEnabled = false,
     this.debuggingEnabled = false,
