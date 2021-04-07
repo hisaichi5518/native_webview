@@ -1,6 +1,7 @@
 ## 0.28.0
 
 - The webview event callback returns FutureOr type.
+- Add PlatformWebView
 
 ## 0.27.0
 
