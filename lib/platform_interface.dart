@@ -10,8 +10,8 @@ abstract class PlatformWebView {
     @required BuildContext context,
     @required CreationParams creationParams,
     @required String viewType,
-    PlatformViewCreatedCallback onPlatformViewCreated,
-    Set<Factory<OneSequenceGestureRecognizer>> gestureRecognizers,
+    @required PlatformViewCreatedCallback onPlatformViewCreated,
+    @required Set<Factory<OneSequenceGestureRecognizer>> gestureRecognizers,
     bool useHybridComposition = true,
   });
 }
