@@ -37,7 +37,7 @@ flutter_drive_android_task:
     image: cirrusci/flutter:stable
     kvm: true
     cpu: 4
-    memory: 24G
+    memory: 16G
   env:
     EMULATOR_API_LEVEL: 29
     ANDROID_ABI: "default;x86_64"
