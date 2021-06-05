@@ -12,7 +12,7 @@ void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   group("loadUrl", () {
-    testWebView('loadUrl(www.google.com)', (tester, context) async {
+    testWebView('loadUrl(flutter.dev)', (tester, context) async {
       await tester.pumpFrames(
         WebView(
           initialUrl: 'about:blank',
@@ -26,7 +26,7 @@ void main() {
       );
 
       final controller = await context.webviewController.future;
-      await controller.loadUrl("https://www.google.com/");
+      await controller.loadUrl("https://flutter.dev/");
 
       await sleep();
 
@@ -38,8 +38,8 @@ void main() {
           false,
         ),
         WebViewEvent.pageStarted(
-          "https://www.google.com/",
-          "https://www.google.com/",
+          "https://flutter.dev/",
+          "https://flutter.dev/",
           Platform.isAndroid ? true : false,
           false,
         ),
@@ -57,8 +57,8 @@ void main() {
                 false,
               ),
               WebViewEvent.pageFinished(
-                "https://www.google.com/",
-                "https://www.google.com/",
+                "https://flutter.dev/",
+                "https://flutter.dev/",
                 true,
                 false,
               ),
@@ -72,14 +72,14 @@ void main() {
                 false,
               ),
               WebViewEvent.pageFinished(
-                "https://www.google.com/",
-                "https://www.google.com/",
+                "https://flutter.dev/",
+                "https://flutter.dev/",
                 true,
                 false,
               ),
               WebViewEvent.pageFinished(
-                "https://www.google.com/",
-                "https://www.google.com/",
+                "https://flutter.dev/",
+                "https://flutter.dev/",
                 true,
                 false,
               ),
