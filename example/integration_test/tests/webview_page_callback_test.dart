@@ -45,11 +45,10 @@ void main() {
       expect(context.loadingRequestEvents.length, 0);
     });
 
-    testWebView('initialUrl is https://www.google.com/',
-        (tester, context) async {
+    testWebView('initialUrl is https://flutter.dev/', (tester, context) async {
       await tester.pumpFrames(
         WebView(
-          initialUrl: 'https://www.google.com/',
+          initialUrl: 'https://flutter.dev/',
           onWebViewCreated: context.onWebViewCreated,
           shouldOverrideUrlLoading: context.shouldOverrideUrlLoading,
           onPageStarted: context.onPageStarted,
@@ -71,8 +70,8 @@ void main() {
 
       expect(context.pageStartedEvents, [
         WebViewEvent.pageStarted(
-          "https://www.google.com/",
-          "https://www.google.com/",
+          "https://flutter.dev/",
+          "https://flutter.dev/",
           false,
           false,
         ),
@@ -82,23 +81,23 @@ void main() {
         anyOf(
           equals([
             WebViewEvent.pageFinished(
-              "https://www.google.com/",
-              "https://www.google.com/",
+              "https://flutter.dev/",
+              "https://flutter.dev/",
               false,
               false,
             ),
           ]),
           equals([
-            // PageFinished of www.google.com may come twice on Android.
+            // PageFinished of flutter.dev may come twice on Android.
             WebViewEvent.pageFinished(
-              "https://www.google.com/",
-              "https://www.google.com/",
+              "https://flutter.dev/",
+              "https://flutter.dev/",
               false,
               false,
             ),
             WebViewEvent.pageFinished(
-              "https://www.google.com/",
-              "https://www.google.com/",
+              "https://flutter.dev/",
+              "https://flutter.dev/",
               false,
               false,
             ),
@@ -107,11 +106,11 @@ void main() {
       );
     });
 
-    testWebView('initialUrl is https://google.com (with redirect)',
+    testWebView('initialUrl is https://flutter.dev/ (with redirect)',
         (tester, context) async {
       await tester.pumpFrames(
         WebView(
-          initialUrl: 'https://google.com/',
+          initialUrl: 'https://bit.ly/3yXUxiS',
           onWebViewCreated: context.onWebViewCreated,
           shouldOverrideUrlLoading: context.shouldOverrideUrlLoading,
           onPageStarted: context.onPageStarted,
@@ -121,18 +120,25 @@ void main() {
         ),
       );
 
-      expect(context.loadingRequestEvents.map((e) => e.request.url), [
-        'https://www.google.com/',
-      ]);
+      expect(
+        context.loadingRequestEvents.length,
+        Platform.isAndroid
+            ? 0
+            : anyOf(
+                greaterThanOrEqualTo(0),
+                greaterThanOrEqualTo(1),
+              ),
+      );
 
+      print(context.pageStartedEvents);
       expect(
         context.pageStartedEvents,
         anyOf(
           equals([
             // iOS?
             WebViewEvent.pageStarted(
-              "https://google.com/",
-              "https://google.com/",
+              "https://bit.ly/3yXUxiS",
+              "https://bit.ly/3yXUxiS",
               false,
               false,
             ),
@@ -140,8 +146,8 @@ void main() {
           equals([
             // on CI(iOS)
             WebViewEvent.pageStarted(
-              "https://google.com/",
-              "https://www.google.com/",
+              "https://bit.ly/3yXUxiS",
+              "https://flutter.dev/",
               false,
               false,
             ),
@@ -149,8 +155,8 @@ void main() {
           equals([
             // Android
             WebViewEvent.pageStarted(
-              "https://www.google.com/",
-              "https://www.google.com/",
+              "https://flutter.dev/",
+              "https://flutter.dev/",
               false,
               false,
             ),
@@ -163,23 +169,23 @@ void main() {
         anyOf(
           equals([
             WebViewEvent.pageFinished(
-              "https://www.google.com/",
-              "https://www.google.com/",
+              "https://flutter.dev/",
+              "https://flutter.dev/",
               false,
               false,
             ),
           ]),
           equals([
-            // PageFinished of www.google.com may come twice on Android.
+            // PageFinished of flutter.dev may come twice on Android.
             WebViewEvent.pageFinished(
-              "https://www.google.com/",
-              "https://www.google.com/",
+              "https://flutter.dev/",
+              "https://flutter.dev/",
               false,
               false,
             ),
             WebViewEvent.pageFinished(
-              "https://www.google.com/",
-              "https://www.google.com/",
+              "https://flutter.dev/",
+              "https://flutter.dev/",
               false,
               false,
             ),
@@ -187,20 +193,20 @@ void main() {
           equals([
             // for Android
             WebViewEvent.pageFinished(
-              "https://www.google.com/",
-              "https://www.google.com/",
+              "https://flutter.dev/",
+              "https://flutter.dev/",
               false,
               false,
             ),
             WebViewEvent.pageFinished(
-              "https://www.google.com/",
-              "https://www.google.com/",
+              "https://flutter.dev/",
+              "https://flutter.dev/",
               false,
               false,
             ),
             WebViewEvent.pageFinished(
-              "https://www.google.com/",
-              "https://www.google.com/",
+              "https://flutter.dev/",
+              "https://flutter.dev/",
               false,
               false,
             ),
@@ -407,13 +413,19 @@ void main() {
     );
 
     final controller = await context.webviewController.future;
-    await controller.loadUrl("https://www.google.com/");
+    await controller.loadUrl("https://flutter.dev/");
 
     await sleep();
 
-    expect(context.loadingRequestEvents.map((e) => e.request.url), [
-      if (Platform.isIOS) "https://www.google.com/",
-    ]);
+    expect(
+      context.loadingRequestEvents.length,
+      Platform.isAndroid
+          ? 0
+          : anyOf(
+              greaterThanOrEqualTo(0),
+              greaterThanOrEqualTo(1),
+            ),
+    );
 
     expect(context.webResourceErrorEvents.length, 0);
     expect(context.pageStartedEvents, [
@@ -424,8 +436,8 @@ void main() {
         false,
       ),
       WebViewEvent.pageStarted(
-        "https://www.google.com/",
-        "https://www.google.com/",
+        "https://flutter.dev/",
+        "https://flutter.dev/",
         Platform.isAndroid ? true : false,
         false,
       ),
@@ -441,14 +453,14 @@ void main() {
             false,
           ),
           WebViewEvent.pageFinished(
-            "https://www.google.com/",
-            "https://www.google.com/",
+            "https://flutter.dev/",
+            "https://flutter.dev/",
             true,
             false,
           ),
         ]),
         equals([
-          // PageFinished of www.google.com may come twice on Android.
+          // PageFinished of flutter.dev may come twice on Android.
           WebViewEvent.pageFinished(
             "about:blank",
             "about:blank",
@@ -456,14 +468,14 @@ void main() {
             false,
           ),
           WebViewEvent.pageFinished(
-            "https://www.google.com/",
-            "https://www.google.com/",
+            "https://flutter.dev/",
+            "https://flutter.dev/",
             true,
             false,
           ),
           WebViewEvent.pageFinished(
-            "https://www.google.com/",
-            "https://www.google.com/",
+            "https://flutter.dev/",
+            "https://flutter.dev/",
             true,
             false,
           ),
@@ -487,8 +499,8 @@ void main() {
     );
 
     final controller = await context.webviewController.future;
-    await controller.loadUrl("https://www.google.com/");
-    await controller.loadUrl("https://www.google.com/");
+    await controller.loadUrl("https://flutter.dev/");
+    await controller.loadUrl("https://flutter.dev/");
 
     await sleep();
 
@@ -507,8 +519,8 @@ void main() {
         false,
       ),
       WebViewEvent.pageStarted(
-        "https://www.google.com/",
-        "https://www.google.com/",
+        "https://flutter.dev/",
+        "https://flutter.dev/",
         Platform.isAndroid ? true : false,
         false,
       ),
@@ -524,14 +536,14 @@ void main() {
             false,
           ),
           WebViewEvent.pageFinished(
-            "https://www.google.com/",
-            "https://www.google.com/",
+            "https://flutter.dev/",
+            "https://flutter.dev/",
             true,
             false,
           ),
         ]),
         equals([
-          // PageFinished of www.google.com may come twice on Android.
+          // PageFinished of flutter.dev may come twice on Android.
           WebViewEvent.pageFinished(
             "about:blank",
             "about:blank",
@@ -539,20 +551,20 @@ void main() {
             false,
           ),
           WebViewEvent.pageFinished(
-            "https://www.google.com/",
-            "https://www.google.com/",
+            "https://flutter.dev/",
+            "https://flutter.dev/",
             true,
             false,
           ),
           WebViewEvent.pageFinished(
-            "https://www.google.com/",
-            "https://www.google.com/",
+            "https://flutter.dev/",
+            "https://flutter.dev/",
             true,
             false,
           ),
         ]),
         equals([
-          // PageFinished of www.google.com may come twice on Android.
+          // PageFinished of flutter.dev may come twice on Android.
           WebViewEvent.pageFinished(
             "about:blank",
             "about:blank",
@@ -560,20 +572,20 @@ void main() {
             false,
           ),
           WebViewEvent.pageFinished(
-            "https://www.google.com/",
-            "https://www.google.com/",
+            "https://flutter.dev/",
+            "https://flutter.dev/",
             false,
             false,
           ),
           WebViewEvent.pageFinished(
-            "https://www.google.com/",
-            "https://www.google.com/",
+            "https://flutter.dev/",
+            "https://flutter.dev/",
             true,
             false,
           ),
           WebViewEvent.pageFinished(
-            "https://www.google.com/",
-            "https://www.google.com/",
+            "https://flutter.dev/",
+            "https://flutter.dev/",
             true,
             false,
           ),
@@ -597,14 +609,20 @@ void main() {
 
     final controller = await context.webviewController.future;
     await controller.evaluateJavascript(
-      "location.href = 'https://www.google.com/'",
+      "location.href = 'https://flutter.dev/'",
     );
 
     await sleep();
 
-    expect(context.loadingRequestEvents.map((e) => e.request.url), [
-      "https://www.google.com/",
-    ]);
+    expect(
+      context.loadingRequestEvents.length,
+      Platform.isAndroid
+          ? 0
+          : anyOf(
+              greaterThanOrEqualTo(0),
+              greaterThanOrEqualTo(1),
+            ),
+    );
 
     expect(context.webResourceErrorEvents.length, 0);
 
@@ -616,8 +634,8 @@ void main() {
         false,
       ),
       WebViewEvent.pageStarted(
-        "https://www.google.com/",
-        "https://www.google.com/",
+        "https://flutter.dev/",
+        "https://flutter.dev/",
         Platform.isAndroid ? true : false,
         false,
       ),
@@ -633,8 +651,8 @@ void main() {
             false,
           ),
           WebViewEvent.pageFinished(
-            "https://www.google.com/",
-            "https://www.google.com/",
+            "https://flutter.dev/",
+            "https://flutter.dev/",
             Platform.isAndroid ? true : false,
             false,
           ),
@@ -647,14 +665,14 @@ void main() {
             false,
           ),
           WebViewEvent.pageFinished(
-            "https://www.google.com/",
-            "https://www.google.com/",
+            "https://flutter.dev/",
+            "https://flutter.dev/",
             true,
             false,
           ),
           WebViewEvent.pageFinished(
-            "https://www.google.com/",
-            "https://www.google.com/",
+            "https://flutter.dev/",
+            "https://flutter.dev/",
             true,
             false,
           ),
@@ -678,7 +696,7 @@ void main() {
 
     final controller = await context.webviewController.future;
     await controller.evaluateJavascript(
-      "window.open('https://www.google.com/', '_blank');",
+      "window.open('https://flutter.dev/', '_blank');",
     );
 
     await sleep();
@@ -695,8 +713,8 @@ void main() {
         false,
       ),
       WebViewEvent.pageStarted(
-        "https://www.google.com/",
-        "https://www.google.com/",
+        "https://flutter.dev/",
+        "https://flutter.dev/",
         Platform.isAndroid ? true : false,
         false,
       ),
@@ -712,8 +730,8 @@ void main() {
             false,
           ),
           WebViewEvent.pageFinished(
-            "https://www.google.com/",
-            "https://www.google.com/",
+            "https://flutter.dev/",
+            "https://flutter.dev/",
             true,
             false,
           ),
@@ -726,14 +744,14 @@ void main() {
             false,
           ),
           WebViewEvent.pageFinished(
-            "https://www.google.com/",
-            "https://www.google.com/",
+            "https://flutter.dev/",
+            "https://flutter.dev/",
             true,
             false,
           ),
           WebViewEvent.pageFinished(
-            "https://www.google.com/",
-            "https://www.google.com/",
+            "https://flutter.dev/",
+            "https://flutter.dev/",
             true,
             false,
           ),
