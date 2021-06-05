@@ -7,11 +7,11 @@ import 'native_webview.dart';
 
 abstract class PlatformWebView {
   Widget build({
-    @required BuildContext context,
-    @required CreationParams creationParams,
-    @required String viewType,
-    @required PlatformViewCreatedCallback onPlatformViewCreated,
-    @required Set<Factory<OneSequenceGestureRecognizer>> gestureRecognizers,
+    required BuildContext context,
+    required CreationParams creationParams,
+    required String viewType,
+    required PlatformViewCreatedCallback onPlatformViewCreated,
+    required Set<Factory<OneSequenceGestureRecognizer>> gestureRecognizers,
     bool useHybridComposition = true,
   });
 }

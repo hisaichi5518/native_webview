@@ -8,11 +8,11 @@ import 'package:native_webview/platform_interface.dart';
 class CupertinoWebView extends PlatformWebView {
   @override
   Widget build({
-    BuildContext context,
-    CreationParams creationParams,
-    String viewType,
+    BuildContext? context,
+    required CreationParams creationParams,
+    required String viewType,
     onPlatformViewCreated,
-    Set<Factory<OneSequenceGestureRecognizer>> gestureRecognizers,
+    Set<Factory<OneSequenceGestureRecognizer>>? gestureRecognizers,
     bool useHybridComposition = true,
   }) {
     return UiKitView(
