@@ -77,7 +77,7 @@ extension ShouldOverrideUrlLoadingActionExtension
     on ShouldOverrideUrlLoadingAction {
   Map<String, dynamic> toMap() {
     return {
-      "action": this.index,
+      "action": index,
     };
   }
 }
@@ -241,7 +241,7 @@ class WebView extends StatelessWidget {
       creationParams: CreationParams.from(this),
       viewType: viewType,
       onPlatformViewCreated: _onPlatformViewCreated,
-      gestureRecognizers: Set.from([]),
+      gestureRecognizers: <dynamic>{},
       useHybridComposition: androidUseHybridComposition,
     );
   }

@@ -113,6 +113,6 @@ class WebResourceError {
   @override
   String toString() => mapPropsToString(
         runtimeType,
-        [this.errorCode, this.description, this.domain, this.errorType],
+        [errorCode, description, domain, errorType],
       );
 }

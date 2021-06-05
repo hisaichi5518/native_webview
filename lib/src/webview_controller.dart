@@ -5,7 +5,7 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:native_webview/native_webview.dart';
 
-typedef Future<void> JavascriptHandlerCallback(List<dynamic>? arguments);
+typedef JavascriptHandlerCallback = Future<void> Function(List<dynamic>? arguments);
 
 class WebViewController {
   final WebView _widget;
@@ -21,16 +21,16 @@ class WebViewController {
   Future<dynamic> _onMethodCall(MethodCall call) async {
     switch (call.method) {
       case 'onPageStarted':
-        if (this.updateFirstLoading != null) {
-          this.updateFirstLoading();
+        if (updateFirstLoading != null) {
+          updateFirstLoading();
         }
         if (_widget.onPageStarted != null) {
           await _widget.onPageStarted!(this, call.arguments['url'] as String?);
         }
         return true;
       case 'onPageFinished':
-        if (this.updateFirstLoading != null) {
-          this.updateFirstLoading();
+        if (updateFirstLoading != null) {
+          updateFirstLoading();
         }
         if (_widget.onPageFinished != null) {
           await _widget.onPageFinished!(this, call.arguments['url'] as String?);

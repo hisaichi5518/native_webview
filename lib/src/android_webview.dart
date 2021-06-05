@@ -18,14 +18,14 @@ class AndroidWebView extends PlatformWebView {
   }) {
     if (useHybridComposition) {
       return PlatformViewLink(
-        viewType: viewType!,
+        viewType: viewType,
         surfaceFactory: (
           BuildContext context,
           PlatformViewController controller,
         ) {
           return AndroidViewSurface(
             controller: controller as AndroidViewController,
-            gestureRecognizers: Set.from([]),
+            gestureRecognizers: <dynamic>{},
             hitTestBehavior: PlatformViewHitTestBehavior.opaque,
           );
         },
@@ -39,16 +39,16 @@ class AndroidWebView extends PlatformWebView {
           )
             ..addOnPlatformViewCreatedListener(params.onPlatformViewCreated)
             ..addOnPlatformViewCreatedListener(
-                (id) => onPlatformViewCreated!(id))
+                (id) => onPlatformViewCreated(id))
             ..create();
         },
       );
     }
 
     return AndroidView(
-      viewType: viewType!,
+      viewType: viewType,
       onPlatformViewCreated: onPlatformViewCreated,
-      gestureRecognizers: Set.from([]),
+      gestureRecognizers: <dynamic>{},
       creationParams: creationParams!.toMap(),
       creationParamsCodec: const StandardMessageCodec(),
     );
