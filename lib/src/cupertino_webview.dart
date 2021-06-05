@@ -11,7 +11,7 @@ class CupertinoWebView extends PlatformWebView {
     BuildContext? context,
     required CreationParams creationParams,
     required String viewType,
-    onPlatformViewCreated,
+    required onPlatformViewCreated,
     Set<Factory<OneSequenceGestureRecognizer>>? gestureRecognizers,
     bool useHybridComposition = true,
   }) {

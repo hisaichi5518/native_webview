@@ -1,4 +1,5 @@
-import 'package:flutter/foundation.dart';
+import 'dart:async';
+
 import 'package:flutter/services.dart';
 
 class Cookie {
@@ -63,8 +64,8 @@ class CookieManager {
     final Map<String, dynamic> args = <String, dynamic>{
       "url": url,
     };
-    List<dynamic> cookieListMap =
-        await (_channel.invokeMethod('getCookies', args) as FutureOr<List<dynamic>>);
+    List<dynamic> cookieListMap = await (_channel.invokeMethod(
+        'getCookies', args) as FutureOr<List<dynamic>>);
     cookieListMap = cookieListMap.cast<Map<dynamic, dynamic>>();
     List<Cookie> cookies = [];
 

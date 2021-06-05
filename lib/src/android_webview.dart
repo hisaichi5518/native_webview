@@ -11,8 +11,8 @@ class AndroidWebView extends PlatformWebView {
   Widget build({
     BuildContext? context,
     CreationParams? creationParams,
-    viewType,
-    onPlatformViewCreated,
+    required viewType,
+    required onPlatformViewCreated,
     Set<Factory<OneSequenceGestureRecognizer>>? gestureRecognizers,
     bool useHybridComposition = true,
   }) {
