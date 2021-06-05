@@ -60,12 +60,10 @@ void main() {
 
       expect(
         context.loadingRequestEvents.length,
-        Platform.isAndroid
-            ? 0
-            : anyOf(
-                greaterThanOrEqualTo(0),
-                greaterThanOrEqualTo(1),
-              ),
+        anyOf(
+          greaterThanOrEqualTo(0),
+          greaterThanOrEqualTo(1),
+        ),
       );
 
       expect(context.pageStartedEvents, [
@@ -122,12 +120,10 @@ void main() {
 
       expect(
         context.loadingRequestEvents.length,
-        Platform.isAndroid
-            ? 0
-            : anyOf(
-                greaterThanOrEqualTo(0),
-                greaterThanOrEqualTo(1),
-              ),
+        anyOf(
+          greaterThanOrEqualTo(0),
+          greaterThanOrEqualTo(1),
+        ),
       );
 
       print(context.pageStartedEvents);
@@ -419,12 +415,10 @@ void main() {
 
     expect(
       context.loadingRequestEvents.length,
-      Platform.isAndroid
-          ? 0
-          : anyOf(
-              greaterThanOrEqualTo(0),
-              greaterThanOrEqualTo(1),
-            ),
+      anyOf(
+        greaterThanOrEqualTo(0),
+        greaterThanOrEqualTo(1),
+      ),
     );
 
     expect(context.webResourceErrorEvents.length, 0);
@@ -616,12 +610,10 @@ void main() {
 
     expect(
       context.loadingRequestEvents.length,
-      Platform.isAndroid
-          ? 0
-          : anyOf(
-              greaterThanOrEqualTo(0),
-              greaterThanOrEqualTo(1),
-            ),
+      anyOf(
+        greaterThanOrEqualTo(0),
+        greaterThanOrEqualTo(1),
+      ),
     );
 
     expect(context.webResourceErrorEvents.length, 0);
