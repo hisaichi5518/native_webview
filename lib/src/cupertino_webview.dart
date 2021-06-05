@@ -18,7 +18,7 @@ class CupertinoWebView extends PlatformWebView {
     return UiKitView(
       viewType: viewType,
       onPlatformViewCreated: onPlatformViewCreated,
-      gestureRecognizers: <dynamic>{},
+      gestureRecognizers: {},
       creationParams: creationParams.toMap(),
       creationParamsCodec: const StandardMessageCodec(),
     );

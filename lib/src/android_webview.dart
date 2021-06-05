@@ -25,7 +25,7 @@ class AndroidWebView extends PlatformWebView {
         ) {
           return AndroidViewSurface(
             controller: controller as AndroidViewController,
-            gestureRecognizers: <dynamic>{},
+            gestureRecognizers: {},
             hitTestBehavior: PlatformViewHitTestBehavior.opaque,
           );
         },
@@ -48,7 +48,7 @@ class AndroidWebView extends PlatformWebView {
     return AndroidView(
       viewType: viewType,
       onPlatformViewCreated: onPlatformViewCreated,
-      gestureRecognizers: <dynamic>{},
+      gestureRecognizers: {},
       creationParams: creationParams!.toMap(),
       creationParamsCodec: const StandardMessageCodec(),
     );

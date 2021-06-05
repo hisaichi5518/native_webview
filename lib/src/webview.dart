@@ -241,7 +241,7 @@ class WebView extends StatelessWidget {
       creationParams: CreationParams.from(this),
       viewType: viewType,
       onPlatformViewCreated: _onPlatformViewCreated,
-      gestureRecognizers: <dynamic>{},
+      gestureRecognizers: {},
       useHybridComposition: androidUseHybridComposition,
     );
   }
