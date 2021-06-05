@@ -5,7 +5,8 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:native_webview/native_webview.dart';
 
-typedef JavascriptHandlerCallback = Future<void> Function(List<dynamic>? arguments);
+typedef JavascriptHandlerCallback = Future<void> Function(
+    List<dynamic>? arguments);
 
 class WebViewController {
   final WebView _widget;
@@ -21,17 +22,13 @@ class WebViewController {
   Future<dynamic> _onMethodCall(MethodCall call) async {
     switch (call.method) {
       case 'onPageStarted':
-        if (updateFirstLoading != null) {
-          updateFirstLoading();
-        }
+        updateFirstLoading();
         if (_widget.onPageStarted != null) {
           await _widget.onPageStarted!(this, call.arguments['url'] as String?);
         }
         return true;
       case 'onPageFinished':
-        if (updateFirstLoading != null) {
-          updateFirstLoading();
-        }
+        updateFirstLoading();
         if (_widget.onPageFinished != null) {
           await _widget.onPageFinished!(this, call.arguments['url'] as String?);
         }
@@ -75,20 +72,20 @@ class WebViewController {
         if (_widget.onJsConfirm == null) {
           return {};
         }
-        return (await _widget.onJsConfirm!(this, message))?.toMap();
+        return (await _widget.onJsConfirm!(this, message)).toMap();
       case 'onJsAlert':
         final message = call.arguments['message'] as String?;
         if (_widget.onJsAlert == null) {
           return {};
         }
-        return (await _widget.onJsAlert!(this, message))?.toMap();
+        return (await _widget.onJsAlert!(this, message)).toMap();
       case 'onJsPrompt':
         final message = call.arguments['message'] as String?;
         final defaultText = call.arguments['defaultText'] as String?;
         if (_widget.onJsPrompt == null) {
           return {};
         }
-        return (await _widget.onJsPrompt!(this, message, defaultText))?.toMap();
+        return (await _widget.onJsPrompt!(this, message, defaultText)).toMap();
       case 'shouldOverrideUrlLoading':
         if (_widget.shouldOverrideUrlLoading == null) {
           return {};
@@ -104,7 +101,7 @@ class WebViewController {
           headers: headers,
           isForMainFrame: isForMainFrame,
         );
-        return (await _widget.shouldOverrideUrlLoading!(this, request))?.toMap();
+        return (await _widget.shouldOverrideUrlLoading!(this, request)).toMap();
       case 'onReceivedHttpAuthRequest':
         if (_widget.onReceivedHttpAuthRequest == null) {
           return {};
@@ -117,7 +114,7 @@ class WebViewController {
           realm: realm,
         );
         return (await _widget.onReceivedHttpAuthRequest!(this, request))
-            ?.toMap();
+            .toMap();
     }
     throw MissingPluginException(
       '${call.method} was invoked but has no handler',

@@ -34,11 +34,7 @@ class WebViewData {
     this.encoding = "utf8",
     this.baseUrl = "about:blank",
     this.historyUrl = "about:blank",
-  }) : assert(data != null &&
-            mimeType != null &&
-            encoding != null &&
-            baseUrl != null &&
-            historyUrl != null);
+  });
 
   Map<String, String> toMap() {
     return {
@@ -126,7 +122,7 @@ class ReceivedHttpAuthResponse {
 
   Map<String, dynamic> toMap() {
     return {
-      "action": action?.index ?? ReceivedHttpAuthResponseAction.cancel.index,
+      "action": action.index,
       "username": username,
       "password": password,
     };
@@ -273,8 +269,8 @@ class CreationParams {
       "hasShouldOverrideUrlLoading": widget.shouldOverrideUrlLoading != null,
       "contentBlockers":
           (widget.contentBlockers ?? []).map((v) => v.toMap()).toList(),
-      "gestureNavigationEnabled": widget.gestureNavigationEnabled ?? false,
-      "debuggingEnabled": widget.debuggingEnabled ?? false,
+      "gestureNavigationEnabled": widget.gestureNavigationEnabled,
+      "debuggingEnabled": widget.debuggingEnabled,
       "userAgent": widget.userAgent,
     };
   }

@@ -1,5 +1,3 @@
-import 'package:flutter/widgets.dart';
-
 // Originally written by pichillilorenzo
 // https://github.com/pichillilorenzo/flutter_inappwebview/
 
@@ -128,8 +126,7 @@ class ContentBlockerTrigger {
     var resourceType = <ContentBlockerTriggerResourceType?>[];
     var loadType = <ContentBlockerTriggerLoadType?>[];
 
-    var resourceTypeStringList =
-        List<String>.from(map["resource-type"] ?? []);
+    var resourceTypeStringList = List<String>.from(map["resource-type"] ?? []);
     resourceTypeStringList.forEach((type) {
       resourceType.add(ContentBlockerTriggerResourceType.fromValue(type));
     });
@@ -169,8 +166,7 @@ class ContentBlockerAction {
     type = ContentBlockerActionType.block;
   }
 
-  ContentBlockerAction.cssDisplayNone(String this.selector)
-      : assert(selector != null) {
+  ContentBlockerAction.cssDisplayNone(String this.selector) {
     type = ContentBlockerActionType.cssDisplayNone;
     selector = selector;
   }

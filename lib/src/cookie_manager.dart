@@ -36,10 +36,10 @@ class CookieManager {
     Duration? maxAge,
     bool? isSecure,
   }) async {
-    assert(url != null && url.isNotEmpty);
-    assert(name != null && name.isNotEmpty);
-    assert(value != null && value.isNotEmpty);
-    assert(path != null && path.isNotEmpty);
+    assert(url.isNotEmpty);
+    assert(name.isNotEmpty);
+    assert(value.isNotEmpty);
+    assert(path.isNotEmpty);
 
     var args = <String, dynamic>{
       "url": url,
@@ -59,13 +59,13 @@ class CookieManager {
     required String url,
     String? name,
   }) async {
-    assert(url != null && url.isNotEmpty);
+    assert(url.isNotEmpty);
 
     final args = <String, dynamic>{
       "url": url,
     };
-    var cookieListMap = await (_channel.invokeMethod(
-        'getCookies', args) as FutureOr<List<dynamic>>);
+    var cookieListMap = await (_channel.invokeMethod('getCookies', args)
+        as FutureOr<List<dynamic>>);
     cookieListMap = cookieListMap.cast<Map<dynamic, dynamic>>();
     var cookies = <Cookie>[];
 
