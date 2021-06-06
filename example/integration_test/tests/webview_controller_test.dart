@@ -56,6 +56,15 @@ void main() {
           context.pageFinishedEvents,
           anyOf(
             equals([
+              // Android CI
+              WebViewEvent.pageFinished(
+                "about:blank",
+                "about:blank",
+                false,
+                false,
+              ),
+            ]),
+            equals([
               WebViewEvent.pageFinished(
                 "about:blank",
                 "about:blank",
