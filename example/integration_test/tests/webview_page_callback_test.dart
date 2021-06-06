@@ -474,6 +474,15 @@ void main() {
             false,
           ),
         ]),
+        equals([
+          // Android CI
+          WebViewEvent.pageFinished(
+            "about:blank",
+            "about:blank",
+            false,
+            false,
+          ),
+        ]),
       ),
     );
   });
@@ -522,6 +531,15 @@ void main() {
     expect(
       context.pageFinishedEvents,
       anyOf(
+        equals([
+          // Android CI
+          WebViewEvent.pageFinished(
+            "about:blank",
+            "about:blank",
+            false,
+            false,
+          ),
+        ]),
         equals([
           WebViewEvent.pageFinished(
             "about:blank",
