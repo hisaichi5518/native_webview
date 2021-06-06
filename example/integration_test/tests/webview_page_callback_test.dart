@@ -584,6 +584,27 @@ void main() {
             false,
           ),
         ]),
+        equals([
+          // PageFinished of flutter.dev may come twice on Android.
+          WebViewEvent.pageFinished(
+            "about:blank",
+            "about:blank",
+            false,
+            false,
+          ),
+          WebViewEvent.pageFinished(
+            "https://flutter.dev/",
+            "https://flutter.dev/",
+            false,
+            false,
+          ),
+          WebViewEvent.pageFinished(
+            "https://flutter.dev/",
+            "https://flutter.dev/",
+            true,
+            false,
+          ),
+        ]),
       ),
     );
   });

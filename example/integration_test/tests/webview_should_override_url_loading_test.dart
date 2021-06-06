@@ -93,6 +93,15 @@ void main() {
               false,
             ),
           ]),
+          equals([
+            // on Android CI
+            WebViewEvent.pageFinished(
+              "about:blank",
+              "about:blank",
+              false,
+              false,
+            ),
+          ]),
         ));
   });
 
