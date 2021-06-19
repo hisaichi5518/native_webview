@@ -56,7 +56,7 @@ class WebViewController {
       case 'onProgressChanged':
         if (_widget.onProgressChanged != null) {
           await _widget.onProgressChanged!(
-              this, call.arguments['progress'] as int?);
+              this, call.arguments['progress'] as int);
         }
         return true;
       case 'onJavascriptHandler':
