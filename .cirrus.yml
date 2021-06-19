@@ -7,63 +7,63 @@ flutter_analyze_task:
   lint_script: flutter analyze
   test_script: flutter test
 
-flutter_drive_ios_task:
-  osx_instance:
-    image: big-sur-xcode-12.4
-  flutter_upgrade_script:
-    - flutter upgrade
-  open_simulator_script:
-    - xcrun --version
-    - xcrun simctl list
-    - xcrun simctl create Flutter-iPhone com.apple.CoreSimulator.SimDeviceType.iPhone-12-Pro-Max com.apple.CoreSimulator.SimRuntime.iOS-14-4 | xargs xcrun simctl boot
-  matrix:
-    - name: ios_content_blocker_test
-      test_script: make testci TARGET=integration_test/tests/content_blocker_test.dart
-    - name: ios_cookie_manager_test
-      test_script: make testci TARGET=integration_test/tests/cookie_manager_test.dart
-    - name: ios_webview_controller_test
-      test_script: make testci TARGET=integration_test/tests/webview_controller_test.dart
-    - name: ios_webview_manager_test
-      test_script: make testci TARGET=integration_test/tests/webview_manager_test.dart
-    - name: ios_webview_page_callback_test
-      test_script: make testci TARGET=integration_test/tests/webview_page_callback_test.dart
-    - name: ios_webview_should_override_url_loading_test
-      test_script: make testci TARGET=integration_test/tests/webview_should_override_url_loading_test.dart
-    - name: ios_webview_test
-      test_script: make testci TARGET=integration_test/tests/webview_test.dart
-
-flutter_drive_android_task:
-  container:
-    image: cirrusci/flutter:stable
-    kvm: true
-    cpu: 4
-    memory: 16G
-  env:
-    EMULATOR_API_LEVEL: 29
-    ANDROID_ABI: "default;x86_64"
-  fix_kvm_script: sudo chown $(whoami):$(whoami) /dev/kvm
-  update_emulator_script: sdkmanager --verbose --channel=0 "emulator"
-  update_images_script: sdkmanager "system-images;android-$EMULATOR_API_LEVEL;$ANDROID_ABI"
-  create_device_script: echo no | avdmanager create avd --force -n test -k "system-images;android-$EMULATOR_API_LEVEL;$ANDROID_ABI"
-  start_emulator_background_script: $ANDROID_HOME/emulator/emulator -verbose -avd test -no-audio -no-window
-  wait_for_emulator_script:
-    - ./scripts/android-wait-for-emulator.sh
-  pub_cache:
-    folder: ~/.pub-cache
-  android_cache:
-    folder: ~/.android/build-cache/
-  matrix:
-    - name: android_content_blocker_test
-      test_script: make testci TARGET=integration_test/tests/content_blocker_test.dart
-    - name: android_cookie_manager_test
-      test_script: make testci TARGET=integration_test/tests/cookie_manager_test.dart
-    - name: android_webview_controller_test
-      test_script: make testci TARGET=integration_test/tests/webview_controller_test.dart
-    - name: android_webview_manager_test
-      test_script: make testci TARGET=integration_test/tests/webview_manager_test.dart
-    - name: android_webview_page_callback_test
-      test_script: make testci TARGET=integration_test/tests/webview_page_callback_test.dart
-    - name: android_webview_should_override_url_loading_test
-      test_script: make testci TARGET=integration_test/tests/webview_should_override_url_loading_test.dart
-    - name: android_webview_test
-      test_script: make testci TARGET=integration_test/tests/webview_test.dart
+#flutter_drive_ios_task:
+#  osx_instance:
+#    image: big-sur-xcode-12.4
+#  flutter_upgrade_script:
+#    - flutter upgrade
+#  open_simulator_script:
+#    - xcrun --version
+#    - xcrun simctl list
+#    - xcrun simctl create Flutter-iPhone com.apple.CoreSimulator.SimDeviceType.iPhone-12-Pro-Max com.apple.CoreSimulator.SimRuntime.iOS-14-4 | xargs xcrun simctl boot
+#  matrix:
+#    - name: ios_content_blocker_test
+#      test_script: make testci TARGET=integration_test/tests/content_blocker_test.dart
+#    - name: ios_cookie_manager_test
+#      test_script: make testci TARGET=integration_test/tests/cookie_manager_test.dart
+#    - name: ios_webview_controller_test
+#      test_script: make testci TARGET=integration_test/tests/webview_controller_test.dart
+#    - name: ios_webview_manager_test
+#      test_script: make testci TARGET=integration_test/tests/webview_manager_test.dart
+#    - name: ios_webview_page_callback_test
+#      test_script: make testci TARGET=integration_test/tests/webview_page_callback_test.dart
+#    - name: ios_webview_should_override_url_loading_test
+#      test_script: make testci TARGET=integration_test/tests/webview_should_override_url_loading_test.dart
+#    - name: ios_webview_test
+#      test_script: make testci TARGET=integration_test/tests/webview_test.dart
+#
+#flutter_drive_android_task:
+#  container:
+#    image: cirrusci/flutter:stable
+#    kvm: true
+#    cpu: 4
+#    memory: 16G
+#  env:
+#    EMULATOR_API_LEVEL: 29
+#    ANDROID_ABI: "default;x86_64"
+#  fix_kvm_script: sudo chown $(whoami):$(whoami) /dev/kvm
+#  update_emulator_script: sdkmanager --verbose --channel=0 "emulator"
+#  update_images_script: sdkmanager "system-images;android-$EMULATOR_API_LEVEL;$ANDROID_ABI"
+#  create_device_script: echo no | avdmanager create avd --force -n test -k "system-images;android-$EMULATOR_API_LEVEL;$ANDROID_ABI"
+#  start_emulator_background_script: $ANDROID_HOME/emulator/emulator -verbose -avd test -no-audio -no-window
+#  wait_for_emulator_script:
+#    - ./scripts/android-wait-for-emulator.sh
+#  pub_cache:
+#    folder: ~/.pub-cache
+#  android_cache:
+#    folder: ~/.android/build-cache/
+#  matrix:
+#    - name: android_content_blocker_test
+#      test_script: make testci TARGET=integration_test/tests/content_blocker_test.dart
+#    - name: android_cookie_manager_test
+#      test_script: make testci TARGET=integration_test/tests/cookie_manager_test.dart
+#    - name: android_webview_controller_test
+#      test_script: make testci TARGET=integration_test/tests/webview_controller_test.dart
+#    - name: android_webview_manager_test
+#      test_script: make testci TARGET=integration_test/tests/webview_manager_test.dart
+#    - name: android_webview_page_callback_test
+#      test_script: make testci TARGET=integration_test/tests/webview_page_callback_test.dart
+#    - name: android_webview_should_override_url_loading_test
+#      test_script: make testci TARGET=integration_test/tests/webview_should_override_url_loading_test.dart
+#    - name: android_webview_test
+#      test_script: make testci TARGET=integration_test/tests/webview_test.dart
