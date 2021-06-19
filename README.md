@@ -42,3 +42,12 @@ If you want to see other examples, see [example](./example) or see DartDoc.
 ## Known issues
 
 - [Bad hybrid composition performance on Android](https://github.com/flutter/flutter/issues/62303)
+
+## Run tests
+
+- There are tests in `example/integration_test/tests
+- You will need to launch the iOS simulator or Android emulator
+
+```
+make test
+```
