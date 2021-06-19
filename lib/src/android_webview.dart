@@ -9,11 +9,11 @@ import 'package:native_webview/platform_interface.dart';
 class AndroidWebView extends PlatformWebView {
   @override
   Widget build({
-    BuildContext context,
-    CreationParams creationParams,
-    viewType,
-    onPlatformViewCreated,
-    Set<Factory<OneSequenceGestureRecognizer>> gestureRecognizers,
+    BuildContext? context,
+    CreationParams? creationParams,
+    required viewType,
+    required onPlatformViewCreated,
+    Set<Factory<OneSequenceGestureRecognizer>>? gestureRecognizers,
     bool useHybridComposition = true,
   }) {
     if (useHybridComposition) {
@@ -24,8 +24,8 @@ class AndroidWebView extends PlatformWebView {
           PlatformViewController controller,
         ) {
           return AndroidViewSurface(
-            controller: controller,
-            gestureRecognizers: Set.from([]),
+            controller: controller as AndroidViewController,
+            gestureRecognizers: {},
             hitTestBehavior: PlatformViewHitTestBehavior.opaque,
           );
         },
@@ -34,7 +34,7 @@ class AndroidWebView extends PlatformWebView {
             id: params.id,
             viewType: viewType,
             layoutDirection: TextDirection.rtl,
-            creationParams: creationParams.toMap(),
+            creationParams: creationParams!.toMap(),
             creationParamsCodec: const StandardMessageCodec(),
           )
             ..addOnPlatformViewCreatedListener(params.onPlatformViewCreated)
@@ -48,8 +48,8 @@ class AndroidWebView extends PlatformWebView {
     return AndroidView(
       viewType: viewType,
       onPlatformViewCreated: onPlatformViewCreated,
-      gestureRecognizers: Set.from([]),
-      creationParams: creationParams.toMap(),
+      gestureRecognizers: {},
+      creationParams: creationParams!.toMap(),
       creationParamsCodec: const StandardMessageCodec(),
     );
   }

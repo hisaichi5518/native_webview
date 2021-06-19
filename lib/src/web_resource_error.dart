@@ -1,4 +1,3 @@
-import 'package:flutter/widgets.dart';
 import 'package:native_webview/src/stringify.dart';
 
 // Copied from https://github.com/flutter/plugins/blob/a0b692d8e4040ac42c754a75b11e2acb4bc2617f/packages/webview_flutter/lib/platform_interface.dart#L37
@@ -73,12 +72,11 @@ class WebResourceError {
   /// A user should not need to instantiate this class, but will receive one in
   /// [WebResourceErrorCallback].
   WebResourceError({
-    @required this.errorCode,
-    @required this.description,
+    required this.errorCode,
+    required this.description,
     this.domain,
     this.errorType,
-  })  : assert(errorCode != null),
-        assert(description != null);
+  });
 
   /// Raw code of the error from the respective platform.
   ///
@@ -100,7 +98,7 @@ class WebResourceError {
   /// in Objective-C. See
   /// https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ErrorHandlingCocoa/ErrorObjectsDomains/ErrorObjectsDomains.html
   /// for more information on error handling on iOS.
-  final String domain;
+  final String? domain;
 
   /// Description of the error that can be used to communicate the problem to the user.
   final String description;
@@ -108,11 +106,11 @@ class WebResourceError {
   /// The type this error can be categorized as.
   ///
   /// This will never be `null` on Android, but can be `null` on iOS.
-  final WebResourceErrorType errorType;
+  final WebResourceErrorType? errorType;
 
   @override
   String toString() => mapPropsToString(
         runtimeType,
-        [this.errorCode, this.description, this.domain, this.errorType],
+        [errorCode, description, domain, errorType],
       );
 }

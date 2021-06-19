@@ -34,11 +34,7 @@ class WebViewData {
     this.encoding = "utf8",
     this.baseUrl = "about:blank",
     this.historyUrl = "about:blank",
-  }) : assert(data != null &&
-            mimeType != null &&
-            encoding != null &&
-            baseUrl != null &&
-            historyUrl != null);
+  });
 
   Map<String, String> toMap() {
     return {
@@ -52,13 +48,13 @@ class WebViewData {
 }
 
 class ShouldOverrideUrlLoadingRequest {
-  final String url;
+  final String? url;
 
-  final String method;
+  final String? method;
 
-  final Map<String, String> headers;
+  final Map<String, String>? headers;
 
-  final bool isForMainFrame;
+  final bool? isForMainFrame;
 
   ShouldOverrideUrlLoadingRequest({
     this.url,
@@ -77,14 +73,14 @@ extension ShouldOverrideUrlLoadingActionExtension
     on ShouldOverrideUrlLoadingAction {
   Map<String, dynamic> toMap() {
     return {
-      "action": this.index,
+      "action": index,
     };
   }
 }
 
 class HttpAuthChallenge {
-  final String host;
-  final String realm;
+  final String? host;
+  final String? realm;
 
   HttpAuthChallenge({this.host, this.realm});
 }
@@ -96,8 +92,8 @@ enum ReceivedHttpAuthResponseAction {
 
 class ReceivedHttpAuthResponse {
   final ReceivedHttpAuthResponseAction action;
-  final String username;
-  final String password;
+  final String? username;
+  final String? password;
 
   factory ReceivedHttpAuthResponse.useCredential(
     String username,
@@ -126,7 +122,7 @@ class ReceivedHttpAuthResponse {
 
   Map<String, dynamic> toMap() {
     return {
-      "action": action?.index ?? ReceivedHttpAuthResponseAction.cancel.index,
+      "action": action.index,
       "username": username,
       "password": password,
     };
@@ -136,13 +132,13 @@ class ReceivedHttpAuthResponse {
 class WebView extends StatelessWidget {
   static const String viewType = "com.hisaichi5518/native_webview";
 
-  static PlatformWebView _platform;
+  static PlatformWebView? _platform;
 
-  static set platform(PlatformWebView platform) {
+  static set platform(PlatformWebView? platform) {
     _platform = platform;
   }
 
-  static PlatformWebView get platform {
+  static PlatformWebView? get platform {
     if (_platform == null) {
       switch (defaultTargetPlatform) {
         case TargetPlatform.android:
@@ -160,32 +156,32 @@ class WebView extends StatelessWidget {
     return _platform;
   }
 
-  final String initialUrl;
-  final String initialFile;
-  final Map<String, String> initialHeaders;
-  final WebViewData initialData;
+  final String? initialUrl;
+  final String? initialFile;
+  final Map<String, String>? initialHeaders;
+  final WebViewData? initialData;
 
-  final void Function(WebViewController) onWebViewCreated;
-  final FutureOr<void> Function(WebViewController, String) onPageStarted;
-  final FutureOr<void> Function(WebViewController, String) onPageFinished;
-  final FutureOr<void> Function(WebResourceError error) onWebResourceError;
-  final FutureOr<void> Function(WebViewController, int) onProgressChanged;
+  final void Function(WebViewController)? onWebViewCreated;
+  final FutureOr<void> Function(WebViewController, String?)? onPageStarted;
+  final FutureOr<void> Function(WebViewController, String?)? onPageFinished;
+  final FutureOr<void> Function(WebResourceError error)? onWebResourceError;
+  final FutureOr<void> Function(WebViewController, int?)? onProgressChanged;
 
-  final JsConfirmCallback onJsConfirm;
-  final JsAlertCallback onJsAlert;
-  final JsPromptCallback onJsPrompt;
+  final JsConfirmCallback? onJsConfirm;
+  final JsAlertCallback? onJsAlert;
+  final JsPromptCallback? onJsPrompt;
 
   final FutureOr<ShouldOverrideUrlLoadingAction> Function(
     WebViewController,
     ShouldOverrideUrlLoadingRequest,
-  ) shouldOverrideUrlLoading;
+  )? shouldOverrideUrlLoading;
 
   final FutureOr<ReceivedHttpAuthResponse> Function(
     WebViewController,
     HttpAuthChallenge,
-  ) onReceivedHttpAuthRequest;
+  )? onReceivedHttpAuthRequest;
 
-  final List<ContentBlocker> contentBlockers;
+  final List<ContentBlocker>? contentBlockers;
 
   /// Controls whether WebView debugging is enabled.
   ///
@@ -207,12 +203,12 @@ class WebView extends StatelessWidget {
   /// By default `gestureNavigationEnabled` is false.
   final bool gestureNavigationEnabled;
 
-  final String userAgent;
+  final String? userAgent;
 
   final bool androidUseHybridComposition;
 
   const WebView({
-    Key key,
+    Key? key,
     this.initialUrl,
     this.initialFile,
     this.initialHeaders,
@@ -236,12 +232,12 @@ class WebView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return platform.build(
+    return platform!.build(
       context: context,
       creationParams: CreationParams.from(this),
       viewType: viewType,
       onPlatformViewCreated: _onPlatformViewCreated,
-      gestureRecognizers: Set.from([]),
+      gestureRecognizers: {},
       useHybridComposition: androidUseHybridComposition,
     );
   }
@@ -251,7 +247,7 @@ class WebView extends StatelessWidget {
     if (onWebViewCreated == null) {
       return;
     }
-    onWebViewCreated(controller);
+    onWebViewCreated!(controller);
   }
 }
 
@@ -273,8 +269,8 @@ class CreationParams {
       "hasShouldOverrideUrlLoading": widget.shouldOverrideUrlLoading != null,
       "contentBlockers":
           (widget.contentBlockers ?? []).map((v) => v.toMap()).toList(),
-      "gestureNavigationEnabled": widget.gestureNavigationEnabled ?? false,
-      "debuggingEnabled": widget.debuggingEnabled ?? false,
+      "gestureNavigationEnabled": widget.gestureNavigationEnabled,
+      "debuggingEnabled": widget.debuggingEnabled,
       "userAgent": widget.userAgent,
     };
   }
