@@ -165,7 +165,7 @@ class WebView extends StatelessWidget {
   final FutureOr<void> Function(WebViewController, String?)? onPageStarted;
   final FutureOr<void> Function(WebViewController, String?)? onPageFinished;
   final FutureOr<void> Function(WebResourceError error)? onWebResourceError;
-  final FutureOr<void> Function(WebViewController, int?)? onProgressChanged;
+  final FutureOr<void> Function(WebViewController, int)? onProgressChanged;
 
   final JsConfirmCallback? onJsConfirm;
   final JsAlertCallback? onJsAlert;
