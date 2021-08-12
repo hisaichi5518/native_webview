@@ -5,8 +5,7 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:native_webview/native_webview.dart';
 
-typedef JavascriptHandlerCallback = Future<void> Function(
-    List<dynamic>? arguments);
+typedef JavascriptHandlerCallback = Future<void> Function(dynamic arguments);
 
 class WebViewController {
   final WebView _widget;
