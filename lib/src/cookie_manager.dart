@@ -15,14 +15,14 @@ class CookieManager {
   static const MethodChannel _channel =
       MethodChannel('com.hisaichi5518/native_webview_cookie_manager');
 
-  static CookieManager? instance() {
-    return (_instance != null) ? _instance : _init();
+  static CookieManager instance() {
+    return (_instance != null) ? _instance! : _init();
   }
 
-  static CookieManager? _init() {
+  static CookieManager _init() {
     _channel.setMethodCallHandler(_handleMethod);
     _instance = CookieManager();
-    return _instance;
+    return _instance!;
   }
 
   static Future<dynamic> _handleMethod(MethodCall call) async {}
