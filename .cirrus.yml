@@ -7,6 +7,7 @@ flutter_analyze_task:
   lint_script: flutter analyze
   test_script: flutter test
 
+# https://github.com/hisaichi5518/native_webview/pull/100
 #flutter_drive_ios_task:
 #  osx_instance:
 #    image: big-sur-xcode-12.4
