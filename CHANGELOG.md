@@ -1,3 +1,7 @@
+## 1.1.0
+
+- Fix null safety
+
 ## 1.0.0
 
 - null safety
