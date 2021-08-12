@@ -1,3 +1,7 @@
+## 1.0.0
+
+- null safety
+
 ## 0.28.0
 
 - The webview event callback returns FutureOr type.
