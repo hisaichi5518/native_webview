@@ -12,8 +12,11 @@ class AndroidWebViewInfo {
 
   AndroidWebViewInfo._(this.packageName, this.versionName);
 
-  factory AndroidWebViewInfo.fromMap(Map<dynamic, dynamic> mapping) {
-    return AndroidWebViewInfo._(mapping["packageName"], mapping["versionName"]);
+  factory AndroidWebViewInfo.fromMap(Map<dynamic, dynamic>? mapping) {
+    return AndroidWebViewInfo._(
+      mapping!["packageName"],
+      mapping["versionName"],
+    );
   }
 }
 
@@ -42,7 +45,7 @@ class WebViewManager {
     final mapping = await (_channel.invokeMethod<Map<dynamic, dynamic>>(
       'getAndroidWebViewInfo',
       <String, dynamic>{},
-    ) as FutureOr<Map<dynamic, dynamic>>);
+    ));
     return AndroidWebViewInfo.fromMap(mapping);
   }
 }
