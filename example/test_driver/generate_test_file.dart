@@ -2,7 +2,7 @@ import 'dart:io';
 
 Future<void> main() async {
   final dir = Directory('integration_test/tests');
-  final files = <File>[];
+  final files = <FileSystemEntity>[];
   await for (final file in dir.list(recursive: true)) {
     files.add(file);
   }
@@ -10,15 +10,15 @@ Future<void> main() async {
   files.sort((a, b) => a.path.compareTo(b.path));
 
   final imports = files.map((file) {
-    final basename = file.path?.split("/")?.last;
-    final name = basename?.replaceAll(".dart", "");
+    final basename = file.path.split("/").last;
+    final name = basename.replaceAll(".dart", "");
     return """
 import "tests/$basename" as $name;
 """;
   }).join("");
 
   final tests = files.map((file) {
-    final name = file.path?.split("/")?.last?.replaceAll(".dart", "");
+    final name = file.path.split("/").last.replaceAll(".dart", "");
     return """
   group(
     "$name",
