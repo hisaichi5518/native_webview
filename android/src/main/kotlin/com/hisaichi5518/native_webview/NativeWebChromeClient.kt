@@ -20,7 +20,6 @@ import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.PluginRegistry
 
 
-
 class NativeWebChromeClient(private val channel: MethodChannel) : WebChromeClient(), PluginRegistry.ActivityResultListener {
     private var videoView: View? = null
     private var videoViewCallback: CustomViewCallback? = null
@@ -38,9 +37,9 @@ class NativeWebChromeClient(private val channel: MethodChannel) : WebChromeClien
             View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
 
         val FULLSCREEN_LAYOUT_PARAMS = FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                Gravity.CENTER
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            Gravity.CENTER
         )
 
         const val JAVASCRIPT_BRIDGE_NAME = "nativeWebView"
@@ -105,159 +104,159 @@ if (!window.${JAVASCRIPT_BRIDGE_NAME}.callHandler) {
         view?.evaluateJavascript(JAVASCRIPT) {}
 
         channel.invokeMethod("onProgressChanged", mapOf(
-                "progress" to newProgress
+            "progress" to newProgress
         ))
     }
 
     override fun onJsConfirm(view: WebView?, url: String?, message: String, result: JsResult): Boolean {
         channel.invokeMethod(
-                "onJsConfirm",
-                mapOf("message" to message),
-                object : MethodChannel.Result {
-                    override fun notImplemented() {
-                        Log.i("NativeWebChromeClient", "onJsConfirm is notImplemented")
-                        result.cancel()
-                    }
+            "onJsConfirm",
+            mapOf("message" to message),
+            object : MethodChannel.Result {
+                override fun notImplemented() {
+                    Log.i("NativeWebChromeClient", "onJsConfirm is notImplemented")
+                    result.cancel()
+                }
 
-                    override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
-                        Log.e("NativeWebChromeClient", "$errorCode $errorMessage $errorDetails")
-                        result.cancel()
-                    }
+                override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
+                    Log.e("NativeWebChromeClient", "$errorCode $errorMessage $errorDetails")
+                    result.cancel()
+                }
 
-                    override fun success(response: Any?) {
-                        var responseMessage: String? = null
-                        var okLabel: String? = null
-                        var cancelLabel: String? = null
+                override fun success(response: Any?) {
+                    var responseMessage: String? = null
+                    var okLabel: String? = null
+                    var cancelLabel: String? = null
 
-                        val responseMap = response as? Map<String, Any>
-                        if (responseMap != null) {
-                            val handledByClient = responseMap["handledByClient"] as? Boolean
-                            val action = responseMap["action"] as? Int
-                            if (handledByClient != null && handledByClient) {
-                                when (action) {
-                                    0 -> result.confirm()
-                                    1 -> result.cancel()
-                                    else -> result.cancel()
-                                }
-                                return
+                    val responseMap = response as? Map<String, Any>
+                    if (responseMap != null) {
+                        val handledByClient = responseMap["handledByClient"] as? Boolean
+                        val action = responseMap["action"] as? Int
+                        if (handledByClient != null && handledByClient) {
+                            when (action) {
+                                0 -> result.confirm()
+                                1 -> result.cancel()
+                                else -> result.cancel()
                             }
-
-                            responseMessage = responseMap["message"] as? String ?: message
-                            okLabel = responseMap["okLabel"] as? String
-                            cancelLabel = responseMap["cancelLabel"] as? String
+                            return
                         }
 
-                        createConfirmDialog(
-                                responseMessage ?: message,
-                                result,
-                                okLabel,
-                                cancelLabel
-                        )
+                        responseMessage = responseMap["message"] as? String ?: message
+                        okLabel = responseMap["okLabel"] as? String
+                        cancelLabel = responseMap["cancelLabel"] as? String
                     }
-                })
+
+                    createConfirmDialog(
+                        responseMessage ?: message,
+                        result,
+                        okLabel,
+                        cancelLabel
+                    )
+                }
+            })
 
         return true
     }
 
     override fun onJsAlert(view: WebView?, url: String?, message: String, result: JsResult): Boolean {
         channel.invokeMethod(
-                "onJsAlert",
-                mapOf("message" to message),
-                object : MethodChannel.Result {
-                    override fun notImplemented() {
-                        Log.i("NativeWebChromeClient", "onJsAlert is notImplemented")
-                        result.cancel()
-                    }
+            "onJsAlert",
+            mapOf("message" to message),
+            object : MethodChannel.Result {
+                override fun notImplemented() {
+                    Log.i("NativeWebChromeClient", "onJsAlert is notImplemented")
+                    result.cancel()
+                }
 
-                    override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
-                        Log.e("NativeWebChromeClient", "$errorCode $errorMessage $errorDetails")
-                        result.cancel()
-                    }
+                override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
+                    Log.e("NativeWebChromeClient", "$errorCode $errorMessage $errorDetails")
+                    result.cancel()
+                }
 
-                    override fun success(response: Any?) {
-                        var responseMessage: String? = null
-                        var okLabel: String? = null
+                override fun success(response: Any?) {
+                    var responseMessage: String? = null
+                    var okLabel: String? = null
 
-                        val responseMap = response as? Map<String, Any>
-                        if (responseMap != null) {
-                            val handledByClient = responseMap["handledByClient"] as? Boolean
-                            if (handledByClient != null && handledByClient) {
-                                result.confirm()
-                                return
-                            }
-
-                            responseMessage = responseMap["message"] as? String ?: message
-                            okLabel = responseMap["okLabel"] as? String
+                    val responseMap = response as? Map<String, Any>
+                    if (responseMap != null) {
+                        val handledByClient = responseMap["handledByClient"] as? Boolean
+                        if (handledByClient != null && handledByClient) {
+                            result.confirm()
+                            return
                         }
 
-                        createAlertDialog(
-                                responseMessage ?: message,
-                                result,
-                                okLabel
-                        )
+                        responseMessage = responseMap["message"] as? String ?: message
+                        okLabel = responseMap["okLabel"] as? String
                     }
-                })
+
+                    createAlertDialog(
+                        responseMessage ?: message,
+                        result,
+                        okLabel
+                    )
+                }
+            })
 
         return true
     }
 
     override fun onJsPrompt(view: WebView?, url: String?, message: String, defaultValue: String?, result: JsPromptResult): Boolean {
         channel.invokeMethod(
-                "onJsPrompt",
-                mapOf("message" to message),
-                object : MethodChannel.Result {
-                    override fun notImplemented() {
-                        Log.i("NativeWebChromeClient", "onJsPrompt is notImplemented")
-                        result.cancel()
-                    }
+            "onJsPrompt",
+            mapOf("message" to message),
+            object : MethodChannel.Result {
+                override fun notImplemented() {
+                    Log.i("NativeWebChromeClient", "onJsPrompt is notImplemented")
+                    result.cancel()
+                }
 
-                    override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
-                        Log.e("NativeWebChromeClient", "$errorCode $errorMessage $errorDetails")
-                        result.cancel()
-                    }
+                override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
+                    Log.e("NativeWebChromeClient", "$errorCode $errorMessage $errorDetails")
+                    result.cancel()
+                }
 
-                    override fun success(response: Any?) {
-                        var responseMessage: String? = null
-                        var okLabel: String? = null
-                        var cancelLabel: String? = null
+                override fun success(response: Any?) {
+                    var responseMessage: String? = null
+                    var okLabel: String? = null
+                    var cancelLabel: String? = null
 
-                        val responseMap = response as? Map<String, Any>
-                        if (responseMap != null) {
-                            val handledByClient = responseMap["handledByClient"] as? Boolean
-                            val action = responseMap["action"] as? Int
-                            if (handledByClient != null && handledByClient) {
-                                when (action) {
-                                    0 -> {
-                                        val value = responseMap["value"] as? String
-                                        result.confirm(value)
-                                    }
-                                    1 -> result.cancel()
-                                    else -> result.cancel()
+                    val responseMap = response as? Map<String, Any>
+                    if (responseMap != null) {
+                        val handledByClient = responseMap["handledByClient"] as? Boolean
+                        val action = responseMap["action"] as? Int
+                        if (handledByClient != null && handledByClient) {
+                            when (action) {
+                                0 -> {
+                                    val value = responseMap["value"] as? String
+                                    result.confirm(value)
                                 }
-                                return
+                                1 -> result.cancel()
+                                else -> result.cancel()
                             }
-
-                            responseMessage = responseMap["message"] as? String ?: message
-                            okLabel = responseMap["okLabel"] as? String
-                            cancelLabel = responseMap["cancelLabel"] as? String
+                            return
                         }
 
-                        createPromptDialog(
-                                responseMessage ?: message,
-                                defaultValue,
-                                result,
-                                okLabel,
-                                cancelLabel
-                        )
+                        responseMessage = responseMap["message"] as? String ?: message
+                        okLabel = responseMap["okLabel"] as? String
+                        cancelLabel = responseMap["cancelLabel"] as? String
                     }
-                })
+
+                    createPromptDialog(
+                        responseMessage ?: message,
+                        defaultValue,
+                        result,
+                        okLabel,
+                        cancelLabel
+                    )
+                }
+            })
         return true
     }
 
     private fun createAlertDialog(
-            message: String,
-            result: JsResult,
-            okLabel: String?
+        message: String,
+        result: JsResult,
+        okLabel: String?
     ) {
         val builder = AlertDialog.Builder(Locator.activity!!, R.style.Theme_AppCompat_Dialog_Alert).apply {
             setMessage(message)
@@ -280,10 +279,10 @@ if (!window.${JAVASCRIPT_BRIDGE_NAME}.callHandler) {
     }
 
     private fun createConfirmDialog(
-            message: String,
-            result: JsResult,
-            okLabel: String?,
-            cancelLabel: String?
+        message: String,
+        result: JsResult,
+        okLabel: String?,
+        cancelLabel: String?
     ) {
         val builder = AlertDialog.Builder(Locator.activity!!, R.style.Theme_AppCompat_Dialog_Alert).apply {
             setMessage(message)
@@ -316,11 +315,11 @@ if (!window.${JAVASCRIPT_BRIDGE_NAME}.callHandler) {
     }
 
     private fun createPromptDialog(
-            message: String,
-            defaultText: String?,
-            result: JsPromptResult,
-            okLabel: String?,
-            cancelLabel: String?
+        message: String,
+        defaultText: String?,
+        result: JsPromptResult,
+        okLabel: String?,
+        cancelLabel: String?
     ) {
         val layout = FrameLayout(Locator.activity!!)
         val editText = EditText(Locator.activity!!).apply {
@@ -369,9 +368,9 @@ if (!window.${JAVASCRIPT_BRIDGE_NAME}.callHandler) {
     }
 
     override fun onShowFileChooser(
-            webview: WebView?,
-            filePathCallback: ValueCallback<Array<Uri>>?,
-            fileChooserParams: FileChooserParams?
+        webview: WebView?,
+        filePathCallback: ValueCallback<Array<Uri>>?,
+        fileChooserParams: FileChooserParams?
     ): Boolean {
         val acceptTypes = fileChooserParams?.acceptTypes;
         val allowMultiple = fileChooserParams?.mode == FileChooserParams.MODE_OPEN_MULTIPLE
