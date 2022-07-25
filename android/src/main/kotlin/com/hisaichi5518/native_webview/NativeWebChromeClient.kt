@@ -1,29 +1,31 @@
 package com.hisaichi5518.native_webview
 
+import android.app.Activity
 import android.content.DialogInterface
+import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.graphics.Color
+import android.net.Uri
 import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.webkit.JsPromptResult
-import android.webkit.JsResult
-import android.webkit.WebChromeClient
-import android.webkit.WebView
+import android.webkit.*
 import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.appcompat.app.AlertDialog
 import io.flutter.plugin.common.MethodChannel
+import io.flutter.plugin.common.PluginRegistry
 
 
-class NativeWebChromeClient(private val channel: MethodChannel) : WebChromeClient() {
+class NativeWebChromeClient(private val channel: MethodChannel) : WebChromeClient(), PluginRegistry.ActivityResultListener {
     private var videoView: View? = null
     private var videoViewCallback: CustomViewCallback? = null
     private var originalRequestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
     private var originalSystemUiVisibility = 0
+    private var filePathCallback: ValueCallback<Array<Uri>>? = null
 
     companion object {
         const val FULLSCREEN_SYSTEM_UI_VISIBILITY = View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
@@ -47,6 +49,7 @@ if (!window.${JAVASCRIPT_BRIDGE_NAME}.callHandler) {
         window.${JAVASCRIPT_BRIDGE_NAME}._callHandler(arguments[0], JSON.stringify(Array.prototype.slice.call(arguments, 1)));
     };
 }""".trimIndent()
+        const val PICKER_REQUEST_CODE = 1;
     }
 
     override fun onShowCustomView(view: View?, callback: CustomViewCallback?) {
@@ -364,4 +367,46 @@ if (!window.${JAVASCRIPT_BRIDGE_NAME}.callHandler) {
         builder.show()
     }
 
+    override fun onShowFileChooser(
+        webview: WebView?,
+        filePathCallback: ValueCallback<Array<Uri>>?,
+        fileChooserParams: FileChooserParams?
+    ): Boolean {
+        val acceptTypes = fileChooserParams?.acceptTypes;
+        val allowMultiple = fileChooserParams?.mode == FileChooserParams.MODE_OPEN_MULTIPLE
+        val activity = Locator.activity
+        activity ?: return false
+        this.filePathCallback = filePathCallback
+        Locator.activityResultListener = this
+
+        val contentIntent = Intent(Intent.ACTION_GET_CONTENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
+            type = "*/*"
+            val isEmptyArray = acceptTypes?.isEmpty() == true || (acceptTypes?.size == 1 && acceptTypes[0].isEmpty())
+            if (!isEmptyArray) {
+                putExtra(Intent.EXTRA_MIME_TYPES, acceptTypes);
+            }
+            putExtra(Intent.EXTRA_ALLOW_MULTIPLE, allowMultiple);
+        }
+
+        activity.startActivityForResult(contentIntent, PICKER_REQUEST_CODE)
+
+        return true
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
+        if (filePathCallback == null || requestCode != PICKER_REQUEST_CODE) {
+            return false
+        }
+        if (resultCode == Activity.RESULT_CANCELED) {
+            filePathCallback?.onReceiveValue(null)
+        } else if (resultCode == Activity.RESULT_OK) {
+            filePathCallback?.onReceiveValue(
+                    FileChooserParams.parseResult(resultCode, data)
+            )
+        }
+        filePathCallback = null
+        Locator.activityResultListener = null
+        return true
+    }
 }
