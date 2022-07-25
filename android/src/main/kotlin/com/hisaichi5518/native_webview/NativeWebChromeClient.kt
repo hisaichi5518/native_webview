@@ -325,8 +325,8 @@ if (!window.${JAVASCRIPT_BRIDGE_NAME}.callHandler) {
         val editText = EditText(Locator.activity!!).apply {
             maxLines = 1
             layoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.MATCH_PARENT
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT
             )
             setText(defaultText)
         }
