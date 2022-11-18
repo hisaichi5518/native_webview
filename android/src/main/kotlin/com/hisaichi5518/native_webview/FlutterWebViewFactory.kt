@@ -10,7 +10,7 @@ import io.flutter.plugin.platform.PlatformViewFactory
 class FlutterWebViewFactory(
     private val messenger: BinaryMessenger
 ) : PlatformViewFactory(StandardMessageCodec.INSTANCE) {
-    override fun create(context: Context, viewId: Int, args: Any): PlatformView {
+    override fun create(context: Context, viewId: Int, args: Any?): PlatformView {
         val channel = MethodChannel(messenger, "com.hisaichi5518/native_webview_$viewId")
 
         return FlutterWebViewController(

@@ -118,7 +118,7 @@ if (!window.${JAVASCRIPT_BRIDGE_NAME}.callHandler) {
                     result.cancel()
                 }
 
-                override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
+                override fun error(errorCode: String, errorMessage: String?, errorDetails: Any?) {
                     Log.e("NativeWebChromeClient", "$errorCode $errorMessage $errorDetails")
                     result.cancel()
                 }
@@ -168,7 +168,7 @@ if (!window.${JAVASCRIPT_BRIDGE_NAME}.callHandler) {
                     result.cancel()
                 }
 
-                override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
+                override fun error(errorCode: String, errorMessage: String?, errorDetails: Any?) {
                     Log.e("NativeWebChromeClient", "$errorCode $errorMessage $errorDetails")
                     result.cancel()
                 }
@@ -210,7 +210,7 @@ if (!window.${JAVASCRIPT_BRIDGE_NAME}.callHandler) {
                     result.cancel()
                 }
 
-                override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
+                override fun error(errorCode: String, errorMessage: String?, errorDetails: Any?) {
                     Log.e("NativeWebChromeClient", "$errorCode $errorMessage $errorDetails")
                     result.cancel()
                 }

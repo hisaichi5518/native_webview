@@ -6,7 +6,7 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 
-class MyCookieManager(messenger: BinaryMessenger?) : MethodCallHandler {
+class MyCookieManager(messenger: BinaryMessenger) : MethodCallHandler {
 
     private var channel = MethodChannel(messenger, "com.hisaichi5518/native_webview_cookie_manager")
     private var cookieManager: CookieManager = CookieManager.getInstance()

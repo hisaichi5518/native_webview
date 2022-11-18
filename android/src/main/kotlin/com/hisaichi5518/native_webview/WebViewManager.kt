@@ -6,7 +6,7 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 
-class WebViewManager(messenger: BinaryMessenger?) : MethodCallHandler {
+class WebViewManager(messenger: BinaryMessenger) : MethodCallHandler {
 
     private var channel = MethodChannel(messenger, "com.hisaichi5518/native_webview_webview_manager")
 
