@@ -25,7 +25,7 @@ void main() {
 
     final controller = await context.webviewController.future;
     await controller.evaluateJavascript(
-      "location.href = 'https://example.com/'",
+      "location.href = '$TARGET_URL'",
     );
 
     await sleep();
@@ -48,8 +48,8 @@ void main() {
         false,
       ),
       WebViewEvent.pageStarted(
-        "https://example.com/",
-        "https://example.com/",
+        TARGET_URL,
+        TARGET_URL,
         Platform.isAndroid ? true : false,
         false,
       ),
@@ -66,8 +66,8 @@ void main() {
               false,
             ),
             WebViewEvent.pageFinished(
-              "https://example.com/",
-              "https://example.com/",
+              TARGET_URL,
+              TARGET_URL,
               Platform.isAndroid ? true : false,
               false,
             ),
@@ -81,14 +81,14 @@ void main() {
               false,
             ),
             WebViewEvent.pageFinished(
-              "https://example.com/",
-              "https://example.com/",
+              TARGET_URL,
+              TARGET_URL,
               Platform.isAndroid ? true : false,
               false,
             ),
             WebViewEvent.pageFinished(
-              "https://example.com/",
-              "https://example.com/",
+              TARGET_URL,
+              TARGET_URL,
               Platform.isAndroid ? true : false,
               false,
             ),
@@ -123,13 +123,13 @@ void main() {
 
     final controller = await context.webviewController.future;
     await controller.evaluateJavascript(
-      "location.href = 'https://example.com/'",
+      "location.href = '$TARGET_URL'",
     );
 
     await sleep();
 
     expect(context.loadingRequestEvents.map((e) => e.request.url), [
-      "https://example.com/",
+      TARGET_URL,
     ]);
 
     expect(context.webResourceErrorEvents.length, 0);
@@ -170,12 +170,12 @@ void main() {
     );
 
     final controller = await context.webviewController.future;
-    await controller.loadUrl("https://example.com/");
+    await controller.loadUrl(TARGET_URL);
 
     await sleep();
 
     expect(context.loadingRequestEvents.map((e) => e.request.url), [
-      if (Platform.isIOS) "https://example.com/",
+      if (Platform.isIOS) TARGET_URL,
     ]);
 
     expect(context.webResourceErrorEvents.length, 0);

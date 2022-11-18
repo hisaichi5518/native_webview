@@ -5,6 +5,8 @@ import 'package:flutter_test/flutter_test.dart' as test;
 import 'package:native_webview/native_webview.dart';
 import 'package:native_webview_example/integration_test/webview_event.dart';
 
+const TARGET_URL = "https://example.com/";
+
 T Function(A) onData<T, A>(List<T Function(A)> events) {
   var index = 0;
   return test.expectAsync1<T, A>((event) {

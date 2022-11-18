@@ -283,14 +283,14 @@ void main() {
       ]);
     });
 
-    testWebView('baseUrl is https://example.com/', (tester, context) async {
+    testWebView('baseUrl is $TARGET_URL', (tester, context) async {
       await tester.pumpFrames(
         WebView(
           initialData: WebViewData(
             """
 <!doctype html><html lang="en"><head></head><body>native_webview</body></html>
         """,
-            baseUrl: "https://example.com/",
+            baseUrl: TARGET_URL,
           ),
           onWebViewCreated: context.onWebViewCreated,
           shouldOverrideUrlLoading: context.shouldOverrideUrlLoading,
@@ -306,14 +306,14 @@ void main() {
       expect(context.pageStartedEvents, [
         Platform.isAndroid
             ? WebViewEvent.pageStarted(
-                "https://example.com/",
+                TARGET_URL,
                 "about:blank",
                 false,
                 false,
               )
             : WebViewEvent.pageStarted(
-                "https://example.com/",
-                "https://example.com/",
+                TARGET_URL,
+                TARGET_URL,
                 false,
                 false,
               ),
@@ -321,14 +321,14 @@ void main() {
       expect(context.pageFinishedEvents, [
         Platform.isAndroid
             ? WebViewEvent.pageFinished(
-                "https://example.com/",
+                TARGET_URL,
                 "about:blank",
                 false,
                 false,
               )
             : WebViewEvent.pageFinished(
-                "https://example.com/",
-                "https://example.com/",
+                TARGET_URL,
+                TARGET_URL,
                 false,
                 false,
               ),
@@ -409,7 +409,7 @@ void main() {
     );
 
     final controller = await context.webviewController.future;
-    await controller.loadUrl("https://flutter.dev/");
+    await controller.loadUrl(TARGET_URL);
 
     await sleep();
 
@@ -430,8 +430,8 @@ void main() {
         false,
       ),
       WebViewEvent.pageStarted(
-        "https://flutter.dev/",
-        "https://flutter.dev/",
+        TARGET_URL,
+        TARGET_URL,
         Platform.isAndroid ? true : false,
         false,
       ),
@@ -447,8 +447,8 @@ void main() {
             false,
           ),
           WebViewEvent.pageFinished(
-            "https://flutter.dev/",
-            "https://flutter.dev/",
+            TARGET_URL,
+            TARGET_URL,
             true,
             false,
           ),
@@ -462,14 +462,14 @@ void main() {
             false,
           ),
           WebViewEvent.pageFinished(
-            "https://flutter.dev/",
-            "https://flutter.dev/",
+            TARGET_URL,
+            TARGET_URL,
             true,
             false,
           ),
           WebViewEvent.pageFinished(
-            "https://flutter.dev/",
-            "https://flutter.dev/",
+            TARGET_URL,
+            TARGET_URL,
             true,
             false,
           ),
@@ -502,8 +502,8 @@ void main() {
     );
 
     final controller = await context.webviewController.future;
-    await controller.loadUrl("https://flutter.dev/");
-    await controller.loadUrl("https://flutter.dev/");
+    await controller.loadUrl(TARGET_URL);
+    await controller.loadUrl(TARGET_URL);
 
     await sleep();
 
@@ -522,8 +522,8 @@ void main() {
         false,
       ),
       WebViewEvent.pageStarted(
-        "https://flutter.dev/",
-        "https://flutter.dev/",
+        TARGET_URL,
+        TARGET_URL,
         Platform.isAndroid ? true : false,
         false,
       ),
@@ -548,8 +548,8 @@ void main() {
             false,
           ),
           WebViewEvent.pageFinished(
-            "https://flutter.dev/",
-            "https://flutter.dev/",
+            TARGET_URL,
+            TARGET_URL,
             true,
             false,
           ),
@@ -563,41 +563,14 @@ void main() {
             false,
           ),
           WebViewEvent.pageFinished(
-            "https://flutter.dev/",
-            "https://flutter.dev/",
+            TARGET_URL,
+            TARGET_URL,
             true,
             false,
           ),
           WebViewEvent.pageFinished(
-            "https://flutter.dev/",
-            "https://flutter.dev/",
-            true,
-            false,
-          ),
-        ]),
-        equals([
-          // PageFinished of flutter.dev may come twice on Android.
-          WebViewEvent.pageFinished(
-            "about:blank",
-            "about:blank",
-            false,
-            false,
-          ),
-          WebViewEvent.pageFinished(
-            "https://flutter.dev/",
-            "https://flutter.dev/",
-            false,
-            false,
-          ),
-          WebViewEvent.pageFinished(
-            "https://flutter.dev/",
-            "https://flutter.dev/",
-            true,
-            false,
-          ),
-          WebViewEvent.pageFinished(
-            "https://flutter.dev/",
-            "https://flutter.dev/",
+            TARGET_URL,
+            TARGET_URL,
             true,
             false,
           ),
@@ -611,14 +584,41 @@ void main() {
             false,
           ),
           WebViewEvent.pageFinished(
-            "https://flutter.dev/",
-            "https://flutter.dev/",
+            TARGET_URL,
+            TARGET_URL,
             false,
             false,
           ),
           WebViewEvent.pageFinished(
-            "https://flutter.dev/",
-            "https://flutter.dev/",
+            TARGET_URL,
+            TARGET_URL,
+            true,
+            false,
+          ),
+          WebViewEvent.pageFinished(
+            TARGET_URL,
+            TARGET_URL,
+            true,
+            false,
+          ),
+        ]),
+        equals([
+          // PageFinished of flutter.dev may come twice on Android.
+          WebViewEvent.pageFinished(
+            "about:blank",
+            "about:blank",
+            false,
+            false,
+          ),
+          WebViewEvent.pageFinished(
+            TARGET_URL,
+            TARGET_URL,
+            false,
+            false,
+          ),
+          WebViewEvent.pageFinished(
+            TARGET_URL,
+            TARGET_URL,
             true,
             false,
           ),
@@ -642,7 +642,7 @@ void main() {
 
     final controller = await context.webviewController.future;
     await controller.evaluateJavascript(
-      "location.href = 'https://flutter.dev/'",
+      "location.href = '$TARGET_URL'",
     );
 
     await sleep();
@@ -665,8 +665,8 @@ void main() {
         false,
       ),
       WebViewEvent.pageStarted(
-        "https://flutter.dev/",
-        "https://flutter.dev/",
+        TARGET_URL,
+        TARGET_URL,
         Platform.isAndroid ? true : false,
         false,
       ),
@@ -682,8 +682,8 @@ void main() {
             false,
           ),
           WebViewEvent.pageFinished(
-            "https://flutter.dev/",
-            "https://flutter.dev/",
+            TARGET_URL,
+            TARGET_URL,
             Platform.isAndroid ? true : false,
             false,
           ),
@@ -696,14 +696,14 @@ void main() {
             false,
           ),
           WebViewEvent.pageFinished(
-            "https://flutter.dev/",
-            "https://flutter.dev/",
+            TARGET_URL,
+            TARGET_URL,
             true,
             false,
           ),
           WebViewEvent.pageFinished(
-            "https://flutter.dev/",
-            "https://flutter.dev/",
+            TARGET_URL,
+            TARGET_URL,
             true,
             false,
           ),
@@ -727,7 +727,7 @@ void main() {
 
     final controller = await context.webviewController.future;
     await controller.evaluateJavascript(
-      "window.open('https://flutter.dev/', '_blank');",
+      "window.open('$TARGET_URL', '_blank');",
     );
 
     await sleep();
@@ -744,8 +744,8 @@ void main() {
         false,
       ),
       WebViewEvent.pageStarted(
-        "https://flutter.dev/",
-        "https://flutter.dev/",
+        TARGET_URL,
+        TARGET_URL,
         Platform.isAndroid ? true : false,
         false,
       ),
@@ -761,8 +761,8 @@ void main() {
             false,
           ),
           WebViewEvent.pageFinished(
-            "https://flutter.dev/",
-            "https://flutter.dev/",
+            TARGET_URL,
+            TARGET_URL,
             true,
             false,
           ),
@@ -775,14 +775,14 @@ void main() {
             false,
           ),
           WebViewEvent.pageFinished(
-            "https://flutter.dev/",
-            "https://flutter.dev/",
+            TARGET_URL,
+            TARGET_URL,
             true,
             false,
           ),
           WebViewEvent.pageFinished(
-            "https://flutter.dev/",
-            "https://flutter.dev/",
+            TARGET_URL,
+            TARGET_URL,
             true,
             false,
           ),
