@@ -99,16 +99,19 @@ void main() {
           [contains("The URL was blocked by a content blocker")],
         );
       } else {
-        // Android's shouldInterceptRequest does not target the URL of the MainFrame,
+        // Depending on Android's OS, shouldInterceptRequest does not target the URL of the MainFrame,
         // so onPageFinished will be executed.
-        expect(context.pageFinishedEvents, [
-          WebViewEvent.pageFinished(
-            "https://www.google.com/",
-            "https://www.google.com/",
-            false,
-            false,
-          ),
-        ]);
+        expect(
+          context.pageFinishedEvents,
+          anyOf(isEmpty, [
+            WebViewEvent.pageFinished(
+              "https://www.google.com/",
+              "https://www.google.com/",
+              false,
+              false,
+            ),
+          ]),
+        );
         expect(
           context.webResourceErrorEvents.map((e) => e.error.errorType),
           [WebResourceErrorType.unknown],
