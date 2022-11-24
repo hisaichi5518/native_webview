@@ -19,7 +19,6 @@ class WebViewManager: NSObject, FlutterPlugin {
     }
 
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
-        let arguments = call.arguments as? NSDictionary
         switch call.method {
             default:
                 result(FlutterMethodNotImplemented)
