@@ -193,7 +193,7 @@ void main() {
           onPageFinished: context.onPageFinished,
         ),
       );
-
+      await sleep();
       if (Platform.isIOS && Platform.environment["CI"] == "true") {
         expect(argumentsReceived, [
           [], // Empty when run with CI

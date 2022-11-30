@@ -9,7 +9,7 @@ void main() {
 
   group("androidWebViewInfo", () {
     test("on Android", () async {
-      final info = await WebViewManager.instance().androidWebViewInfo;
+      final info = (await WebViewManager.instance().androidWebViewInfo)!;
       expect(info.versionName, isNotEmpty);
       expect(info.packageName, isNotEmpty);
     }, skip: !Platform.isAndroid);

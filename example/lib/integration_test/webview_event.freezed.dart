@@ -1,5 +1,7 @@
+// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies
+// ignore_for_file: type=lint
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target
 
 part of 'webview_event.dart';
 
@@ -9,159 +11,142 @@ part of 'webview_event.dart';
 
 T _$identity<T>(T value) => value;
 
-/// @nodoc
-class _$WebViewEventTearOff {
-  const _$WebViewEventTearOff();
-
-// ignore: unused_element
-  ShouldOverrideUrlLoadingEvent shouldOverrideUrlLoading(
-      ShouldOverrideUrlLoadingRequest request) {
-    return ShouldOverrideUrlLoadingEvent(
-      request,
-    );
-  }
-
-// ignore: unused_element
-  ProgressChangedEvent progressChanged(int progress) {
-    return ProgressChangedEvent(
-      progress,
-    );
-  }
-
-// ignore: unused_element
-  PageStartedEvent pageStarted(
-      String url, String currentUrl, bool canGoBack, bool canGoForward) {
-    return PageStartedEvent(
-      url,
-      currentUrl,
-      canGoBack,
-      canGoForward,
-    );
-  }
-
-// ignore: unused_element
-  PageFinishedEvent pageFinished(
-      String url, String currentUrl, bool canGoBack, bool canGoForward) {
-    return PageFinishedEvent(
-      url,
-      currentUrl,
-      canGoBack,
-      canGoForward,
-    );
-  }
-
-// ignore: unused_element
-  WebResourceErrorEvent webResourceError(WebResourceError error) {
-    return WebResourceErrorEvent(
-      error,
-    );
-  }
-}
-
-/// @nodoc
-// ignore: unused_element
-const $WebViewEvent = _$WebViewEventTearOff();
+final _privateConstructorUsedError = UnsupportedError(
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
 /// @nodoc
 mixin _$WebViewEvent {
   @optionalTypeArgs
-  TResult when<TResult extends Object>({
-    @required
-        TResult shouldOverrideUrlLoading(
-            ShouldOverrideUrlLoadingRequest request),
-    @required TResult progressChanged(int progress),
-    @required
-        TResult pageStarted(
-            String url, String currentUrl, bool canGoBack, bool canGoForward),
-    @required
-        TResult pageFinished(
-            String url, String currentUrl, bool canGoBack, bool canGoForward),
-    @required TResult webResourceError(WebResourceError error),
-  });
+  TResult when<TResult extends Object?>({
+    required TResult Function(ShouldOverrideUrlLoadingRequest request)
+        shouldOverrideUrlLoading,
+    required TResult Function(int progress) progressChanged,
+    required TResult Function(
+            String url, String currentUrl, bool canGoBack, bool canGoForward)
+        pageStarted,
+    required TResult Function(
+            String url, String currentUrl, bool canGoBack, bool canGoForward)
+        pageFinished,
+    required TResult Function(WebResourceError error) webResourceError,
+  }) =>
+      throw _privateConstructorUsedError;
   @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object>({
-    TResult shouldOverrideUrlLoading(ShouldOverrideUrlLoadingRequest request),
-    TResult progressChanged(int progress),
-    TResult pageStarted(
-        String url, String currentUrl, bool canGoBack, bool canGoForward),
-    TResult pageFinished(
-        String url, String currentUrl, bool canGoBack, bool canGoForward),
-    TResult webResourceError(WebResourceError error),
-    @required TResult orElse(),
-  });
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(ShouldOverrideUrlLoadingRequest request)?
+        shouldOverrideUrlLoading,
+    TResult? Function(int progress)? progressChanged,
+    TResult? Function(
+            String url, String currentUrl, bool canGoBack, bool canGoForward)?
+        pageStarted,
+    TResult? Function(
+            String url, String currentUrl, bool canGoBack, bool canGoForward)?
+        pageFinished,
+    TResult? Function(WebResourceError error)? webResourceError,
+  }) =>
+      throw _privateConstructorUsedError;
   @optionalTypeArgs
-  TResult map<TResult extends Object>({
-    @required
-        TResult shouldOverrideUrlLoading(ShouldOverrideUrlLoadingEvent value),
-    @required TResult progressChanged(ProgressChangedEvent value),
-    @required TResult pageStarted(PageStartedEvent value),
-    @required TResult pageFinished(PageFinishedEvent value),
-    @required TResult webResourceError(WebResourceErrorEvent value),
-  });
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(ShouldOverrideUrlLoadingRequest request)?
+        shouldOverrideUrlLoading,
+    TResult Function(int progress)? progressChanged,
+    TResult Function(
+            String url, String currentUrl, bool canGoBack, bool canGoForward)?
+        pageStarted,
+    TResult Function(
+            String url, String currentUrl, bool canGoBack, bool canGoForward)?
+        pageFinished,
+    TResult Function(WebResourceError error)? webResourceError,
+    required TResult orElse(),
+  }) =>
+      throw _privateConstructorUsedError;
   @optionalTypeArgs
-  TResult maybeMap<TResult extends Object>({
-    TResult shouldOverrideUrlLoading(ShouldOverrideUrlLoadingEvent value),
-    TResult progressChanged(ProgressChangedEvent value),
-    TResult pageStarted(PageStartedEvent value),
-    TResult pageFinished(PageFinishedEvent value),
-    TResult webResourceError(WebResourceErrorEvent value),
-    @required TResult orElse(),
-  });
+  TResult map<TResult extends Object?>({
+    required TResult Function(ShouldOverrideUrlLoadingEvent value)
+        shouldOverrideUrlLoading,
+    required TResult Function(ProgressChangedEvent value) progressChanged,
+    required TResult Function(PageStartedEvent value) pageStarted,
+    required TResult Function(PageFinishedEvent value) pageFinished,
+    required TResult Function(WebResourceErrorEvent value) webResourceError,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(ShouldOverrideUrlLoadingEvent value)?
+        shouldOverrideUrlLoading,
+    TResult? Function(ProgressChangedEvent value)? progressChanged,
+    TResult? Function(PageStartedEvent value)? pageStarted,
+    TResult? Function(PageFinishedEvent value)? pageFinished,
+    TResult? Function(WebResourceErrorEvent value)? webResourceError,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(ShouldOverrideUrlLoadingEvent value)?
+        shouldOverrideUrlLoading,
+    TResult Function(ProgressChangedEvent value)? progressChanged,
+    TResult Function(PageStartedEvent value)? pageStarted,
+    TResult Function(PageFinishedEvent value)? pageFinished,
+    TResult Function(WebResourceErrorEvent value)? webResourceError,
+    required TResult orElse(),
+  }) =>
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class $WebViewEventCopyWith<$Res> {
   factory $WebViewEventCopyWith(
           WebViewEvent value, $Res Function(WebViewEvent) then) =
-      _$WebViewEventCopyWithImpl<$Res>;
+      _$WebViewEventCopyWithImpl<$Res, WebViewEvent>;
 }
 
 /// @nodoc
-class _$WebViewEventCopyWithImpl<$Res> implements $WebViewEventCopyWith<$Res> {
+class _$WebViewEventCopyWithImpl<$Res, $Val extends WebViewEvent>
+    implements $WebViewEventCopyWith<$Res> {
   _$WebViewEventCopyWithImpl(this._value, this._then);
 
-  final WebViewEvent _value;
   // ignore: unused_field
-  final $Res Function(WebViewEvent) _then;
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
 }
 
 /// @nodoc
-abstract class $ShouldOverrideUrlLoadingEventCopyWith<$Res> {
-  factory $ShouldOverrideUrlLoadingEventCopyWith(
-          ShouldOverrideUrlLoadingEvent value,
-          $Res Function(ShouldOverrideUrlLoadingEvent) then) =
-      _$ShouldOverrideUrlLoadingEventCopyWithImpl<$Res>;
+abstract class _$$ShouldOverrideUrlLoadingEventCopyWith<$Res> {
+  factory _$$ShouldOverrideUrlLoadingEventCopyWith(
+          _$ShouldOverrideUrlLoadingEvent value,
+          $Res Function(_$ShouldOverrideUrlLoadingEvent) then) =
+      __$$ShouldOverrideUrlLoadingEventCopyWithImpl<$Res>;
+  @useResult
   $Res call({ShouldOverrideUrlLoadingRequest request});
 }
 
 /// @nodoc
-class _$ShouldOverrideUrlLoadingEventCopyWithImpl<$Res>
-    extends _$WebViewEventCopyWithImpl<$Res>
-    implements $ShouldOverrideUrlLoadingEventCopyWith<$Res> {
-  _$ShouldOverrideUrlLoadingEventCopyWithImpl(
-      ShouldOverrideUrlLoadingEvent _value,
-      $Res Function(ShouldOverrideUrlLoadingEvent) _then)
-      : super(_value, (v) => _then(v as ShouldOverrideUrlLoadingEvent));
+class __$$ShouldOverrideUrlLoadingEventCopyWithImpl<$Res>
+    extends _$WebViewEventCopyWithImpl<$Res, _$ShouldOverrideUrlLoadingEvent>
+    implements _$$ShouldOverrideUrlLoadingEventCopyWith<$Res> {
+  __$$ShouldOverrideUrlLoadingEventCopyWithImpl(
+      _$ShouldOverrideUrlLoadingEvent _value,
+      $Res Function(_$ShouldOverrideUrlLoadingEvent) _then)
+      : super(_value, _then);
 
-  @override
-  ShouldOverrideUrlLoadingEvent get _value =>
-      super._value as ShouldOverrideUrlLoadingEvent;
-
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object request = freezed,
+    Object? request = null,
   }) {
-    return _then(ShouldOverrideUrlLoadingEvent(
-      request == freezed
+    return _then(_$ShouldOverrideUrlLoadingEvent(
+      null == request
           ? _value.request
-          : request as ShouldOverrideUrlLoadingRequest,
+          : request // ignore: cast_nullable_to_non_nullable
+              as ShouldOverrideUrlLoadingRequest,
     ));
   }
 }
 
 /// @nodoc
+
 class _$ShouldOverrideUrlLoadingEvent implements ShouldOverrideUrlLoadingEvent {
-  const _$ShouldOverrideUrlLoadingEvent(this.request) : assert(request != null);
+  const _$ShouldOverrideUrlLoadingEvent(this.request);
 
   @override
   final ShouldOverrideUrlLoadingRequest request;
@@ -174,57 +159,70 @@ class _$ShouldOverrideUrlLoadingEvent implements ShouldOverrideUrlLoadingEvent {
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other is ShouldOverrideUrlLoadingEvent &&
-            (identical(other.request, request) ||
-                const DeepCollectionEquality().equals(other.request, request)));
+        (other.runtimeType == runtimeType &&
+            other is _$ShouldOverrideUrlLoadingEvent &&
+            (identical(other.request, request) || other.request == request));
   }
 
   @override
-  int get hashCode =>
-      runtimeType.hashCode ^ const DeepCollectionEquality().hash(request);
+  int get hashCode => Object.hash(runtimeType, request);
 
   @JsonKey(ignore: true)
   @override
-  $ShouldOverrideUrlLoadingEventCopyWith<ShouldOverrideUrlLoadingEvent>
-      get copyWith => _$ShouldOverrideUrlLoadingEventCopyWithImpl<
-          ShouldOverrideUrlLoadingEvent>(this, _$identity);
+  @pragma('vm:prefer-inline')
+  _$$ShouldOverrideUrlLoadingEventCopyWith<_$ShouldOverrideUrlLoadingEvent>
+      get copyWith => __$$ShouldOverrideUrlLoadingEventCopyWithImpl<
+          _$ShouldOverrideUrlLoadingEvent>(this, _$identity);
 
   @override
   @optionalTypeArgs
-  TResult when<TResult extends Object>({
-    @required
-        TResult shouldOverrideUrlLoading(
-            ShouldOverrideUrlLoadingRequest request),
-    @required TResult progressChanged(int progress),
-    @required
-        TResult pageStarted(
-            String url, String currentUrl, bool canGoBack, bool canGoForward),
-    @required
-        TResult pageFinished(
-            String url, String currentUrl, bool canGoBack, bool canGoForward),
-    @required TResult webResourceError(WebResourceError error),
+  TResult when<TResult extends Object?>({
+    required TResult Function(ShouldOverrideUrlLoadingRequest request)
+        shouldOverrideUrlLoading,
+    required TResult Function(int progress) progressChanged,
+    required TResult Function(
+            String url, String currentUrl, bool canGoBack, bool canGoForward)
+        pageStarted,
+    required TResult Function(
+            String url, String currentUrl, bool canGoBack, bool canGoForward)
+        pageFinished,
+    required TResult Function(WebResourceError error) webResourceError,
   }) {
-    assert(shouldOverrideUrlLoading != null);
-    assert(progressChanged != null);
-    assert(pageStarted != null);
-    assert(pageFinished != null);
-    assert(webResourceError != null);
     return shouldOverrideUrlLoading(request);
   }
 
   @override
   @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object>({
-    TResult shouldOverrideUrlLoading(ShouldOverrideUrlLoadingRequest request),
-    TResult progressChanged(int progress),
-    TResult pageStarted(
-        String url, String currentUrl, bool canGoBack, bool canGoForward),
-    TResult pageFinished(
-        String url, String currentUrl, bool canGoBack, bool canGoForward),
-    TResult webResourceError(WebResourceError error),
-    @required TResult orElse(),
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(ShouldOverrideUrlLoadingRequest request)?
+        shouldOverrideUrlLoading,
+    TResult? Function(int progress)? progressChanged,
+    TResult? Function(
+            String url, String currentUrl, bool canGoBack, bool canGoForward)?
+        pageStarted,
+    TResult? Function(
+            String url, String currentUrl, bool canGoBack, bool canGoForward)?
+        pageFinished,
+    TResult? Function(WebResourceError error)? webResourceError,
   }) {
-    assert(orElse != null);
+    return shouldOverrideUrlLoading?.call(request);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(ShouldOverrideUrlLoadingRequest request)?
+        shouldOverrideUrlLoading,
+    TResult Function(int progress)? progressChanged,
+    TResult Function(
+            String url, String currentUrl, bool canGoBack, bool canGoForward)?
+        pageStarted,
+    TResult Function(
+            String url, String currentUrl, bool canGoBack, bool canGoForward)?
+        pageFinished,
+    TResult Function(WebResourceError error)? webResourceError,
+    required TResult orElse(),
+  }) {
     if (shouldOverrideUrlLoading != null) {
       return shouldOverrideUrlLoading(request);
     }
@@ -233,33 +231,41 @@ class _$ShouldOverrideUrlLoadingEvent implements ShouldOverrideUrlLoadingEvent {
 
   @override
   @optionalTypeArgs
-  TResult map<TResult extends Object>({
-    @required
-        TResult shouldOverrideUrlLoading(ShouldOverrideUrlLoadingEvent value),
-    @required TResult progressChanged(ProgressChangedEvent value),
-    @required TResult pageStarted(PageStartedEvent value),
-    @required TResult pageFinished(PageFinishedEvent value),
-    @required TResult webResourceError(WebResourceErrorEvent value),
+  TResult map<TResult extends Object?>({
+    required TResult Function(ShouldOverrideUrlLoadingEvent value)
+        shouldOverrideUrlLoading,
+    required TResult Function(ProgressChangedEvent value) progressChanged,
+    required TResult Function(PageStartedEvent value) pageStarted,
+    required TResult Function(PageFinishedEvent value) pageFinished,
+    required TResult Function(WebResourceErrorEvent value) webResourceError,
   }) {
-    assert(shouldOverrideUrlLoading != null);
-    assert(progressChanged != null);
-    assert(pageStarted != null);
-    assert(pageFinished != null);
-    assert(webResourceError != null);
     return shouldOverrideUrlLoading(this);
   }
 
   @override
   @optionalTypeArgs
-  TResult maybeMap<TResult extends Object>({
-    TResult shouldOverrideUrlLoading(ShouldOverrideUrlLoadingEvent value),
-    TResult progressChanged(ProgressChangedEvent value),
-    TResult pageStarted(PageStartedEvent value),
-    TResult pageFinished(PageFinishedEvent value),
-    TResult webResourceError(WebResourceErrorEvent value),
-    @required TResult orElse(),
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(ShouldOverrideUrlLoadingEvent value)?
+        shouldOverrideUrlLoading,
+    TResult? Function(ProgressChangedEvent value)? progressChanged,
+    TResult? Function(PageStartedEvent value)? pageStarted,
+    TResult? Function(PageFinishedEvent value)? pageFinished,
+    TResult? Function(WebResourceErrorEvent value)? webResourceError,
   }) {
-    assert(orElse != null);
+    return shouldOverrideUrlLoading?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(ShouldOverrideUrlLoadingEvent value)?
+        shouldOverrideUrlLoading,
+    TResult Function(ProgressChangedEvent value)? progressChanged,
+    TResult Function(PageStartedEvent value)? pageStarted,
+    TResult Function(PageFinishedEvent value)? pageFinished,
+    TResult Function(WebResourceErrorEvent value)? webResourceError,
+    required TResult orElse(),
+  }) {
     if (shouldOverrideUrlLoading != null) {
       return shouldOverrideUrlLoading(this);
     }
@@ -269,47 +275,50 @@ class _$ShouldOverrideUrlLoadingEvent implements ShouldOverrideUrlLoadingEvent {
 
 abstract class ShouldOverrideUrlLoadingEvent implements WebViewEvent {
   const factory ShouldOverrideUrlLoadingEvent(
-          ShouldOverrideUrlLoadingRequest request) =
+          final ShouldOverrideUrlLoadingRequest request) =
       _$ShouldOverrideUrlLoadingEvent;
 
   ShouldOverrideUrlLoadingRequest get request;
   @JsonKey(ignore: true)
-  $ShouldOverrideUrlLoadingEventCopyWith<ShouldOverrideUrlLoadingEvent>
-      get copyWith;
+  _$$ShouldOverrideUrlLoadingEventCopyWith<_$ShouldOverrideUrlLoadingEvent>
+      get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $ProgressChangedEventCopyWith<$Res> {
-  factory $ProgressChangedEventCopyWith(ProgressChangedEvent value,
-          $Res Function(ProgressChangedEvent) then) =
-      _$ProgressChangedEventCopyWithImpl<$Res>;
+abstract class _$$ProgressChangedEventCopyWith<$Res> {
+  factory _$$ProgressChangedEventCopyWith(_$ProgressChangedEvent value,
+          $Res Function(_$ProgressChangedEvent) then) =
+      __$$ProgressChangedEventCopyWithImpl<$Res>;
+  @useResult
   $Res call({int progress});
 }
 
 /// @nodoc
-class _$ProgressChangedEventCopyWithImpl<$Res>
-    extends _$WebViewEventCopyWithImpl<$Res>
-    implements $ProgressChangedEventCopyWith<$Res> {
-  _$ProgressChangedEventCopyWithImpl(
-      ProgressChangedEvent _value, $Res Function(ProgressChangedEvent) _then)
-      : super(_value, (v) => _then(v as ProgressChangedEvent));
+class __$$ProgressChangedEventCopyWithImpl<$Res>
+    extends _$WebViewEventCopyWithImpl<$Res, _$ProgressChangedEvent>
+    implements _$$ProgressChangedEventCopyWith<$Res> {
+  __$$ProgressChangedEventCopyWithImpl(_$ProgressChangedEvent _value,
+      $Res Function(_$ProgressChangedEvent) _then)
+      : super(_value, _then);
 
-  @override
-  ProgressChangedEvent get _value => super._value as ProgressChangedEvent;
-
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object progress = freezed,
+    Object? progress = null,
   }) {
-    return _then(ProgressChangedEvent(
-      progress == freezed ? _value.progress : progress as int,
+    return _then(_$ProgressChangedEvent(
+      null == progress
+          ? _value.progress
+          : progress // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }
 
 /// @nodoc
+
 class _$ProgressChangedEvent implements ProgressChangedEvent {
-  const _$ProgressChangedEvent(this.progress) : assert(progress != null);
+  const _$ProgressChangedEvent(this.progress);
 
   @override
   final int progress;
@@ -322,58 +331,71 @@ class _$ProgressChangedEvent implements ProgressChangedEvent {
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other is ProgressChangedEvent &&
+        (other.runtimeType == runtimeType &&
+            other is _$ProgressChangedEvent &&
             (identical(other.progress, progress) ||
-                const DeepCollectionEquality()
-                    .equals(other.progress, progress)));
+                other.progress == progress));
   }
 
   @override
-  int get hashCode =>
-      runtimeType.hashCode ^ const DeepCollectionEquality().hash(progress);
+  int get hashCode => Object.hash(runtimeType, progress);
 
   @JsonKey(ignore: true)
   @override
-  $ProgressChangedEventCopyWith<ProgressChangedEvent> get copyWith =>
-      _$ProgressChangedEventCopyWithImpl<ProgressChangedEvent>(
+  @pragma('vm:prefer-inline')
+  _$$ProgressChangedEventCopyWith<_$ProgressChangedEvent> get copyWith =>
+      __$$ProgressChangedEventCopyWithImpl<_$ProgressChangedEvent>(
           this, _$identity);
 
   @override
   @optionalTypeArgs
-  TResult when<TResult extends Object>({
-    @required
-        TResult shouldOverrideUrlLoading(
-            ShouldOverrideUrlLoadingRequest request),
-    @required TResult progressChanged(int progress),
-    @required
-        TResult pageStarted(
-            String url, String currentUrl, bool canGoBack, bool canGoForward),
-    @required
-        TResult pageFinished(
-            String url, String currentUrl, bool canGoBack, bool canGoForward),
-    @required TResult webResourceError(WebResourceError error),
+  TResult when<TResult extends Object?>({
+    required TResult Function(ShouldOverrideUrlLoadingRequest request)
+        shouldOverrideUrlLoading,
+    required TResult Function(int progress) progressChanged,
+    required TResult Function(
+            String url, String currentUrl, bool canGoBack, bool canGoForward)
+        pageStarted,
+    required TResult Function(
+            String url, String currentUrl, bool canGoBack, bool canGoForward)
+        pageFinished,
+    required TResult Function(WebResourceError error) webResourceError,
   }) {
-    assert(shouldOverrideUrlLoading != null);
-    assert(progressChanged != null);
-    assert(pageStarted != null);
-    assert(pageFinished != null);
-    assert(webResourceError != null);
     return progressChanged(progress);
   }
 
   @override
   @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object>({
-    TResult shouldOverrideUrlLoading(ShouldOverrideUrlLoadingRequest request),
-    TResult progressChanged(int progress),
-    TResult pageStarted(
-        String url, String currentUrl, bool canGoBack, bool canGoForward),
-    TResult pageFinished(
-        String url, String currentUrl, bool canGoBack, bool canGoForward),
-    TResult webResourceError(WebResourceError error),
-    @required TResult orElse(),
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(ShouldOverrideUrlLoadingRequest request)?
+        shouldOverrideUrlLoading,
+    TResult? Function(int progress)? progressChanged,
+    TResult? Function(
+            String url, String currentUrl, bool canGoBack, bool canGoForward)?
+        pageStarted,
+    TResult? Function(
+            String url, String currentUrl, bool canGoBack, bool canGoForward)?
+        pageFinished,
+    TResult? Function(WebResourceError error)? webResourceError,
   }) {
-    assert(orElse != null);
+    return progressChanged?.call(progress);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(ShouldOverrideUrlLoadingRequest request)?
+        shouldOverrideUrlLoading,
+    TResult Function(int progress)? progressChanged,
+    TResult Function(
+            String url, String currentUrl, bool canGoBack, bool canGoForward)?
+        pageStarted,
+    TResult Function(
+            String url, String currentUrl, bool canGoBack, bool canGoForward)?
+        pageFinished,
+    TResult Function(WebResourceError error)? webResourceError,
+    required TResult orElse(),
+  }) {
     if (progressChanged != null) {
       return progressChanged(progress);
     }
@@ -382,33 +404,41 @@ class _$ProgressChangedEvent implements ProgressChangedEvent {
 
   @override
   @optionalTypeArgs
-  TResult map<TResult extends Object>({
-    @required
-        TResult shouldOverrideUrlLoading(ShouldOverrideUrlLoadingEvent value),
-    @required TResult progressChanged(ProgressChangedEvent value),
-    @required TResult pageStarted(PageStartedEvent value),
-    @required TResult pageFinished(PageFinishedEvent value),
-    @required TResult webResourceError(WebResourceErrorEvent value),
+  TResult map<TResult extends Object?>({
+    required TResult Function(ShouldOverrideUrlLoadingEvent value)
+        shouldOverrideUrlLoading,
+    required TResult Function(ProgressChangedEvent value) progressChanged,
+    required TResult Function(PageStartedEvent value) pageStarted,
+    required TResult Function(PageFinishedEvent value) pageFinished,
+    required TResult Function(WebResourceErrorEvent value) webResourceError,
   }) {
-    assert(shouldOverrideUrlLoading != null);
-    assert(progressChanged != null);
-    assert(pageStarted != null);
-    assert(pageFinished != null);
-    assert(webResourceError != null);
     return progressChanged(this);
   }
 
   @override
   @optionalTypeArgs
-  TResult maybeMap<TResult extends Object>({
-    TResult shouldOverrideUrlLoading(ShouldOverrideUrlLoadingEvent value),
-    TResult progressChanged(ProgressChangedEvent value),
-    TResult pageStarted(PageStartedEvent value),
-    TResult pageFinished(PageFinishedEvent value),
-    TResult webResourceError(WebResourceErrorEvent value),
-    @required TResult orElse(),
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(ShouldOverrideUrlLoadingEvent value)?
+        shouldOverrideUrlLoading,
+    TResult? Function(ProgressChangedEvent value)? progressChanged,
+    TResult? Function(PageStartedEvent value)? pageStarted,
+    TResult? Function(PageFinishedEvent value)? pageFinished,
+    TResult? Function(WebResourceErrorEvent value)? webResourceError,
   }) {
-    assert(orElse != null);
+    return progressChanged?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(ShouldOverrideUrlLoadingEvent value)?
+        shouldOverrideUrlLoading,
+    TResult Function(ProgressChangedEvent value)? progressChanged,
+    TResult Function(PageStartedEvent value)? pageStarted,
+    TResult Function(PageFinishedEvent value)? pageFinished,
+    TResult Function(WebResourceErrorEvent value)? webResourceError,
+    required TResult orElse(),
+  }) {
     if (progressChanged != null) {
       return progressChanged(this);
     }
@@ -417,56 +447,66 @@ class _$ProgressChangedEvent implements ProgressChangedEvent {
 }
 
 abstract class ProgressChangedEvent implements WebViewEvent {
-  const factory ProgressChangedEvent(int progress) = _$ProgressChangedEvent;
+  const factory ProgressChangedEvent(final int progress) =
+      _$ProgressChangedEvent;
 
   int get progress;
   @JsonKey(ignore: true)
-  $ProgressChangedEventCopyWith<ProgressChangedEvent> get copyWith;
+  _$$ProgressChangedEventCopyWith<_$ProgressChangedEvent> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $PageStartedEventCopyWith<$Res> {
-  factory $PageStartedEventCopyWith(
-          PageStartedEvent value, $Res Function(PageStartedEvent) then) =
-      _$PageStartedEventCopyWithImpl<$Res>;
+abstract class _$$PageStartedEventCopyWith<$Res> {
+  factory _$$PageStartedEventCopyWith(
+          _$PageStartedEvent value, $Res Function(_$PageStartedEvent) then) =
+      __$$PageStartedEventCopyWithImpl<$Res>;
+  @useResult
   $Res call({String url, String currentUrl, bool canGoBack, bool canGoForward});
 }
 
 /// @nodoc
-class _$PageStartedEventCopyWithImpl<$Res>
-    extends _$WebViewEventCopyWithImpl<$Res>
-    implements $PageStartedEventCopyWith<$Res> {
-  _$PageStartedEventCopyWithImpl(
-      PageStartedEvent _value, $Res Function(PageStartedEvent) _then)
-      : super(_value, (v) => _then(v as PageStartedEvent));
+class __$$PageStartedEventCopyWithImpl<$Res>
+    extends _$WebViewEventCopyWithImpl<$Res, _$PageStartedEvent>
+    implements _$$PageStartedEventCopyWith<$Res> {
+  __$$PageStartedEventCopyWithImpl(
+      _$PageStartedEvent _value, $Res Function(_$PageStartedEvent) _then)
+      : super(_value, _then);
 
-  @override
-  PageStartedEvent get _value => super._value as PageStartedEvent;
-
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object url = freezed,
-    Object currentUrl = freezed,
-    Object canGoBack = freezed,
-    Object canGoForward = freezed,
+    Object? url = null,
+    Object? currentUrl = null,
+    Object? canGoBack = null,
+    Object? canGoForward = null,
   }) {
-    return _then(PageStartedEvent(
-      url == freezed ? _value.url : url as String,
-      currentUrl == freezed ? _value.currentUrl : currentUrl as String,
-      canGoBack == freezed ? _value.canGoBack : canGoBack as bool,
-      canGoForward == freezed ? _value.canGoForward : canGoForward as bool,
+    return _then(_$PageStartedEvent(
+      null == url
+          ? _value.url
+          : url // ignore: cast_nullable_to_non_nullable
+              as String,
+      null == currentUrl
+          ? _value.currentUrl
+          : currentUrl // ignore: cast_nullable_to_non_nullable
+              as String,
+      null == canGoBack
+          ? _value.canGoBack
+          : canGoBack // ignore: cast_nullable_to_non_nullable
+              as bool,
+      null == canGoForward
+          ? _value.canGoForward
+          : canGoForward // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
 
 /// @nodoc
+
 class _$PageStartedEvent implements PageStartedEvent {
   const _$PageStartedEvent(
-      this.url, this.currentUrl, this.canGoBack, this.canGoForward)
-      : assert(url != null),
-        assert(currentUrl != null),
-        assert(canGoBack != null),
-        assert(canGoForward != null);
+      this.url, this.currentUrl, this.canGoBack, this.canGoForward);
 
   @override
   final String url;
@@ -485,69 +525,76 @@ class _$PageStartedEvent implements PageStartedEvent {
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other is PageStartedEvent &&
-            (identical(other.url, url) ||
-                const DeepCollectionEquality().equals(other.url, url)) &&
+        (other.runtimeType == runtimeType &&
+            other is _$PageStartedEvent &&
+            (identical(other.url, url) || other.url == url) &&
             (identical(other.currentUrl, currentUrl) ||
-                const DeepCollectionEquality()
-                    .equals(other.currentUrl, currentUrl)) &&
+                other.currentUrl == currentUrl) &&
             (identical(other.canGoBack, canGoBack) ||
-                const DeepCollectionEquality()
-                    .equals(other.canGoBack, canGoBack)) &&
+                other.canGoBack == canGoBack) &&
             (identical(other.canGoForward, canGoForward) ||
-                const DeepCollectionEquality()
-                    .equals(other.canGoForward, canGoForward)));
+                other.canGoForward == canGoForward));
   }
 
   @override
   int get hashCode =>
-      runtimeType.hashCode ^
-      const DeepCollectionEquality().hash(url) ^
-      const DeepCollectionEquality().hash(currentUrl) ^
-      const DeepCollectionEquality().hash(canGoBack) ^
-      const DeepCollectionEquality().hash(canGoForward);
+      Object.hash(runtimeType, url, currentUrl, canGoBack, canGoForward);
 
   @JsonKey(ignore: true)
   @override
-  $PageStartedEventCopyWith<PageStartedEvent> get copyWith =>
-      _$PageStartedEventCopyWithImpl<PageStartedEvent>(this, _$identity);
+  @pragma('vm:prefer-inline')
+  _$$PageStartedEventCopyWith<_$PageStartedEvent> get copyWith =>
+      __$$PageStartedEventCopyWithImpl<_$PageStartedEvent>(this, _$identity);
 
   @override
   @optionalTypeArgs
-  TResult when<TResult extends Object>({
-    @required
-        TResult shouldOverrideUrlLoading(
-            ShouldOverrideUrlLoadingRequest request),
-    @required TResult progressChanged(int progress),
-    @required
-        TResult pageStarted(
-            String url, String currentUrl, bool canGoBack, bool canGoForward),
-    @required
-        TResult pageFinished(
-            String url, String currentUrl, bool canGoBack, bool canGoForward),
-    @required TResult webResourceError(WebResourceError error),
+  TResult when<TResult extends Object?>({
+    required TResult Function(ShouldOverrideUrlLoadingRequest request)
+        shouldOverrideUrlLoading,
+    required TResult Function(int progress) progressChanged,
+    required TResult Function(
+            String url, String currentUrl, bool canGoBack, bool canGoForward)
+        pageStarted,
+    required TResult Function(
+            String url, String currentUrl, bool canGoBack, bool canGoForward)
+        pageFinished,
+    required TResult Function(WebResourceError error) webResourceError,
   }) {
-    assert(shouldOverrideUrlLoading != null);
-    assert(progressChanged != null);
-    assert(pageStarted != null);
-    assert(pageFinished != null);
-    assert(webResourceError != null);
     return pageStarted(url, currentUrl, canGoBack, canGoForward);
   }
 
   @override
   @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object>({
-    TResult shouldOverrideUrlLoading(ShouldOverrideUrlLoadingRequest request),
-    TResult progressChanged(int progress),
-    TResult pageStarted(
-        String url, String currentUrl, bool canGoBack, bool canGoForward),
-    TResult pageFinished(
-        String url, String currentUrl, bool canGoBack, bool canGoForward),
-    TResult webResourceError(WebResourceError error),
-    @required TResult orElse(),
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(ShouldOverrideUrlLoadingRequest request)?
+        shouldOverrideUrlLoading,
+    TResult? Function(int progress)? progressChanged,
+    TResult? Function(
+            String url, String currentUrl, bool canGoBack, bool canGoForward)?
+        pageStarted,
+    TResult? Function(
+            String url, String currentUrl, bool canGoBack, bool canGoForward)?
+        pageFinished,
+    TResult? Function(WebResourceError error)? webResourceError,
   }) {
-    assert(orElse != null);
+    return pageStarted?.call(url, currentUrl, canGoBack, canGoForward);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(ShouldOverrideUrlLoadingRequest request)?
+        shouldOverrideUrlLoading,
+    TResult Function(int progress)? progressChanged,
+    TResult Function(
+            String url, String currentUrl, bool canGoBack, bool canGoForward)?
+        pageStarted,
+    TResult Function(
+            String url, String currentUrl, bool canGoBack, bool canGoForward)?
+        pageFinished,
+    TResult Function(WebResourceError error)? webResourceError,
+    required TResult orElse(),
+  }) {
     if (pageStarted != null) {
       return pageStarted(url, currentUrl, canGoBack, canGoForward);
     }
@@ -556,33 +603,41 @@ class _$PageStartedEvent implements PageStartedEvent {
 
   @override
   @optionalTypeArgs
-  TResult map<TResult extends Object>({
-    @required
-        TResult shouldOverrideUrlLoading(ShouldOverrideUrlLoadingEvent value),
-    @required TResult progressChanged(ProgressChangedEvent value),
-    @required TResult pageStarted(PageStartedEvent value),
-    @required TResult pageFinished(PageFinishedEvent value),
-    @required TResult webResourceError(WebResourceErrorEvent value),
+  TResult map<TResult extends Object?>({
+    required TResult Function(ShouldOverrideUrlLoadingEvent value)
+        shouldOverrideUrlLoading,
+    required TResult Function(ProgressChangedEvent value) progressChanged,
+    required TResult Function(PageStartedEvent value) pageStarted,
+    required TResult Function(PageFinishedEvent value) pageFinished,
+    required TResult Function(WebResourceErrorEvent value) webResourceError,
   }) {
-    assert(shouldOverrideUrlLoading != null);
-    assert(progressChanged != null);
-    assert(pageStarted != null);
-    assert(pageFinished != null);
-    assert(webResourceError != null);
     return pageStarted(this);
   }
 
   @override
   @optionalTypeArgs
-  TResult maybeMap<TResult extends Object>({
-    TResult shouldOverrideUrlLoading(ShouldOverrideUrlLoadingEvent value),
-    TResult progressChanged(ProgressChangedEvent value),
-    TResult pageStarted(PageStartedEvent value),
-    TResult pageFinished(PageFinishedEvent value),
-    TResult webResourceError(WebResourceErrorEvent value),
-    @required TResult orElse(),
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(ShouldOverrideUrlLoadingEvent value)?
+        shouldOverrideUrlLoading,
+    TResult? Function(ProgressChangedEvent value)? progressChanged,
+    TResult? Function(PageStartedEvent value)? pageStarted,
+    TResult? Function(PageFinishedEvent value)? pageFinished,
+    TResult? Function(WebResourceErrorEvent value)? webResourceError,
   }) {
-    assert(orElse != null);
+    return pageStarted?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(ShouldOverrideUrlLoadingEvent value)?
+        shouldOverrideUrlLoading,
+    TResult Function(ProgressChangedEvent value)? progressChanged,
+    TResult Function(PageStartedEvent value)? pageStarted,
+    TResult Function(PageFinishedEvent value)? pageFinished,
+    TResult Function(WebResourceErrorEvent value)? webResourceError,
+    required TResult orElse(),
+  }) {
     if (pageStarted != null) {
       return pageStarted(this);
     }
@@ -591,61 +646,69 @@ class _$PageStartedEvent implements PageStartedEvent {
 }
 
 abstract class PageStartedEvent implements WebViewEvent {
-  const factory PageStartedEvent(
-          String url, String currentUrl, bool canGoBack, bool canGoForward) =
-      _$PageStartedEvent;
+  const factory PageStartedEvent(final String url, final String currentUrl,
+      final bool canGoBack, final bool canGoForward) = _$PageStartedEvent;
 
   String get url;
   String get currentUrl;
   bool get canGoBack;
   bool get canGoForward;
   @JsonKey(ignore: true)
-  $PageStartedEventCopyWith<PageStartedEvent> get copyWith;
+  _$$PageStartedEventCopyWith<_$PageStartedEvent> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $PageFinishedEventCopyWith<$Res> {
-  factory $PageFinishedEventCopyWith(
-          PageFinishedEvent value, $Res Function(PageFinishedEvent) then) =
-      _$PageFinishedEventCopyWithImpl<$Res>;
+abstract class _$$PageFinishedEventCopyWith<$Res> {
+  factory _$$PageFinishedEventCopyWith(
+          _$PageFinishedEvent value, $Res Function(_$PageFinishedEvent) then) =
+      __$$PageFinishedEventCopyWithImpl<$Res>;
+  @useResult
   $Res call({String url, String currentUrl, bool canGoBack, bool canGoForward});
 }
 
 /// @nodoc
-class _$PageFinishedEventCopyWithImpl<$Res>
-    extends _$WebViewEventCopyWithImpl<$Res>
-    implements $PageFinishedEventCopyWith<$Res> {
-  _$PageFinishedEventCopyWithImpl(
-      PageFinishedEvent _value, $Res Function(PageFinishedEvent) _then)
-      : super(_value, (v) => _then(v as PageFinishedEvent));
+class __$$PageFinishedEventCopyWithImpl<$Res>
+    extends _$WebViewEventCopyWithImpl<$Res, _$PageFinishedEvent>
+    implements _$$PageFinishedEventCopyWith<$Res> {
+  __$$PageFinishedEventCopyWithImpl(
+      _$PageFinishedEvent _value, $Res Function(_$PageFinishedEvent) _then)
+      : super(_value, _then);
 
-  @override
-  PageFinishedEvent get _value => super._value as PageFinishedEvent;
-
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object url = freezed,
-    Object currentUrl = freezed,
-    Object canGoBack = freezed,
-    Object canGoForward = freezed,
+    Object? url = null,
+    Object? currentUrl = null,
+    Object? canGoBack = null,
+    Object? canGoForward = null,
   }) {
-    return _then(PageFinishedEvent(
-      url == freezed ? _value.url : url as String,
-      currentUrl == freezed ? _value.currentUrl : currentUrl as String,
-      canGoBack == freezed ? _value.canGoBack : canGoBack as bool,
-      canGoForward == freezed ? _value.canGoForward : canGoForward as bool,
+    return _then(_$PageFinishedEvent(
+      null == url
+          ? _value.url
+          : url // ignore: cast_nullable_to_non_nullable
+              as String,
+      null == currentUrl
+          ? _value.currentUrl
+          : currentUrl // ignore: cast_nullable_to_non_nullable
+              as String,
+      null == canGoBack
+          ? _value.canGoBack
+          : canGoBack // ignore: cast_nullable_to_non_nullable
+              as bool,
+      null == canGoForward
+          ? _value.canGoForward
+          : canGoForward // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
 
 /// @nodoc
+
 class _$PageFinishedEvent implements PageFinishedEvent {
   const _$PageFinishedEvent(
-      this.url, this.currentUrl, this.canGoBack, this.canGoForward)
-      : assert(url != null),
-        assert(currentUrl != null),
-        assert(canGoBack != null),
-        assert(canGoForward != null);
+      this.url, this.currentUrl, this.canGoBack, this.canGoForward);
 
   @override
   final String url;
@@ -664,69 +727,76 @@ class _$PageFinishedEvent implements PageFinishedEvent {
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other is PageFinishedEvent &&
-            (identical(other.url, url) ||
-                const DeepCollectionEquality().equals(other.url, url)) &&
+        (other.runtimeType == runtimeType &&
+            other is _$PageFinishedEvent &&
+            (identical(other.url, url) || other.url == url) &&
             (identical(other.currentUrl, currentUrl) ||
-                const DeepCollectionEquality()
-                    .equals(other.currentUrl, currentUrl)) &&
+                other.currentUrl == currentUrl) &&
             (identical(other.canGoBack, canGoBack) ||
-                const DeepCollectionEquality()
-                    .equals(other.canGoBack, canGoBack)) &&
+                other.canGoBack == canGoBack) &&
             (identical(other.canGoForward, canGoForward) ||
-                const DeepCollectionEquality()
-                    .equals(other.canGoForward, canGoForward)));
+                other.canGoForward == canGoForward));
   }
 
   @override
   int get hashCode =>
-      runtimeType.hashCode ^
-      const DeepCollectionEquality().hash(url) ^
-      const DeepCollectionEquality().hash(currentUrl) ^
-      const DeepCollectionEquality().hash(canGoBack) ^
-      const DeepCollectionEquality().hash(canGoForward);
+      Object.hash(runtimeType, url, currentUrl, canGoBack, canGoForward);
 
   @JsonKey(ignore: true)
   @override
-  $PageFinishedEventCopyWith<PageFinishedEvent> get copyWith =>
-      _$PageFinishedEventCopyWithImpl<PageFinishedEvent>(this, _$identity);
+  @pragma('vm:prefer-inline')
+  _$$PageFinishedEventCopyWith<_$PageFinishedEvent> get copyWith =>
+      __$$PageFinishedEventCopyWithImpl<_$PageFinishedEvent>(this, _$identity);
 
   @override
   @optionalTypeArgs
-  TResult when<TResult extends Object>({
-    @required
-        TResult shouldOverrideUrlLoading(
-            ShouldOverrideUrlLoadingRequest request),
-    @required TResult progressChanged(int progress),
-    @required
-        TResult pageStarted(
-            String url, String currentUrl, bool canGoBack, bool canGoForward),
-    @required
-        TResult pageFinished(
-            String url, String currentUrl, bool canGoBack, bool canGoForward),
-    @required TResult webResourceError(WebResourceError error),
+  TResult when<TResult extends Object?>({
+    required TResult Function(ShouldOverrideUrlLoadingRequest request)
+        shouldOverrideUrlLoading,
+    required TResult Function(int progress) progressChanged,
+    required TResult Function(
+            String url, String currentUrl, bool canGoBack, bool canGoForward)
+        pageStarted,
+    required TResult Function(
+            String url, String currentUrl, bool canGoBack, bool canGoForward)
+        pageFinished,
+    required TResult Function(WebResourceError error) webResourceError,
   }) {
-    assert(shouldOverrideUrlLoading != null);
-    assert(progressChanged != null);
-    assert(pageStarted != null);
-    assert(pageFinished != null);
-    assert(webResourceError != null);
     return pageFinished(url, currentUrl, canGoBack, canGoForward);
   }
 
   @override
   @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object>({
-    TResult shouldOverrideUrlLoading(ShouldOverrideUrlLoadingRequest request),
-    TResult progressChanged(int progress),
-    TResult pageStarted(
-        String url, String currentUrl, bool canGoBack, bool canGoForward),
-    TResult pageFinished(
-        String url, String currentUrl, bool canGoBack, bool canGoForward),
-    TResult webResourceError(WebResourceError error),
-    @required TResult orElse(),
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(ShouldOverrideUrlLoadingRequest request)?
+        shouldOverrideUrlLoading,
+    TResult? Function(int progress)? progressChanged,
+    TResult? Function(
+            String url, String currentUrl, bool canGoBack, bool canGoForward)?
+        pageStarted,
+    TResult? Function(
+            String url, String currentUrl, bool canGoBack, bool canGoForward)?
+        pageFinished,
+    TResult? Function(WebResourceError error)? webResourceError,
   }) {
-    assert(orElse != null);
+    return pageFinished?.call(url, currentUrl, canGoBack, canGoForward);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(ShouldOverrideUrlLoadingRequest request)?
+        shouldOverrideUrlLoading,
+    TResult Function(int progress)? progressChanged,
+    TResult Function(
+            String url, String currentUrl, bool canGoBack, bool canGoForward)?
+        pageStarted,
+    TResult Function(
+            String url, String currentUrl, bool canGoBack, bool canGoForward)?
+        pageFinished,
+    TResult Function(WebResourceError error)? webResourceError,
+    required TResult orElse(),
+  }) {
     if (pageFinished != null) {
       return pageFinished(url, currentUrl, canGoBack, canGoForward);
     }
@@ -735,33 +805,41 @@ class _$PageFinishedEvent implements PageFinishedEvent {
 
   @override
   @optionalTypeArgs
-  TResult map<TResult extends Object>({
-    @required
-        TResult shouldOverrideUrlLoading(ShouldOverrideUrlLoadingEvent value),
-    @required TResult progressChanged(ProgressChangedEvent value),
-    @required TResult pageStarted(PageStartedEvent value),
-    @required TResult pageFinished(PageFinishedEvent value),
-    @required TResult webResourceError(WebResourceErrorEvent value),
+  TResult map<TResult extends Object?>({
+    required TResult Function(ShouldOverrideUrlLoadingEvent value)
+        shouldOverrideUrlLoading,
+    required TResult Function(ProgressChangedEvent value) progressChanged,
+    required TResult Function(PageStartedEvent value) pageStarted,
+    required TResult Function(PageFinishedEvent value) pageFinished,
+    required TResult Function(WebResourceErrorEvent value) webResourceError,
   }) {
-    assert(shouldOverrideUrlLoading != null);
-    assert(progressChanged != null);
-    assert(pageStarted != null);
-    assert(pageFinished != null);
-    assert(webResourceError != null);
     return pageFinished(this);
   }
 
   @override
   @optionalTypeArgs
-  TResult maybeMap<TResult extends Object>({
-    TResult shouldOverrideUrlLoading(ShouldOverrideUrlLoadingEvent value),
-    TResult progressChanged(ProgressChangedEvent value),
-    TResult pageStarted(PageStartedEvent value),
-    TResult pageFinished(PageFinishedEvent value),
-    TResult webResourceError(WebResourceErrorEvent value),
-    @required TResult orElse(),
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(ShouldOverrideUrlLoadingEvent value)?
+        shouldOverrideUrlLoading,
+    TResult? Function(ProgressChangedEvent value)? progressChanged,
+    TResult? Function(PageStartedEvent value)? pageStarted,
+    TResult? Function(PageFinishedEvent value)? pageFinished,
+    TResult? Function(WebResourceErrorEvent value)? webResourceError,
   }) {
-    assert(orElse != null);
+    return pageFinished?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(ShouldOverrideUrlLoadingEvent value)?
+        shouldOverrideUrlLoading,
+    TResult Function(ProgressChangedEvent value)? progressChanged,
+    TResult Function(PageStartedEvent value)? pageStarted,
+    TResult Function(PageFinishedEvent value)? pageFinished,
+    TResult Function(WebResourceErrorEvent value)? webResourceError,
+    required TResult orElse(),
+  }) {
     if (pageFinished != null) {
       return pageFinished(this);
     }
@@ -770,50 +848,53 @@ class _$PageFinishedEvent implements PageFinishedEvent {
 }
 
 abstract class PageFinishedEvent implements WebViewEvent {
-  const factory PageFinishedEvent(
-          String url, String currentUrl, bool canGoBack, bool canGoForward) =
-      _$PageFinishedEvent;
+  const factory PageFinishedEvent(final String url, final String currentUrl,
+      final bool canGoBack, final bool canGoForward) = _$PageFinishedEvent;
 
   String get url;
   String get currentUrl;
   bool get canGoBack;
   bool get canGoForward;
   @JsonKey(ignore: true)
-  $PageFinishedEventCopyWith<PageFinishedEvent> get copyWith;
+  _$$PageFinishedEventCopyWith<_$PageFinishedEvent> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $WebResourceErrorEventCopyWith<$Res> {
-  factory $WebResourceErrorEventCopyWith(WebResourceErrorEvent value,
-          $Res Function(WebResourceErrorEvent) then) =
-      _$WebResourceErrorEventCopyWithImpl<$Res>;
+abstract class _$$WebResourceErrorEventCopyWith<$Res> {
+  factory _$$WebResourceErrorEventCopyWith(_$WebResourceErrorEvent value,
+          $Res Function(_$WebResourceErrorEvent) then) =
+      __$$WebResourceErrorEventCopyWithImpl<$Res>;
+  @useResult
   $Res call({WebResourceError error});
 }
 
 /// @nodoc
-class _$WebResourceErrorEventCopyWithImpl<$Res>
-    extends _$WebViewEventCopyWithImpl<$Res>
-    implements $WebResourceErrorEventCopyWith<$Res> {
-  _$WebResourceErrorEventCopyWithImpl(
-      WebResourceErrorEvent _value, $Res Function(WebResourceErrorEvent) _then)
-      : super(_value, (v) => _then(v as WebResourceErrorEvent));
+class __$$WebResourceErrorEventCopyWithImpl<$Res>
+    extends _$WebViewEventCopyWithImpl<$Res, _$WebResourceErrorEvent>
+    implements _$$WebResourceErrorEventCopyWith<$Res> {
+  __$$WebResourceErrorEventCopyWithImpl(_$WebResourceErrorEvent _value,
+      $Res Function(_$WebResourceErrorEvent) _then)
+      : super(_value, _then);
 
-  @override
-  WebResourceErrorEvent get _value => super._value as WebResourceErrorEvent;
-
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object error = freezed,
+    Object? error = null,
   }) {
-    return _then(WebResourceErrorEvent(
-      error == freezed ? _value.error : error as WebResourceError,
+    return _then(_$WebResourceErrorEvent(
+      null == error
+          ? _value.error
+          : error // ignore: cast_nullable_to_non_nullable
+              as WebResourceError,
     ));
   }
 }
 
 /// @nodoc
+
 class _$WebResourceErrorEvent implements WebResourceErrorEvent {
-  const _$WebResourceErrorEvent(this.error) : assert(error != null);
+  const _$WebResourceErrorEvent(this.error);
 
   @override
   final WebResourceError error;
@@ -826,57 +907,70 @@ class _$WebResourceErrorEvent implements WebResourceErrorEvent {
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other is WebResourceErrorEvent &&
-            (identical(other.error, error) ||
-                const DeepCollectionEquality().equals(other.error, error)));
+        (other.runtimeType == runtimeType &&
+            other is _$WebResourceErrorEvent &&
+            (identical(other.error, error) || other.error == error));
   }
 
   @override
-  int get hashCode =>
-      runtimeType.hashCode ^ const DeepCollectionEquality().hash(error);
+  int get hashCode => Object.hash(runtimeType, error);
 
   @JsonKey(ignore: true)
   @override
-  $WebResourceErrorEventCopyWith<WebResourceErrorEvent> get copyWith =>
-      _$WebResourceErrorEventCopyWithImpl<WebResourceErrorEvent>(
+  @pragma('vm:prefer-inline')
+  _$$WebResourceErrorEventCopyWith<_$WebResourceErrorEvent> get copyWith =>
+      __$$WebResourceErrorEventCopyWithImpl<_$WebResourceErrorEvent>(
           this, _$identity);
 
   @override
   @optionalTypeArgs
-  TResult when<TResult extends Object>({
-    @required
-        TResult shouldOverrideUrlLoading(
-            ShouldOverrideUrlLoadingRequest request),
-    @required TResult progressChanged(int progress),
-    @required
-        TResult pageStarted(
-            String url, String currentUrl, bool canGoBack, bool canGoForward),
-    @required
-        TResult pageFinished(
-            String url, String currentUrl, bool canGoBack, bool canGoForward),
-    @required TResult webResourceError(WebResourceError error),
+  TResult when<TResult extends Object?>({
+    required TResult Function(ShouldOverrideUrlLoadingRequest request)
+        shouldOverrideUrlLoading,
+    required TResult Function(int progress) progressChanged,
+    required TResult Function(
+            String url, String currentUrl, bool canGoBack, bool canGoForward)
+        pageStarted,
+    required TResult Function(
+            String url, String currentUrl, bool canGoBack, bool canGoForward)
+        pageFinished,
+    required TResult Function(WebResourceError error) webResourceError,
   }) {
-    assert(shouldOverrideUrlLoading != null);
-    assert(progressChanged != null);
-    assert(pageStarted != null);
-    assert(pageFinished != null);
-    assert(webResourceError != null);
     return webResourceError(error);
   }
 
   @override
   @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object>({
-    TResult shouldOverrideUrlLoading(ShouldOverrideUrlLoadingRequest request),
-    TResult progressChanged(int progress),
-    TResult pageStarted(
-        String url, String currentUrl, bool canGoBack, bool canGoForward),
-    TResult pageFinished(
-        String url, String currentUrl, bool canGoBack, bool canGoForward),
-    TResult webResourceError(WebResourceError error),
-    @required TResult orElse(),
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(ShouldOverrideUrlLoadingRequest request)?
+        shouldOverrideUrlLoading,
+    TResult? Function(int progress)? progressChanged,
+    TResult? Function(
+            String url, String currentUrl, bool canGoBack, bool canGoForward)?
+        pageStarted,
+    TResult? Function(
+            String url, String currentUrl, bool canGoBack, bool canGoForward)?
+        pageFinished,
+    TResult? Function(WebResourceError error)? webResourceError,
   }) {
-    assert(orElse != null);
+    return webResourceError?.call(error);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(ShouldOverrideUrlLoadingRequest request)?
+        shouldOverrideUrlLoading,
+    TResult Function(int progress)? progressChanged,
+    TResult Function(
+            String url, String currentUrl, bool canGoBack, bool canGoForward)?
+        pageStarted,
+    TResult Function(
+            String url, String currentUrl, bool canGoBack, bool canGoForward)?
+        pageFinished,
+    TResult Function(WebResourceError error)? webResourceError,
+    required TResult orElse(),
+  }) {
     if (webResourceError != null) {
       return webResourceError(error);
     }
@@ -885,33 +979,41 @@ class _$WebResourceErrorEvent implements WebResourceErrorEvent {
 
   @override
   @optionalTypeArgs
-  TResult map<TResult extends Object>({
-    @required
-        TResult shouldOverrideUrlLoading(ShouldOverrideUrlLoadingEvent value),
-    @required TResult progressChanged(ProgressChangedEvent value),
-    @required TResult pageStarted(PageStartedEvent value),
-    @required TResult pageFinished(PageFinishedEvent value),
-    @required TResult webResourceError(WebResourceErrorEvent value),
+  TResult map<TResult extends Object?>({
+    required TResult Function(ShouldOverrideUrlLoadingEvent value)
+        shouldOverrideUrlLoading,
+    required TResult Function(ProgressChangedEvent value) progressChanged,
+    required TResult Function(PageStartedEvent value) pageStarted,
+    required TResult Function(PageFinishedEvent value) pageFinished,
+    required TResult Function(WebResourceErrorEvent value) webResourceError,
   }) {
-    assert(shouldOverrideUrlLoading != null);
-    assert(progressChanged != null);
-    assert(pageStarted != null);
-    assert(pageFinished != null);
-    assert(webResourceError != null);
     return webResourceError(this);
   }
 
   @override
   @optionalTypeArgs
-  TResult maybeMap<TResult extends Object>({
-    TResult shouldOverrideUrlLoading(ShouldOverrideUrlLoadingEvent value),
-    TResult progressChanged(ProgressChangedEvent value),
-    TResult pageStarted(PageStartedEvent value),
-    TResult pageFinished(PageFinishedEvent value),
-    TResult webResourceError(WebResourceErrorEvent value),
-    @required TResult orElse(),
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(ShouldOverrideUrlLoadingEvent value)?
+        shouldOverrideUrlLoading,
+    TResult? Function(ProgressChangedEvent value)? progressChanged,
+    TResult? Function(PageStartedEvent value)? pageStarted,
+    TResult? Function(PageFinishedEvent value)? pageFinished,
+    TResult? Function(WebResourceErrorEvent value)? webResourceError,
   }) {
-    assert(orElse != null);
+    return webResourceError?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(ShouldOverrideUrlLoadingEvent value)?
+        shouldOverrideUrlLoading,
+    TResult Function(ProgressChangedEvent value)? progressChanged,
+    TResult Function(PageStartedEvent value)? pageStarted,
+    TResult Function(PageFinishedEvent value)? pageFinished,
+    TResult Function(WebResourceErrorEvent value)? webResourceError,
+    required TResult orElse(),
+  }) {
     if (webResourceError != null) {
       return webResourceError(this);
     }
@@ -920,10 +1022,11 @@ class _$WebResourceErrorEvent implements WebResourceErrorEvent {
 }
 
 abstract class WebResourceErrorEvent implements WebViewEvent {
-  const factory WebResourceErrorEvent(WebResourceError error) =
+  const factory WebResourceErrorEvent(final WebResourceError error) =
       _$WebResourceErrorEvent;
 
   WebResourceError get error;
   @JsonKey(ignore: true)
-  $WebResourceErrorEventCopyWith<WebResourceErrorEvent> get copyWith;
+  _$$WebResourceErrorEventCopyWith<_$WebResourceErrorEvent> get copyWith =>
+      throw _privateConstructorUsedError;
 }

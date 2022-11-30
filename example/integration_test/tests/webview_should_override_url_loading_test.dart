@@ -25,7 +25,7 @@ void main() {
 
     final controller = await context.webviewController.future;
     await controller.evaluateJavascript(
-      "location.href = 'https://flutter.dev/'",
+      "location.href = '$TARGET_URL'",
     );
 
     await sleep();
@@ -48,8 +48,8 @@ void main() {
         false,
       ),
       WebViewEvent.pageStarted(
-        "https://flutter.dev/",
-        "https://flutter.dev/",
+        TARGET_URL,
+        TARGET_URL,
         Platform.isAndroid ? true : false,
         false,
       ),
@@ -66,8 +66,8 @@ void main() {
               false,
             ),
             WebViewEvent.pageFinished(
-              "https://flutter.dev/",
-              "https://flutter.dev/",
+              TARGET_URL,
+              TARGET_URL,
               Platform.isAndroid ? true : false,
               false,
             ),
@@ -81,14 +81,14 @@ void main() {
               false,
             ),
             WebViewEvent.pageFinished(
-              "https://flutter.dev/",
-              "https://flutter.dev/",
+              TARGET_URL,
+              TARGET_URL,
               Platform.isAndroid ? true : false,
               false,
             ),
             WebViewEvent.pageFinished(
-              "https://flutter.dev/",
-              "https://flutter.dev/",
+              TARGET_URL,
+              TARGET_URL,
               Platform.isAndroid ? true : false,
               false,
             ),
@@ -123,13 +123,13 @@ void main() {
 
     final controller = await context.webviewController.future;
     await controller.evaluateJavascript(
-      "location.href = 'https://flutter.dev/'",
+      "location.href = '$TARGET_URL'",
     );
 
     await sleep();
 
     expect(context.loadingRequestEvents.map((e) => e.request.url), [
-      "https://flutter.dev/",
+      TARGET_URL,
     ]);
 
     expect(context.webResourceErrorEvents.length, 0);
@@ -170,12 +170,12 @@ void main() {
     );
 
     final controller = await context.webviewController.future;
-    await controller.loadUrl("https://flutter.dev/");
+    await controller.loadUrl(TARGET_URL);
 
     await sleep();
 
     expect(context.loadingRequestEvents.map((e) => e.request.url), [
-      if (Platform.isIOS) "https://flutter.dev/",
+      if (Platform.isIOS) TARGET_URL,
     ]);
 
     expect(context.webResourceErrorEvents.length, 0);

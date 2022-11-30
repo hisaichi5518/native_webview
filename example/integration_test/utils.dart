@@ -5,6 +5,8 @@ import 'package:flutter_test/flutter_test.dart' as test;
 import 'package:native_webview/native_webview.dart';
 import 'package:native_webview_example/integration_test/webview_event.dart';
 
+const TARGET_URL = "https://example.com/";
+
 T Function(A) onData<T, A>(List<T Function(A)> events) {
   var index = 0;
   return test.expectAsync1<T, A>((event) {
@@ -29,43 +31,43 @@ class WebViewTestContext {
     WebViewController controller,
     ShouldOverrideUrlLoadingRequest request,
   ) async {
-    final event = WebViewEvent.shouldOverrideUrlLoading(request);
+    final event = ShouldOverrideUrlLoadingEvent(request);
     print(event);
     loadingRequestEvents.add(event);
 
     return ShouldOverrideUrlLoadingAction.allow;
   }
 
-  void onPageStarted(WebViewController controller, String url) async {
-    final event = WebViewEvent.pageStarted(
-      url,
-      await controller.currentUrl(),
-      await controller.canGoBack(),
-      await controller.canGoForward(),
+  void onPageStarted(WebViewController controller, String? url) async {
+    final event = PageStartedEvent(
+      url!,
+      (await controller.currentUrl())!,
+      (await controller.canGoBack())!,
+      (await controller.canGoForward())!,
     );
     print(event);
     pageStartedEvents.add(event);
   }
 
-  void onPageFinished(WebViewController controller, String url) async {
-    final event = WebViewEvent.pageFinished(
-      url,
-      await controller.currentUrl(),
-      await controller.canGoBack(),
-      await controller.canGoForward(),
+  void onPageFinished(WebViewController controller, String? url) async {
+    final event = PageFinishedEvent(
+      url!,
+      (await controller.currentUrl())!,
+      (await controller.canGoBack())!,
+      (await controller.canGoForward())!,
     );
     print(event);
     pageFinishedEvents.add(event);
   }
 
   void onWebResourceError(WebResourceError error) {
-    final event = WebViewEvent.webResourceError(error);
+    final event = WebResourceErrorEvent(error);
     print(event);
     webResourceErrorEvents.add(event);
   }
 
   void onProgressChanged(WebViewController controller, int progress) {
-    final event = WebViewEvent.progressChanged(progress);
+    final event = ProgressChangedEvent(progress);
     print(event);
     progressChangedEvents.add(event);
   }

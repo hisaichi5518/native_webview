@@ -23,7 +23,7 @@ class NativeWebViewClient(private val channel: MethodChannel, private val option
                     handler.cancel()
                 }
 
-                override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
+                override fun error(errorCode: String, errorMessage: String?, errorDetails: Any?) {
                     Log.e("NativeWebViewClient", "$errorCode $errorMessage $errorDetails")
                     handler.cancel()
                 }
@@ -100,7 +100,7 @@ class NativeWebViewClient(private val channel: MethodChannel, private val option
                     Log.i("NativeWebViewClient", "shouldOverrideUrlLoading is notImplemented")
                 }
 
-                override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
+                override fun error(errorCode: String, errorMessage: String?, errorDetails: Any?) {
                     Log.e("NativeWebViewClient", "$errorCode $errorMessage $errorDetails")
                 }
 
