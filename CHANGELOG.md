@@ -1,3 +1,8 @@
+## 1.4.0
+
+- [Suppress build warnings #110](https://github.com/hisaichi5518/native_webview/pull/110)
+- [Upgrade Flutter and fix Android typing to align with the SDK #109](https://github.com/hisaichi5518/native_webview/pull/109)
+
 ## 1.2.0
 
 - Fix null safety
