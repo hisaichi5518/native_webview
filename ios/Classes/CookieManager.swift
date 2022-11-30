@@ -90,7 +90,7 @@ class CookieManager: NSObject, FlutterPlugin {
                     .value: "test",
                     .path: "/"
                 ])
-                var domain = cookie.domain
+                let domain = cookie.domain
                 let canGetSubDomain = domain.hasPrefix(".")
 
                 if canGetSubDomain, let dummyCookie = dummyCookie {
